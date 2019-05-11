@@ -1,0 +1,108 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{newUser ? 'Add new user' : 'Edit user'}}</mat-card-title>
+    <mat-card-subtitle>* indicates fields are required</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form #userForm="ngForm" (ngSubmit)="userForm.form.valid && onSubmit()" 
+    novalidate 
+    [mustMatch]="['password', 'confirmPassword']">
+      <div class="row">
+        <div class="col-4">
+          <mat-form-field>
+            <input [(ngModel)]="userModel.firstName" name="firstName" #firstName="ngModel" type="text" placeholder="First name"
+              matInput required aria-required="true" />
+            <mat-error>
+              <div *ngIf="firstName.invalid && (firstName.touched || firstName.dirty)">
+                <div *ngIf="firstName.errors.required">First Name is required</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-4">
+          <mat-form-field>
+            <input [(ngModel)]="userModel.middleName" name="middleName" #middleName="ngModel" type="text" placeholder="Middle name"
+              matInput />
+          </mat-form-field>
+        </div>
+
+        <div class="col-4">
+          <mat-form-field>
+            <input [(ngModel)]="userModel.lastName" name="lastName" #lastName="ngModel" type="text" placeholder="Last name"
+              matInput aria-required="true" />
+            <mat-error>
+              <div *ngIf="lastName.invalid && (lastName.touched || lastName.dirty)">
+                <div *ngIf="lastName.errors.required">First Name is required</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input [(ngModel)]="userModel.email" name="email" #email="ngModel" type="email" placeholder="Email"
+              matInput required email aria-required="true" />
+            <mat-error>
+              <div *ngIf="email.invalid && (email.touched || email.dirty)">
+                <div *ngIf="email.errors.required">First Name is required</div>
+                <div *ngIf="email.errors.email">Enter valid email</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <mat-select [(ngModel)]="userModel.role" required name="role" #role="ngModel" placeholder="Select an option"
+              aria-required="true">
+              <mat-option value="admin">Admin</mat-option>
+              <mat-option value="editor">Editor</mat-option>
+              <mat-option value="author">Author</mat-option>
+            </mat-select>
+
+            <mat-error>
+              <div *ngIf="role.invalid && (role.touched || role.dirty)">
+                <div *ngIf="role.errors.required">Please select a role</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input [(ngModel)]="userModel.password" name="password" #password="ngModel" type="password" placeholder="Password"
+              matInput [attr.required]="newUser ? true : undefined" aria-required="true" minlength="5" maxlength="15" />
+            <mat-error>
+              <div *ngIf="password.invalid && (password.touched || password.dirty)">
+                <div *ngIf="password.errors.required">Password is required</div>
+                <div *ngIf="password.errors.minlength">Password min length is 5</div>
+                <div *ngIf="password.errors.maxlength">Password max length is 15</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input [(ngModel)]="userModel.confirmPassword" name="confirmPassword" #confirmPassword="ngModel" type="password"
+              placeholder="Confirm Password" matInput [attr.required]="newUser ? true : undefined" aria-required="true" minlength="5" maxlength="15" />
+            <mat-error>
+              <div *ngIf="confirmPassword.invalid && (confirmPassword.touched || confirmPassword.dirty)">
+                <div *ngIf="confirmPassword.errors.required">confirmPassword is required</div>
+                <div *ngIf="confirmPassword.errors.minlength">confirmPassword min length is 5</div>
+                <div *ngIf="confirmPassword.errors.maxlength">confirmPassword max length is 15</div>
+                <div *ngIf="confirmPassword.errors.mustMatch">confirmPassword must match to password</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+      </div>
+      <br>
+      <div>
+        <button [disabled]="!userForm.form.valid" type="submit" mat-raised-button color="primary">{{ newUser ? 'Create user' : 'Update user'}}</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

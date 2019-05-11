@@ -1,0 +1,16 @@
+<div class="admin">
+  <div class="bg-light-gray content-wrapper">
+    <app-header></app-header>
+    <section class="container-fluid content-container h-100">
+      <div class="row h-100">
+        <aside class="col-3 h-100 overflow-auto">
+          <app-nav-left-side></app-nav-left-side>
+        </aside>
+        <main class="col-9 h-100 overflow-auto">
+          <router-outlet></router-outlet>
+        </main>
+      </div>
+    </section>
+    <app-footer></app-footer>
+  </div>
+</div>

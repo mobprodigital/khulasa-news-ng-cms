@@ -1,0 +1,74 @@
+// @import 'css_vars.scss';
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.admin {
+
+
+
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%;
+
+  
+
+
+  .content-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .content-container {
+      overflow: auto;
+    }
+  }
+
+  .toolbar-saparater {
+    flex: 1;
+  }
+
+
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .admin-sidebar>mat-card,
+  .admin-content>mat-card,
+  .admin-sidebar>mat-expansion-panel {
+    margin-bottom: 15px;
+  }
+
+  .page-title {
+    font-weight: 400;
+    margin: 0;
+  }
+
+  header.page-header {
+    padding: 30px 0;
+  }
+
+  .featured-image>img {
+    max-width: 100%;
+  }
+
+  .text-right {
+    text-align: right !important;
+  }
+
+  table.mat-table {
+    width: 100%;
+  }
+
+  .dialog-title {
+    margin: 0 0 10px 0;
+    font-weight: 400;
+    font-size: 1.1rem;
+  }
+
+
+}

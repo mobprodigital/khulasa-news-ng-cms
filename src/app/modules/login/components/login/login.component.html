@@ -1,0 +1,41 @@
+<section class="login-wrap">
+  <img src="assets/images/bg-img/lg-bg.jpg" alt="">
+
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar [ngStyle]="{'background-image' : 'url(assets/images/logo/logo-iocn.png)'}"></div>
+      <!-- <img src="assets/images/logo/iocn.png" /> -->
+      <mat-card-title>Log in</mat-card-title>
+      <mat-card-subtitle>Fields marked as * are required</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="logInSubmit()" #loginForm="ngForm">
+        <mat-form-field class="w-100">
+          <input autofocus tabindex="1" id="userName" #userName="ngModel" name="userName" [(ngModel)]="logInModel.userName" type="text"
+            placeholder="Enter username" matInput required email/>
+          <button type="button" mat-button *ngIf="logInModel.userName" matSuffix mat-icon-button aria-label="Clear" (click)="logInModel.userName=''">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-error *ngIf="userName.invalid && (userName.touched || userName.dirty)">
+            <span *ngIf="userName.errors.required">username is required</span>
+            <span *ngIf="userName.errors.email">Please enter a valid email</span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-100">
+          <input autocomplete tabindex="2" id="password" #password="ngModel" name="password" [(ngModel)]="logInModel.password" type="password"
+            placeholder="Enter password" matInput required [type]="pwdHide ? 'password' : 'text'" />
+          <mat-icon matSuffix (click)="pwdHide = !pwdHide">{{pwdHide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          <mat-error *ngIf="password.invalid && (password.touched || password.dirty)">
+            password is required
+          </mat-error>
+        </mat-form-field>
+        
+        <div>
+          <br>
+          <button tabindex="3" type="submit" [disabled]="!loginForm.form.valid" mat-raised-button color="primary">Login</button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</section>

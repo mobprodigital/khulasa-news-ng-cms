@@ -1,0 +1,15 @@
+<mat-toolbar class="mb-3" color="primary">
+  <mat-toolbar-row>
+    <span>khulasa News</span>
+    <span class="toolbar-saparater"></span>
+    <button mat-button [matMenuTriggerFor]="menu">
+      Gyan Parkash
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Profile</button>
+      <button mat-menu-item>Logout</button>
+    </mat-menu>
+
+  </mat-toolbar-row>
+</mat-toolbar>

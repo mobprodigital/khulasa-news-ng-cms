@@ -1,0 +1,30 @@
+section.login-wrap {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: #e4e4e4;
+}
+
+section.login-wrap>mat-card {
+  width: 30%;
+}
+
+section.login-wrap>img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  filter: blur(3px);
+  object-fit: cover;
+  height: 100%;
+}
+mat-form-field {
+  width: 100%;
+}
+@media all and (max-width : 768px) {
+  section.login-wrap>mat-card {
+    width: 80%;
+  }
+}

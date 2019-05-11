@@ -1,0 +1,131 @@
+<header class="page-header">
+  <div class="row">
+    <div class="col">
+      <h1 class="page-title">Add news</h1>
+    </div>
+    <div class="col">
+      <div class="text-right">
+        <a [routerLink]="['/news/all-news']" mat-raised-button color="primary">All news</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<form [formGroup]="newsForm" (ngSubmit)="onSubmit()">
+  <!-- hidden fields start-->
+  <input type="hidden" formControlName="id">
+  <input type="hidden" formControlName="slug">
+  <!-- hidden fields end -->
+  <section class="row">
+    <div class="col-8 admin-content">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-subtitle>* indicated that fields are required</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field>
+            <input formControlName="title" autofocus type="text" placeholder="News title" matInput />
+            <mat-error *ngIf="newsForm.get('title').invalid">
+              Title is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <textarea formControlName="content" rows="10" placeholder="News content" matInput></textarea>
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-subtitle>SEO options</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field>
+            <input type="url" formControlName="canonicalUrl" placeholder="Canonical URL" matInput />
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-4 admin-sidebar">
+
+      <!-- publish status -->
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Publish status
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="flex justify-content-between">
+          <button type="button" mat-raised-button color="light">Save draft</button>
+          <button type="submit" mat-raised-button color="primary">Publish</button>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- categories -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Categories
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+          <section class="max-h-200">
+            <div *ngFor="let catg of categoriesList; let i = index">
+              <mat-checkbox [checked]="catg.selected" (change)="setCategory($event, catg)" color="primary">{{catg.name}}</mat-checkbox>
+            </div>
+          </section>
+          <div>
+            <br>
+            <button mat-raised-button color="light" (click)="addNewCategory()" type="button">Add new</button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- tags -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Tags
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field>
+          <mat-chip-list #newsTag>
+            <mat-chip *ngFor="let tag of newsForm.get('tags').value" [selectable]="tagControlProp.selectable"
+              [removable]="tagControlProp.removable" (removed)="removeTag(tag)">
+              {{tag}}
+              <mat-icon matChipRemove *ngIf="tagControlProp.removable">cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="New tag..." [matChipInputFor]="newsTag" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="tagControlProp.addOnBlur" (matChipInputTokenEnd)="addTag($event)">
+          </mat-chip-list>
+        </mat-form-field>
+      </mat-expansion-panel>
+
+      <!-- fetured image -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Featured image
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+          <div class="featured-image">
+            <img [src]="thumbnailUrl ? thumbnailUrl : 'assets/images/bg-img/no_image_found.png'" alt="">
+          </div>
+          <div>
+            <button mat-raised-button color="primary" type="button">
+              <label class="btn-label" for="thumbImg">
+                Change
+                <input accept="image/*" id="thumbImg" [hidden]="true" type="file" (change)="coverImageChange($event)" />
+              </label>
+            </button> &nbsp;
+            <button type="button" mat-raised-button color="primary">Set featured image</button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+    </div>
+  </section>
+</form>

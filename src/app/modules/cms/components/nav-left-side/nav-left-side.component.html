@@ -1,0 +1,19 @@
+<section *ngIf="menuList.length  > 0" class="side-nav-main">
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let menu of menuList">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{menu.name}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <section>
+        <ul class="admin-menu">
+          <li *ngFor="let menuItem of menu.menuItems" class="admin-menu-item">
+            <a [routerLinkActive]="'active-admin-menu'" matRipple class="admin-menu-link" [routerLink]="[menuItem.path]"
+              [innerHTML]="menuItem.name"></a>
+          </li>
+        </ul>
+      </section>
+    </mat-expansion-panel>
+  </mat-accordion>
+</section>
