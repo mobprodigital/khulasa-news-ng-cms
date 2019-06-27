@@ -4,17 +4,17 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
-  selector: 'app-add-news-cat-dialog',
-  templateUrl: './add-news-cat-dialog.component.html',
-  styleUrls: ['./add-news-cat-dialog.component.css']
+  selector: 'app-add-post-cat-dialog',
+  templateUrl: './add-post-cat-dialog.component.html',
+  styleUrls: ['./add-post-cat-dialog.component.css']
 })
-export class AddNewsCatDialogComponent implements OnInit {
+export class AddPostCatDialogComponent implements OnInit {
 
   // public catForm: FormGroup;
   public categoryModel: NewsCategoryModel = new NewsCategoryModel(null, '');
   public dialogTitle: string = 'Add new category';
   constructor(
-    public dialogRef: MatDialogRef<AddNewsCatDialogComponent>,
+    public dialogRef: MatDialogRef<AddPostCatDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public categoryData: NewsCategoryModel) {
     console.log(categoryData)
     if (categoryData && categoryData instanceof NewsCategoryModel) {

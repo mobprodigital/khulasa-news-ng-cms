@@ -3,21 +3,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { ManageNewsCategoryComponent } from './manage-news-category.component';
+import { ManagePostCategoryComponent } from './manage-post-category.component';
 
-describe('ManageNewsCategoryComponent', () => {
-  let component: ManageNewsCategoryComponent;
-  let fixture: ComponentFixture<ManageNewsCategoryComponent>;
+describe('ManagePostCategoryComponent', () => {
+  let component: ManagePostCategoryComponent;
+  let fixture: ComponentFixture<ManagePostCategoryComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManageNewsCategoryComponent ]
+      declarations: [ ManagePostCategoryComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ManageNewsCategoryComponent);
+    fixture = TestBed.createComponent(ManagePostCategoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -2,14 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NewsCategoryModel } from 'src/app/model/news-category.model';
 import { PostService } from 'src/app/service/post/post.service';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
-import { AddNewsCatDialogComponent } from '../../dialogs/add-news-cat-dialog/add-news-cat-dialog.component';
+import { AddPostCatDialogComponent } from '../../dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
 
 @Component({
-  selector: 'app-manage-news-category',
-  templateUrl: './manage-news-category.component.html',
-  styleUrls: ['./manage-news-category.component.css']
+  selector: 'app-manage-post-category',
+  templateUrl: './manage-post-category.component.html',
+  styleUrls: ['./manage-post-category.component.css']
 })
-export class ManageNewsCategoryComponent implements OnInit {
+export class ManagePostCategoryComponent implements OnInit {
 
 
 
@@ -44,7 +44,7 @@ export class ManageNewsCategoryComponent implements OnInit {
   }
 
   public deleteNews(textId) {
-    let indexNumber = this.dataSource.data.findIndex(n => n.id === textId);
+    const indexNumber = this.dataSource.data.findIndex(n => n.id === textId);
     this.dataSource.data.splice(indexNumber, 1);
     this.dataSource = new MatTableDataSource<NewsCategoryModel>(this.dataSource.data);
   }
@@ -57,7 +57,7 @@ export class ManageNewsCategoryComponent implements OnInit {
    */
   openDialog(cat?: NewsCategoryModel): void {
 
-    const dialogRef = this.dialog.open(AddNewsCatDialogComponent, {
+    const dialogRef = this.dialog.open(AddPostCatDialogComponent, {
       width: '250px',
       data: (cat ? cat : false),
     });

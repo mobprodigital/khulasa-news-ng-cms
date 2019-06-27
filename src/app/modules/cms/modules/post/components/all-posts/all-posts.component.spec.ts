@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddNewsCatDialogComponent } from './add-news-cat-dialog.component';
+import { AllPostsComponent } from './all-posts.component';
 
-describe('AddNewsCatDialogComponent', () => {
-  let component: AddNewsCatDialogComponent;
-  let fixture: ComponentFixture<AddNewsCatDialogComponent>;
+describe('AllPostsComponent', () => {
+  let component: AllPostsComponent;
+  let fixture: ComponentFixture<AllPostsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddNewsCatDialogComponent ]
+      declarations: [ AllPostsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddNewsCatDialogComponent);
+    fixture = TestBed.createComponent(AllPostsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

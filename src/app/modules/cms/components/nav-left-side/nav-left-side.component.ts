@@ -26,10 +26,10 @@ export class NavLeftSideComponent implements OnInit {
     const baseFolder = '/';
 
     this.menuList.push(...[
-      new AdminMenu('News', [
-        new AdminMenuItem('Add new', baseFolder + 'news/add-new'),
-        new AdminMenuItem('All news', baseFolder + 'news/all-news'),
-        new AdminMenuItem('Manage categories', baseFolder + 'news/manage-categories'),
+      new AdminMenu('Post', [
+        new AdminMenuItem('Add New Post', baseFolder + 'post/add-new'),
+        new AdminMenuItem('All Posts', baseFolder + 'post/all-news'),
+        new AdminMenuItem('Manage Post Categories', baseFolder + 'post/manage-categories'),
       ]),
       new AdminMenu('Media', [
         new AdminMenuItem('Add new', baseFolder + 'media/add-new'),

@@ -8,8 +8,8 @@ const routes: Routes = [
     component: CommonComponent,
     children: [
       {
-        path: 'news',
-        loadChildren: './modules/news/news.module#NewsModule'
+        path: 'post',
+        loadChildren: './modules/post/post.module#PostModule'
       },
       {
         path: 'media',

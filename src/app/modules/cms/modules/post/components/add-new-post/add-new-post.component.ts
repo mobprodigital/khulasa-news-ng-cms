@@ -5,15 +5,15 @@ import { PostModel } from 'src/app/model/post.model';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { NewsCategoryModel } from 'src/app/model/news-category.model';
 import { PostService } from 'src/app/service/post/post.service';
-import { AddNewsCatDialogComponent } from '../../dialogs/add-news-cat-dialog/add-news-cat-dialog.component';
+import { AddPostCatDialogComponent } from '../../dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
-  selector: 'app-add-new-news',
-  templateUrl: './add-new-news.component.html',
-  styleUrls: ['./add-new-news.component.css']
+  selector: 'app-add-new-post',
+  templateUrl: './add-new-post.component.html',
+  styleUrls: ['./add-new-post.component.css']
 })
-export class AddNewNewsComponent implements OnInit {
+export class AddNewPostComponent implements OnInit {
 
 
   public Editor = ClassicEditor;
@@ -143,7 +143,7 @@ export class AddNewNewsComponent implements OnInit {
 
   addNewCategory() {
 
-    const catDialogRef = this.matDialog.open(AddNewsCatDialogComponent, {
+    const catDialogRef = this.matDialog.open(AddPostCatDialogComponent, {
       width: '250px',
     });
 

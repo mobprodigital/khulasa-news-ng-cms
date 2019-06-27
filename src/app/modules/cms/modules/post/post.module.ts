@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { NewsRoutingModule } from './news-routing.module';
-import { AddNewNewsComponent } from './components/add-new-news/add-new-news.component';
-import { AllNewsComponent } from './components/all-news/all-news.component';
+import { PostRoutingModule } from './post-routing.module';
+import { AddNewPostComponent } from './components/add-new-post/add-new-post.component';
+import { AllPostsComponent } from './components/all-posts/all-posts.component';
 import {
   MatCardModule, MatFormFieldModule, MatInputModule,
   MatCheckboxModule, MatChipsModule, MatIconModule, MatButtonModule,
@@ -11,21 +11,21 @@ import {
   MatSelectModule
 } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { AddNewsCatDialogComponent } from './dialogs/add-news-cat-dialog/add-news-cat-dialog.component';
-import { ManageNewsCategoryComponent } from './components/manage-news-category/manage-news-category.component';
+import { AddPostCatDialogComponent } from './dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
+import { ManagePostCategoryComponent } from './components/manage-post-category/manage-post-category.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 @NgModule({
   declarations: [
-    AddNewNewsComponent,
-    AllNewsComponent,
-    AddNewsCatDialogComponent,
-    ManageNewsCategoryComponent
+    AddNewPostComponent,
+    AllPostsComponent,
+    AddPostCatDialogComponent,
+    ManagePostCategoryComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     CKEditorModule,
-    NewsRoutingModule,
+    PostRoutingModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -40,6 +40,6 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     MatPaginatorModule,
     MatDialogModule,
   ],
-  entryComponents: [AddNewsCatDialogComponent]
+  entryComponents: [AddPostCatDialogComponent]
 })
-export class NewsModule { }
+export class PostModule { }

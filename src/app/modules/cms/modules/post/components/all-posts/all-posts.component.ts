@@ -4,11 +4,11 @@ import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { PostService } from 'src/app/service/post/post.service';
 
 @Component({
-  selector: 'app-all-news',
-  templateUrl: './all-news.component.html',
-  styleUrls: ['./all-news.component.css']
+  selector: 'app-all-posts',
+  templateUrl: './all-posts.component.html',
+  styleUrls: ['./all-posts.component.css']
 })
-export class AllNewsComponent implements OnInit {
+export class AllPostsComponent implements OnInit {
 
   displayedColumns: string[] = ['title', 'date', 'author', 'action'];
   dataSource: MatTableDataSource<PostModel>;
@@ -38,7 +38,7 @@ export class AllNewsComponent implements OnInit {
   }
 
   public deleteNews(textId) {
-    let indexNumber = this.dataSource.data.findIndex(n => n.id === textId);
+    const indexNumber = this.dataSource.data.findIndex(n => n.id === textId);
     this.dataSource.data.splice(indexNumber, 1);
     this.dataSource = new MatTableDataSource<PostModel>(this.dataSource.data);
   }
