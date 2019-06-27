@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatChipInputEvent, MatCheckboxChange } from '@angular/material';
-import { NewsModel } from 'src/app/model/news.model';
+import { PostModel } from 'src/app/model/post.model';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { NewsCategoryModel } from 'src/app/model/news-category.model';
-import { NewsService } from 'src/app/service/news/news.service';
+import { PostService } from 'src/app/service/post/post.service';
 import { AddNewsCatDialogComponent } from '../../dialogs/add-news-cat-dialog/add-news-cat-dialog.component';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-add-new-news',
@@ -15,6 +16,8 @@ import { AddNewsCatDialogComponent } from '../../dialogs/add-news-cat-dialog/add
 export class AddNewNewsComponent implements OnInit {
 
 
+  public Editor = ClassicEditor;
+  public rtContent: any;
   public tagControlProp = {
     visible: true,
     selectable: true,
@@ -29,12 +32,12 @@ export class AddNewNewsComponent implements OnInit {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
 
-  public news: NewsModel = new NewsModel();
+  public news: PostModel = new PostModel();
   public newsForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private newsService: NewsService,
+    private newsService: PostService,
     private matDialog: MatDialog
   ) {
 

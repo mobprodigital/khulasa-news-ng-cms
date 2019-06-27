@@ -10,7 +10,13 @@ section.login-wrap {
 section.login-wrap>mat-card {
   width: 30%;
 }
-
+mat-progress-bar.login-pb {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  left: 0;
+  border-radius: 12px;
+}
 section.login-wrap>img {
   position: absolute;
   top: 0;

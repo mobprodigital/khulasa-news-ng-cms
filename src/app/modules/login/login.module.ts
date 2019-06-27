@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './components/login/login.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { MatCardModule, MatInputModule, MatButtonModule, MatIconModule } from '@angular/material';
+import { MatCardModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressBarModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -16,7 +16,8 @@ import { FormsModule } from '@angular/forms';
     MatCardModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressBarModule
   ],
   exports : [
     FormsModule

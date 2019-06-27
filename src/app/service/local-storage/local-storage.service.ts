@@ -9,25 +9,33 @@ export class LocalStorageService {
 
   private prefixKey: string = 'ks_';
 
+  /**
+   * @param key key name to save data
+   * @param data data to save
+   * @param makeStringify if true then save data in json string else in original type
+   */
   public setData(key: string, data: any, makeStringify: boolean = true): void {
-    if (data) {
+    if (data !== undefined || data !== null) {
       if (makeStringify === true) {
-        localStorage.setItem(this.prefixKey + key, JSON.stringify(data));
-      } else {
-        localStorage.setItem(this.prefixKey + key, data);
+        data = JSON.stringify(data);
       }
+      localStorage.setItem(this.prefixKey + key, data);
     }
   }
 
-  public getData(key: string): any;
-  public getData(key: string, inJson: boolean): any;
-  public getData(key: string, inJson?: boolean): any {
-    let localData = localStorage.getItem(this.prefixKey + key);
+
+  /**
+   * Get local stored data by key
+   * @param key key of stored value
+   * @param inJson (optional) (default false) If true json object will be returned else return any
+   */
+  public getData(key: string, inJson: boolean = false): any {
+    const localData = localStorage.getItem(this.prefixKey + key);
     if (localData) {
       if (inJson === true) {
         try {
-          const _localData = JSON.parse(localData);
-          return _localData;
+          const jsonData = JSON.parse(localData);
+          return jsonData;
         } catch (err) {
           console.warn(err);
           return null;
@@ -38,6 +46,13 @@ export class LocalStorageService {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Clear all localStorage data
+   */
+  public clear(): void {
+    localStorage.clear();
   }
 
 }

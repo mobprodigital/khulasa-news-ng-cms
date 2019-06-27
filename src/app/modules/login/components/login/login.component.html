@@ -2,6 +2,8 @@
   <img src="assets/images/bg-img/lg-bg.jpg" alt="">
 
   <mat-card>
+    <mat-progress-bar class="login-pb" [mode]="'query'" *ngIf="showLoader">
+    </mat-progress-bar>
     <mat-card-header>
       <div mat-card-avatar [ngStyle]="{'background-image' : 'url(assets/images/logo/logo-iocn.png)'}"></div>
       <!-- <img src="assets/images/logo/iocn.png" /> -->
@@ -11,28 +13,31 @@
     <mat-card-content>
       <form (ngSubmit)="logInSubmit()" #loginForm="ngForm">
         <mat-form-field class="w-100">
-          <input autofocus tabindex="1" id="userName" #userName="ngModel" name="userName" [(ngModel)]="logInModel.userName" type="text"
-            placeholder="Enter username" matInput required email/>
-          <button type="button" mat-button *ngIf="logInModel.userName" matSuffix mat-icon-button aria-label="Clear" (click)="logInModel.userName=''">
+          <input autofocus tabindex="1" id="email" #email="ngModel" name="email"
+            [(ngModel)]="logInModel.email" type="text" placeholder="Enter email" matInput required email />
+          <button type="button" mat-button *ngIf="logInModel.email" matSuffix mat-icon-button aria-label="Clear"
+            (click)="logInModel.email=''">
             <mat-icon>close</mat-icon>
           </button>
-          <mat-error *ngIf="userName.invalid && (userName.touched || userName.dirty)">
-            <span *ngIf="userName.errors.required">username is required</span>
-            <span *ngIf="userName.errors.email">Please enter a valid email</span>
+          <mat-error *ngIf="email.invalid && (email.touched || email.dirty)">
+            <span *ngIf="email.errors.required">email is required</span>
+            <span *ngIf="email.errors.email">Please enter a valid email</span>
           </mat-error>
         </mat-form-field>
         <mat-form-field class="w-100">
-          <input autocomplete tabindex="2" id="password" #password="ngModel" name="password" [(ngModel)]="logInModel.password" type="password"
-            placeholder="Enter password" matInput required [type]="pwdHide ? 'password' : 'text'" />
+          <input autocomplete tabindex="2" id="password" #password="ngModel" name="password"
+            [(ngModel)]="logInModel.password" type="password" placeholder="Enter password" matInput required
+            [type]="pwdHide ? 'password' : 'text'" />
           <mat-icon matSuffix (click)="pwdHide = !pwdHide">{{pwdHide ? 'visibility_off' : 'visibility'}}</mat-icon>
           <mat-error *ngIf="password.invalid && (password.touched || password.dirty)">
             password is required
           </mat-error>
         </mat-form-field>
-        
+
         <div>
           <br>
-          <button tabindex="3" type="submit" [disabled]="!loginForm.form.valid" mat-raised-button color="primary">Login</button>
+          <button tabindex="3" type="submit" [disabled]="!loginForm.form.valid" mat-raised-button
+            color="primary">Login</button>
         </div>
 
       </form>

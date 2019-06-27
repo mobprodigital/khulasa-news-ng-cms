@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NewsCategoryModel } from 'src/app/model/news-category.model';
-import { NewsService } from 'src/app/service/news/news.service';
+import { PostService } from 'src/app/service/post/post.service';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { AddNewsCatDialogComponent } from '../../dialogs/add-news-cat-dialog/add-news-cat-dialog.component';
 
@@ -19,7 +19,7 @@ export class ManageNewsCategoryComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private newsService: NewsService,
+    private newsService: PostService,
     public dialog: MatDialog
   ) {
     this.getAllNewsCategories();

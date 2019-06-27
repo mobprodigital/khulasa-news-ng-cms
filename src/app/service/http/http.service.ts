@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpRequest, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
+import { LocalStorageService } from '../local-storage/local-storage.service';
+import { IHttpResponse } from 'src/app/interface/http-resp.interface';
 
 export enum HttpMethodType {
-  get = "GET", post = "POST", delete = "DELETE", put = "PUT"
+  get = 'GET', post = 'POST', delete = 'DELETE', put = 'PUT'
 }
 export enum HttpDataType {
   RowData, FormData
@@ -17,11 +19,21 @@ export class HttpService {
 
   private baseUrl: string;
 
+  private corsHeaders: HttpHeaders;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private localSvc: LocalStorageService
   ) {
-    this.baseUrl = localStorage.getItem('lang') === 'hin' ? 'http://hindi.khulasa-news.com/wp-admin/admin-ajax.php' : 'http://khulasa-news.com/wp-admin/admin-ajax.php';
+    this.baseUrl = 'http://192.168.0.7/khulasa-news-panel/';
+
+    this.corsHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Access-Control-Allow-Origin': 'http://localhost:4200',
+      'token': 'bar'
+    });
+
   }
 
   /**
@@ -31,9 +43,7 @@ export class HttpService {
    */
   public get(apiPath: string, params?: HttpParams) {
     return new Promise((resolve, reject) => {
-      this.http.get(this.baseUrl + apiPath, {
-        params: params
-      }).subscribe(
+      this.http.get(this.baseUrl + apiPath, { params }).subscribe(
         (resp: any) => {
           this.handleResponse(resp).then(data => resolve(data)).catch(err => reject(err));
         },
@@ -44,8 +54,8 @@ export class HttpService {
         () => {
 
         }
-      )
-    })
+      );
+    });
   }
 
   /**
@@ -53,18 +63,20 @@ export class HttpService {
    * @param apiPath api controller path (exclusive base path)
    * @param data data to send
    */
-  public post(apiPath: string, data?: any) {
+  public post(apiPath: string, data?: any): Promise<IHttpResponse> {
     return new Promise((rs, rj) => {
-
-      this.http.post(this.baseUrl + apiPath, data).subscribe(
-        resp => {
-          this.handleResponse(resp).catch(err => err);
-        },
-        err => {
-          this.handleError(err);
-        }
-      )
-    })
+      this.http.post(this.baseUrl + apiPath, data,
+        {
+          // headers: this.corsHeaders
+        }).subscribe(
+          resp => {
+            this.handleResponse(resp).catch(err => err);
+          },
+          err => {
+            this.handleError(err);
+          }
+        );
+    });
   }
 
   /**
@@ -82,8 +94,8 @@ export class HttpService {
         err => {
           this.handleError(err);
         }
-      )
-    })
+      );
+    });
   }
 
   /**
@@ -100,17 +112,22 @@ export class HttpService {
         err => {
           this.handleError(err);
         }
-      )
-    })
+      );
+    });
   }
 
-  private handleResponse(response: any): Promise<any> {
+  private handleResponse(response: any): Promise<IHttpResponse> {
     const status = parseInt(response.status, 10);
+
+    const resp: IHttpResponse = {
+      data: response.data,
+      message: response.message,
+      status: response.status === true
+    };
     if (status >= 200 && status < 300) {
-      return Promise.resolve(response.data);
-    }
-    else {
-      return Promise.reject(response.message);
+      return Promise.resolve(resp);
+    } else {
+      return Promise.reject(resp.message);
     }
   }
 
@@ -118,16 +135,13 @@ export class HttpService {
     if (err.error instanceof ErrorEvent) {
       if (environment.production) {
         console.error(err.error.message);
-      }
-      else {
+      } else {
         alert(err.error.message);
       }
-    }
-    else {
+    } else {
       if (environment.production) {
         console.error(`Error status : ${err.status} , Message : ${err.error}`);
-      }
-      else {
+      } else {
         alert(err.error.message);
       }
     }
