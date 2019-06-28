@@ -37,8 +37,8 @@ export class PostService {
             resolve(cats[0]);
           });
       } else if (argsType === 'undefined') {
-        this.httpService.get('', new HttpParams().set('action', 'get_categories')).then((cats: any[]) => {
-          const categories = this.parseCategories(cats);
+        this.httpService.get('', new HttpParams().set('action', 'get_categories')).then((resp) => {
+          const categories = this.parseCategories(resp.data);
           resolve(categories);
         }).catch(err => {
           resolve(err);
@@ -62,8 +62,8 @@ export class PostService {
         }
       } else {
         this.httpService.get('', new HttpParams().set('action', 'get_menu'))
-          .then((data: any[]) => {
-            const menu = this.parseCategories(data);
+          .then((data) => {
+            const menu = this.parseCategories(data.data);
             this.setLocalData('menu_cat', menu);
             this.menuCategories = menu;
             resolve(menu);
@@ -112,8 +112,8 @@ export class PostService {
       }
 
 
-      this.httpService.get('', params).then((news: any[]) => {
-        const newslist = this.parseNews(news);
+      this.httpService.get('', params).then((resp) => {
+        const newslist = this.parseNews(resp.data);
         resolve(newslist);
       }).catch(err => {
         reject(err);
@@ -158,9 +158,9 @@ export class PostService {
         .set('post_id', postId)
         .set('thumbnailSize', thumbnailSize);
       this.httpService.get('', params)
-        .then((data: any[]) => {
+        .then((data) => {
           if (data) {
-            const relatedPostList = this.parseNews(data);
+            const relatedPostList = this.parseNews(data.data);
             resolve(relatedPostList);
           } else {
             reject('no data found');
@@ -184,8 +184,8 @@ export class PostService {
         .set('content_length', 'short');
 
       this.httpService.get('', params)
-        .then((news: any[]) => {
-          const newslist = this.parseNews(news);
+        .then((resp) => {
+          const newslist = this.parseNews(resp.data);
           resolve(newslist);
         })
         .catch(err => {

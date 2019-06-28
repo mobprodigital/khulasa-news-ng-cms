@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+
 // material
 import { MatToolbarModule, MatExpansionModule, MatIconModule, MatMenuModule, MatButtonModule, MatRippleModule } from '@angular/material';
 
@@ -14,6 +15,7 @@ import { NavLeftSideComponent } from './components/nav-left-side/nav-left-side.c
   declarations: [CommonComponent, HeaderComponent, FooterComponent, NavLeftSideComponent],
   imports: [
     CommonModule,
+    
     CmsRoutingModule,
     MatToolbarModule,
     MatIconModule,

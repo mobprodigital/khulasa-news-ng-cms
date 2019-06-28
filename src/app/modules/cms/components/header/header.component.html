@@ -3,7 +3,9 @@
     <span>khulasa News</span>
     <span class="toolbar-saparater"></span>
     <button mat-button [matMenuTriggerFor]="menu">
-      Gyan Parkash
+      <span class="text-uppercase">
+        {{loggedInUser.fullName}}
+      </span>
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #menu="matMenu">

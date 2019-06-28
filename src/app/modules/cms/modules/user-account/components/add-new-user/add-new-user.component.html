@@ -4,36 +4,19 @@
     <mat-card-subtitle>* indicates fields are required</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <form #userForm="ngForm" (ngSubmit)="userForm.form.valid && onSubmit()" 
-    novalidate 
-    [mustMatch]="['password', 'confirmPassword']">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+      <input type="hidden" formControlName="userId">
+
       <div class="row">
-        <div class="col-4">
+        <div class="col-6">
           <mat-form-field>
-            <input [(ngModel)]="userModel.firstName" name="firstName" #firstName="ngModel" type="text" placeholder="First name"
-              matInput required aria-required="true" />
+            <input required formControlName="firstName" placeholder="First name" type="text" matInput
+              aria-required="true" />
             <mat-error>
-              <div *ngIf="firstName.invalid && (firstName.touched || firstName.dirty)">
-                <div *ngIf="firstName.errors.required">First Name is required</div>
-              </div>
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="col-4">
-          <mat-form-field>
-            <input [(ngModel)]="userModel.middleName" name="middleName" #middleName="ngModel" type="text" placeholder="Middle name"
-              matInput />
-          </mat-form-field>
-        </div>
-
-        <div class="col-4">
-          <mat-form-field>
-            <input [(ngModel)]="userModel.lastName" name="lastName" #lastName="ngModel" type="text" placeholder="Last name"
-              matInput aria-required="true" />
-            <mat-error>
-              <div *ngIf="lastName.invalid && (lastName.touched || lastName.dirty)">
-                <div *ngIf="lastName.errors.required">First Name is required</div>
+              <div
+                *ngIf="userForm.get('firstName').invalid && (userForm.get('firstName').touched || userForm.get('firstName').dirty)">
+                <div *ngIf="userForm.get('firstName').errors.required">First Name is required</div>
               </div>
             </mat-error>
           </mat-form-field>
@@ -41,29 +24,32 @@
 
         <div class="col-6">
           <mat-form-field>
-            <input [(ngModel)]="userModel.email" name="email" #email="ngModel" type="email" placeholder="Email"
-              matInput required email aria-required="true" />
-            <mat-error>
-              <div *ngIf="email.invalid && (email.touched || email.dirty)">
-                <div *ngIf="email.errors.required">First Name is required</div>
-                <div *ngIf="email.errors.email">Enter valid email</div>
-              </div>
-            </mat-error>
+            <input formControlName="lastName" type="text" placeholder="Last name" matInput aria-required="false" />
           </mat-form-field>
         </div>
 
         <div class="col-6">
           <mat-form-field>
-            <mat-select [(ngModel)]="userModel.role" required name="role" #role="ngModel" placeholder="Select an option"
-              aria-required="true">
-              <mat-option value="admin">Admin</mat-option>
-              <mat-option value="editor">Editor</mat-option>
-              <mat-option value="author">Author</mat-option>
+            <input required formControlName="email" type="email" placeholder="Email" matInput aria-required="true" />
+            <mat-error>
+              <div
+                *ngIf="userForm.get('email').invalid && (userForm.get('email').touched || userForm.get('email').dirty)">
+                <div *ngIf="userForm.get('email').errors.required">email is required</div>
+                <div *ngIf="userForm.get('email').errors.email">Enter valid email</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field>
+            <mat-select required formControlName="roleId" placeholder="Select role" aria-required="true">
+              <mat-option *ngFor="let role of userRoles" [value]="role.roleId">{{role.roleName}}</mat-option>
             </mat-select>
 
             <mat-error>
-              <div *ngIf="role.invalid && (role.touched || role.dirty)">
-                <div *ngIf="role.errors.required">Please select a role</div>
+              <div
+                *ngIf="userForm.get('roleId').invalid && (userForm.get('roleId').touched || userForm.get('roleId').dirty)">
+                <div *ngIf="userForm.get('roleId').errors.required">Please select a role</div>
               </div>
             </mat-error>
           </mat-form-field>
@@ -71,13 +57,12 @@
 
         <div class="col-6">
           <mat-form-field>
-            <input [(ngModel)]="userModel.password" name="password" #password="ngModel" type="password" placeholder="Password"
-              matInput [attr.required]="newUser ? true : undefined" aria-required="true" minlength="5" maxlength="15" />
+            <input formControlName="password" type="password" placeholder="Password" matInput />
             <mat-error>
-              <div *ngIf="password.invalid && (password.touched || password.dirty)">
-                <div *ngIf="password.errors.required">Password is required</div>
-                <div *ngIf="password.errors.minlength">Password min length is 5</div>
-                <div *ngIf="password.errors.maxlength">Password max length is 15</div>
+              <div
+                *ngIf="userForm.get('password').invalid && (userForm.get('password').touched || userForm.get('password').dirty)">
+                <div *ngIf="userForm.get('password').errors.required">Password is required</div>
+                <div *ngIf="userForm.get('password').errors.minlength">Password min length is 5</div>
               </div>
             </mat-error>
           </mat-form-field>
@@ -85,23 +70,43 @@
 
         <div class="col-6">
           <mat-form-field>
-            <input [(ngModel)]="userModel.confirmPassword" name="confirmPassword" #confirmPassword="ngModel" type="password"
-              placeholder="Confirm Password" matInput [attr.required]="newUser ? true : undefined" aria-required="true" minlength="5" maxlength="15" />
+            <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" matInput />
             <mat-error>
-              <div *ngIf="confirmPassword.invalid && (confirmPassword.touched || confirmPassword.dirty)">
-                <div *ngIf="confirmPassword.errors.required">confirmPassword is required</div>
-                <div *ngIf="confirmPassword.errors.minlength">confirmPassword min length is 5</div>
-                <div *ngIf="confirmPassword.errors.maxlength">confirmPassword max length is 15</div>
-                <div *ngIf="confirmPassword.errors.mustMatch">confirmPassword must match to password</div>
+              <div
+                *ngIf="userForm.get('confirmPassword').invalid && (userForm.get('confirmPassword').touched || userForm.get('confirmPassword').dirty)">
+                <div *ngIf="userForm.get('confirmPassword').errors.required">Confirm Password is required</div>
+                <div *ngIf="userForm.get('confirmPassword').errors.mustMatch">Confirm Password must match with password
+                </div>
               </div>
             </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input formControlName="mobile" type="tel" placeholder="Mobile number" matInput aria-required="false"
+              minlength="8" maxlength="15" />
+            <mat-error>
+              <div
+                *ngIf="userForm.get('mobile').invalid && (userForm.get('mobile').touched || userForm.get('mobile').dirty)">
+                <div *ngIf="userForm.get('mobile').errors.minlength">mobile min length is 8</div>
+                <div *ngIf="userForm.get('mobile').errors.maxlength">mobile max length is 15</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input formControlName="skype" type="text" placeholder="skypeId" matInput aria-required="false" />
           </mat-form-field>
         </div>
 
       </div>
       <br>
       <div>
-        <button [disabled]="!userForm.form.valid" type="submit" mat-raised-button color="primary">{{ newUser ? 'Create user' : 'Update user'}}</button>
+        <button [disabled]="userForm.invalid" type="submit" mat-raised-button
+          color="primary">{{ newUser ? 'Create user' : 'Update user'}}</button>
       </div>
     </form>
   </mat-card-content>

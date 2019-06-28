@@ -12,9 +12,9 @@ export class LocalStorageService {
   /**
    * @param key key name to save data
    * @param data data to save
-   * @param makeStringify if true then save data in json string else in original type
+   * @param makeStringify (default is false)if true then save data in json string else in original type
    */
-  public setData(key: string, data: any, makeStringify: boolean = true): void {
+  public setData(key: string, data: any, makeStringify: boolean = false): void {
     if (data !== undefined || data !== null) {
       if (makeStringify === true) {
         data = JSON.stringify(data);

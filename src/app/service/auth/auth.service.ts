@@ -3,13 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginModel } from 'src/app/model/login.model';
 import { LocalStorageService } from '../local-storage/local-storage.service';
+import { UserModel } from 'src/app/model/user.model';
 
 
 @Injectable()
 export class AuthService {
 
 
-  private baseUrl: string = 'http://192.168.0.7/khulasa-news-panel/';
+  // private baseUrl: string = 'http://192.168.0.7/khulasa-news-panel/';
+  private baseUrl: string = 'http://development.bdigimedia.com/riccha_dev/khulasa-News-Panel/';
 
   /** return true if user is logged in else returns false */
   public get isLoggedIn(): boolean {
@@ -33,6 +35,18 @@ export class AuthService {
   }
 
 
+
+
+  /** Get logged in user */
+  public get loggedInUser(): UserModel {
+    const user: UserModel = new UserModel();
+
+    user.firstName = this.localStSvc.getData('firstName');
+    user.lastName = this.localStSvc.getData('lastName');
+    return user;
+  }
+
+
   // store the URL so we can redirect after logging in
   redirectUrl: string = '/dashboard';
 
@@ -51,7 +65,10 @@ export class AuthService {
         (resp: any) => {
           if (resp && resp.status) {
             if (resp.data.token) {
-              // this.localStSvc.setData('isLoggedIn', resp.data.token);
+
+              this.localStSvc.setData('firstName', resp.data.firstName);
+              this.localStSvc.setData('lastName', resp.data.lastName);
+
               localStorage.setItem(btoa('token'), btoa(resp.data.token));
               res(true);
             } else {
@@ -71,6 +88,8 @@ export class AuthService {
     this.route.navigateByUrl('/login');
     return Promise.resolve(false);
   }
+
+
 
 
 }

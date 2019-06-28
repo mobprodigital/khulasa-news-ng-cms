@@ -25,7 +25,8 @@ export class HttpService {
     private http: HttpClient,
     private localSvc: LocalStorageService
   ) {
-    this.baseUrl = 'http://192.168.0.7/khulasa-news-panel/';
+    // this.baseUrl = 'http://192.168.0.7/khulasa-news-panel/';
+    this.baseUrl = 'http://development.bdigimedia.com/riccha_dev/khulasa-News-Panel/';
 
     this.corsHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -41,7 +42,7 @@ export class HttpService {
    * @param apiPath api controller path (exclusive base path)
    * @param params paremeters to send
    */
-  public get(apiPath: string, params?: HttpParams) {
+  public get(apiPath: string, params?: HttpParams): Promise<IHttpResponse> {
     return new Promise((resolve, reject) => {
       this.http.get(this.baseUrl + apiPath, { params }).subscribe(
         (resp: any) => {
