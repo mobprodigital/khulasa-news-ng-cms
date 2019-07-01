@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { LoginModel } from 'src/app/model/login.model';
 import { LocalStorageService } from '../local-storage/local-storage.service';
 import { UserModel } from 'src/app/model/user.model';
+import { UserRoleModel } from 'src/app/model/user-role.model';
 
 
 @Injectable()
@@ -39,11 +40,19 @@ export class AuthService {
 
   /** Get logged in user */
   public get loggedInUser(): UserModel {
-    const user: UserModel = new UserModel();
 
-    user.firstName = this.localStSvc.getData('firstName');
-    user.lastName = this.localStSvc.getData('lastName');
-    return user;
+    const localUserInfo = localStorage.getItem(btoa('loggedIn'));
+    let localUser: UserModel;
+    if (localUserInfo) {
+      try {
+        localUser = JSON.parse(atob(localUserInfo)) as UserModel;
+        return localUser;
+      } catch {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
 
@@ -66,8 +75,34 @@ export class AuthService {
           if (resp && resp.status) {
             if (resp.data.token) {
 
-              this.localStSvc.setData('firstName', resp.data.firstName);
-              this.localStSvc.setData('lastName', resp.data.lastName);
+              const usr = new UserModel({
+                firstName: resp.data.firstName,
+                lastName: resp.data.lastName,
+                email: resp.data.email,
+                mobile: resp.data.mobile,
+                skype: resp.data.skype,
+                userId: resp.data.userId,
+                role: new UserRoleModel(
+                  resp.data.role.roleId,
+                  resp.data.role.roleName,
+                  {
+                    post: {
+                      add: resp.data.role.addPost === true,
+                      edit: resp.data.role.editPost === true,
+                      delete: resp.data.role.deletePost === true,
+                    },
+                    userAccount: {
+                      add: resp.data.role.userRight === true,
+                      delete: resp.data.role.userRight === true,
+                      edit: resp.data.role.userRight === true
+                    }
+                  }
+                )
+              });
+
+              console.log(usr);
+
+              localStorage.setItem(btoa('loggedIn'), btoa(JSON.stringify(usr)));
 
               localStorage.setItem(btoa('token'), btoa(resp.data.token));
               res(true);
@@ -84,9 +119,22 @@ export class AuthService {
   }
 
   logout(): Promise<boolean> {
-    this.localStSvc.clear();
-    this.route.navigateByUrl('/login');
-    return Promise.resolve(false);
+
+    return new Promise((res, rej) => {
+      this.http.get(this.baseUrl + 'logout.php').subscribe(
+        resp => {
+
+        },
+        err => {
+
+        },
+        () => {
+          this.localStSvc.clear();
+          res(true);
+        }
+      );
+    });
+
   }
 
 

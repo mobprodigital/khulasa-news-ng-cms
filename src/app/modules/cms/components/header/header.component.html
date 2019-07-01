@@ -4,7 +4,7 @@
     <span class="toolbar-saparater"></span>
     <button mat-button [matMenuTriggerFor]="menu">
       <span class="text-uppercase">
-        {{loggedInUser.fullName}}
+        {{loggedInUser.firstName + ' ' + loggedInUser.lastName}}
       </span>
       <mat-icon>arrow_drop_down</mat-icon>
     </button>

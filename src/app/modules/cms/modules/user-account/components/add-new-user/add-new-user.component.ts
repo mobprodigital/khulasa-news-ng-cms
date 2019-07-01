@@ -50,9 +50,13 @@ export class AddNewUserComponent implements OnInit {
       email: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(5)]],
       confirmPassword: ['', Validators.required],
-      mobile: ['',],
+      mobile: [''],
       skype: [''],
-      roleId: [null, Validators.required],
+      role: this.fb.group(
+        {
+          roleId: [null, Validators.required]
+        }
+      ),
       image: [''],
     }, {
         validator: MustMatch('password', 'confirmPassword')
@@ -100,7 +104,7 @@ export class AddNewUserComponent implements OnInit {
         email: user.email,
         mobile: user.mobile,
         skype: user.skype,
-        roleId: user.roleId,
+        role: user.role.roleId,
         image: user.image,
       });
 

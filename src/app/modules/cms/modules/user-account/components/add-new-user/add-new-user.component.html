@@ -40,7 +40,7 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="col-6">
+        <div formGroupName="role" class="col-6">
           <mat-form-field>
             <mat-select required formControlName="roleId" placeholder="Select role" aria-required="true">
               <mat-option *ngFor="let role of userRoles" [value]="role.roleId">{{role.roleName}}</mat-option>
@@ -48,8 +48,8 @@
 
             <mat-error>
               <div
-                *ngIf="userForm.get('roleId').invalid && (userForm.get('roleId').touched || userForm.get('roleId').dirty)">
-                <div *ngIf="userForm.get('roleId').errors.required">Please select a role</div>
+                *ngIf="userForm.get('role').get('roleId').invalid && (userForm.get('role').get('roleId').touched || userForm.get('role').get('roleId').dirty)">
+                <div *ngIf="userForm.get('role').get('roleId').errors.required">Please select a role</div>
               </div>
             </mat-error>
           </mat-form-field>

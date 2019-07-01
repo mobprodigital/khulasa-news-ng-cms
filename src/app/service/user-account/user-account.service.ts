@@ -79,7 +79,7 @@ export class UserAccountService {
       user.email = `user${i + 1}@jmm.com`;
       user.firstName = `Fname ${i + 1}`;
       user.lastName = `Lname ${i + 1}`;
-      user.roleId = roles[Math.floor(Math.random() * roles.length)];
+
       return user;
     });
 

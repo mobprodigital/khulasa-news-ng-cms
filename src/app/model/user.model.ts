@@ -1,3 +1,6 @@
+import { UserRoleModel } from './user-role.model';
+
+
 export class UserModel {
 
     userId: number = null;
@@ -8,9 +11,10 @@ export class UserModel {
     confirmPassword: string = '';
     mobile: string = '';
     skype: string = '';
-    roleId: number = null;
     image: string = '';
 
+    /** User role and its rights */
+    role: UserRoleModel = new UserRoleModel(null, null, null);
 
     public get fullName(): string {
         return `${this.firstName} ${this.lastName}`;

@@ -9,6 +9,17 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   constructor(private authSvc: AuthService, router: Router) {
-    router.navigateByUrl(authSvc.isLoggedIn ? window.location.pathname : '/login');
+
+    let path = window.location.pathname;
+    if (authSvc.isLoggedIn) {
+      if (path === '/login') {
+        path = '';
+      }
+    } else {
+      path = '/login';
+    }
+
+
+    router.navigateByUrl(path);
   }
 }

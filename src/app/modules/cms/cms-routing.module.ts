@@ -17,7 +17,8 @@ const routes: Routes = [
       },
       {
         path: 'user-account',
-        loadChildren: './modules/user-account/user-account.module#UserAccountModule'
+        loadChildren: './modules/user-account/user-account.module#UserAccountModule',
+        canLoad : [  ]
       },
       {
         path: '',
