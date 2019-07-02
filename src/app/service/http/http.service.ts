@@ -28,13 +28,6 @@ export class HttpService {
     // this.baseUrl = 'http://192.168.0.7/khulasa-news-panel/';
     this.baseUrl = 'http://development.bdigimedia.com/riccha_dev/khulasa-News-Panel/';
 
-    this.corsHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': '*/*',
-      'Access-Control-Allow-Origin': 'http://localhost:4200',
-      'token': 'bar'
-    });
-
   }
 
   /**
@@ -44,6 +37,7 @@ export class HttpService {
    */
   public get(apiPath: string, params?: HttpParams): Promise<IHttpResponse> {
     return new Promise((resolve, reject) => {
+
       this.http.get(this.baseUrl + apiPath, { params }).subscribe(
         (resp: any) => {
           this.handleResponse(resp).then(data => resolve(data)).catch(err => reject(err));
@@ -103,7 +97,7 @@ export class HttpService {
    * Send http delete request
    * @param apiPath api controller path (exclusive base path)
    */
-  public delete(apiPath: string) {
+  public delete(apiPath: string, data?: any) {
     return new Promise((rs, rj) => {
 
       this.http.delete(this.baseUrl + apiPath).subscribe(
@@ -118,14 +112,14 @@ export class HttpService {
   }
 
   private handleResponse(response: any): Promise<IHttpResponse> {
-    const status = parseInt(response.status, 10);
+    // const status = parseInt(response.status, 10);
 
     const resp: IHttpResponse = {
       data: response.data,
       message: response.message,
       status: response.status === true
     };
-    if (status >= 200 && status < 300) {
+    if (response.status) {
       return Promise.resolve(resp);
     } else {
       return Promise.reject(resp.message);

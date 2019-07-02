@@ -18,19 +18,32 @@ export class AllUsersComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private userService: UserAccountService) {
-    this.feedUsres();
+
   }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.getUsers();
   }
 
 
-  private async feedUsres() {
+  private getUsers() {
 
-    let userList: UserModel[] = await this.userService.get();
-    this.dataSource = new MatTableDataSource(userList);
+    this.userService.get().then(users => {
+
+      this.dataSource = new MatTableDataSource(users);
+
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+
+
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  public deleteUser(userId: number) {
+    this.userService.deleteUser(userId).then(msg => alert(msg)).catch(err => console.log());
+    console.log(userId);
   }
 
 }

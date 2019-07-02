@@ -4,9 +4,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { AuthService } from './service/auth/auth.service';
+import { AjaxInterceptor } from './interceptor/ajax-interceptor/ajax-interceptor';
 
 
 @NgModule({
@@ -20,7 +21,13 @@ import { AuthService } from './service/auth/auth.service';
     BrowserAnimationsModule,
 
   ],
-  providers: [AuthGuard, AuthService],
+  providers: [AuthGuard, AuthService,
+    [{
+      provide: HTTP_INTERCEPTORS,
+      useClass: AjaxInterceptor,
+      multi: true
+    }]
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -28,7 +28,18 @@ export class UserAccountService {
           reject('User not found with id  ' + userId);
         }
       } else if (argsType === 'undefined') {
-        resolve(this.userList);
+        this.httpService.get('user/listAllUser.php').then(resp => {
+          if (resp.status) {
+            if (resp.data && resp.data.length > 0) {
+              const users = this.parseUsers(resp.data);
+              resolve(users);
+            } else {
+              reject(resp.message);
+            }
+          }
+        }).catch(err => {
+          reject(err);
+        });
       } else {
         throw new Error('Argument type mismatch');
       }
@@ -37,7 +48,7 @@ export class UserAccountService {
 
   public addUser(newUser: UserModel): Promise<string> {
     return new Promise((res, rej) => {
-      this.httpService.post('addUser.php', newUser).then(resp => {
+      this.httpService.post('user/addUser.php', JSON.stringify(newUser)).then(resp => {
         if (resp.status) {
           res(resp.message);
         }
@@ -52,20 +63,23 @@ export class UserAccountService {
    */
   public getRoles(): Promise<UserRoleModel[]> {
     return new Promise((res, rej) => {
+      this.httpService.get('roles/getRoles.php').then(resp => {
+        if (resp.status && resp.data && resp.data.length > 0) {
+          const roles = this.parseRoles(resp.data);
+          res(roles);
+        }
+      }).catch(err => {
+        rej(err);
+      });
+    });
+  }
 
-      res([
-        new UserRoleModel(10, 'Admin'),
-        new UserRoleModel(20, 'Editor'),
-        new UserRoleModel(30, 'Author'),
-      ]);
 
-      /*  this.httpService.get('getRoles.php').then(resp => {
-         if (resp.status && resp.data) {
- 
-         }
-       }).catch(err => {
- 
-       });*/
+  public deleteUser(userId: number): Promise<string> {
+    return new Promise((res, rej) => {
+      this.httpService.post('user/deleteUser.php', { userId }).then(resp => {
+        res(resp.message);
+      }).catch(err => console.log(err));
     });
   }
 
@@ -84,6 +98,55 @@ export class UserAccountService {
     });
 
 
+  }
+
+  private parseRoles(roleArr: any[]): UserRoleModel[] {
+    let userRoles: UserRoleModel[] = [];
+    userRoles = roleArr.map(r => new UserRoleModel(r.roleId, r.roleName, {
+      post: {
+        add: r.addPost,
+        delete: r.addPost,
+        edit: r.deletePost
+      },
+      userAccount: {
+        add: r.userRight,
+        edit: r.userRight,
+        delete: r.userRight,
+      }
+    }));
+    return userRoles;
+  }
+
+
+  private parseUsers(userArr: any[]): UserModel[] {
+    let users: UserModel[] = [];
+    users = userArr.map(u =>
+      new UserModel({
+        userId: u.userId,
+        firstName: u.firstName,
+        lastName: u.lastName,
+        email: u.email,
+        mobile: u.mobile,
+        skype: u.skype,
+        role: new UserRoleModel(
+          u.role.roleId,
+          u.role.roleName,
+          {
+            post: {
+              add: u.role.addPost,
+              delete: u.role.addPost,
+              edit: u.role.deletePost
+            },
+            userAccount: {
+              add: u.role.userRight,
+              edit: u.role.userRight,
+              delete: u.role.userRight,
+            }
+          }
+        )
+      })
+    );
+    return users;
   }
 
 }

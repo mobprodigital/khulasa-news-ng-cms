@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginModel } from 'src/app/model/login.model';
 import { LocalStorageService } from '../local-storage/local-storage.service';
@@ -29,7 +29,7 @@ export class AuthService {
   public get token(): string {
     const token = localStorage.getItem(btoa('token'));
     if (token) {
-      return token;
+      return atob(token);
     } else {
       return null;
     }

@@ -6,7 +6,9 @@
   <!-- Position Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Fullname </th>
-    <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+    <td mat-cell *matCellDef="let element"> 
+      {{element.firstName + ' ' + (element.lastName ? element.lastName : '')}} 
+    </td>
   </ng-container>
 
   <!-- Name Column -->
@@ -18,15 +20,15 @@
   <!-- Weight Column -->
   <ng-container matColumnDef="role">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
-    <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+    <td mat-cell *matCellDef="let element"> {{element.role.roleName}} </td>
   </ng-container>
 
   <!-- Symbol Column -->
   <ng-container matColumnDef="action">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
     <td mat-cell *matCellDef="let element"> 
-      <a [routerLink]="['/user-account/edit', element.userId]">Edit</a> &nbsp; 
-      <a>Delete</a>  
+      <a mat-button color="primary" [routerLink]="['/user-account/edit', element.userId]">Edit</a> &nbsp; 
+      <button mat-button color="warn" (click)="deleteUser(element.userId)">Delete</button>  
     </td>
   </ng-container>
 

@@ -65,6 +65,12 @@ export class AddNewUserComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.userForm.valid) {
+      this.userAccountService.addUser(this.userForm.value).then(resp => {
+
+      }).catch(err => console.log(err));
+
+    }
     console.log('value ', this.userForm.value);
     console.log('status ', this.userForm.status);
   }
@@ -72,7 +78,7 @@ export class AddNewUserComponent implements OnInit {
   private getUserRoles() {
     this.userAccountService.getRoles().then(roles => {
       this.userRoles = roles;
-    });
+    }).catch(err => console.log(err));
   }
 
   private async getUserId() {
