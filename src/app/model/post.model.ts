@@ -1,5 +1,5 @@
 import { IFeturedImage } from '../interface/featured-image.interface';
-import { NewsCategoryModel } from './news-category.model';
+import { PostCategoryModel } from './post-category.model';
 import { PostStatusEnum } from '../enum/post-status.enum';
 import { PostTypeEnum } from '../enum/post-type.enum';
 
@@ -12,7 +12,7 @@ export class PostModel {
     postType: PostTypeEnum = PostTypeEnum.Post;
     published: boolean = false;
     category: string = '';
-    categoryList: NewsCategoryModel[] = [];
+    categoryList: PostCategoryModel[] = [];
     tags: string[] = [];
     featuredImage: IFeturedImage = {
         original: '',

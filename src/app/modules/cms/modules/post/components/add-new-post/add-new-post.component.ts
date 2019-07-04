@@ -3,7 +3,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatChipInputEvent, MatCheckboxChange } from '@angular/material';
 import { PostModel } from 'src/app/model/post.model';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { NewsCategoryModel } from 'src/app/model/news-category.model';
+import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { PostService } from 'src/app/service/post/post.service';
 import { AddPostCatDialogComponent } from '../../dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -25,7 +25,7 @@ export class AddNewPostComponent implements OnInit {
     addOnBlur: true,
   }
 
-  public categoriesList: NewsCategoryModel[] = []
+  public categoriesList: PostCategoryModel[] = []
 
   public coverImage: File = null;
   public thumbnailUrl: string | ArrayBuffer;
@@ -147,7 +147,7 @@ export class AddNewPostComponent implements OnInit {
       width: '250px',
     });
 
-    catDialogRef.afterClosed().subscribe((result: NewsCategoryModel) => {
+    catDialogRef.afterClosed().subscribe((result: PostCategoryModel) => {
       if (result) {
         this.categoriesList.push(result);
       }
@@ -160,7 +160,7 @@ export class AddNewPostComponent implements OnInit {
         ) */
   }
 
-  setCategory($event: MatCheckboxChange, catg: NewsCategoryModel) {
+  setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
 
     //insert id into category list
     if ($event.checked) {

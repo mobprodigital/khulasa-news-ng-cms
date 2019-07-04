@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NewsCategoryModel } from 'src/app/model/news-category.model';
+import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { PostService } from 'src/app/service/post/post.service';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { AddPostCatDialogComponent } from '../../dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
@@ -14,7 +14,7 @@ export class ManagePostCategoryComponent implements OnInit {
 
 
   displayedColumns: string[] = ['name', 'slug', 'action'];
-  dataSource: MatTableDataSource<NewsCategoryModel>;
+  dataSource: MatTableDataSource<PostCategoryModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -29,7 +29,7 @@ export class ManagePostCategoryComponent implements OnInit {
 
   public getAllNewsCategories() {
     this.newsService.getNewsCategories().then(news => {
-      this.dataSource = new MatTableDataSource<NewsCategoryModel>(news);
+      this.dataSource = new MatTableDataSource<PostCategoryModel>(news);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     }).catch(err => alert(err));
@@ -46,7 +46,7 @@ export class ManagePostCategoryComponent implements OnInit {
   public deleteNews(textId) {
     const indexNumber = this.dataSource.data.findIndex(n => n.id === textId);
     this.dataSource.data.splice(indexNumber, 1);
-    this.dataSource = new MatTableDataSource<NewsCategoryModel>(this.dataSource.data);
+    this.dataSource = new MatTableDataSource<PostCategoryModel>(this.dataSource.data);
   }
 
   ngOnInit() {
@@ -55,14 +55,14 @@ export class ManagePostCategoryComponent implements OnInit {
   /**
    * open news category dialog
    */
-  openDialog(cat?: NewsCategoryModel): void {
+  openDialog(cat?: PostCategoryModel): void {
 
     const dialogRef = this.dialog.open(AddPostCatDialogComponent, {
       width: '250px',
       data: (cat ? cat : false),
     });
 
-    dialogRef.afterClosed().subscribe((newCategory: NewsCategoryModel) => {
+    dialogRef.afterClosed().subscribe((newCategory: PostCategoryModel) => {
       if (newCategory) {
         console.log(newCategory);
       }

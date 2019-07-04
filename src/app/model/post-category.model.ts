@@ -1,4 +1,4 @@
-export class NewsCategoryModel {
+export class PostCategoryModel {
 
     slug: string;
     constructor(public id: number, public name: string, public selected: boolean = false) {

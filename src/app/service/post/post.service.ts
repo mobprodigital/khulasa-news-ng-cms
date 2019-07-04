@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PostModel } from 'src/app/model/post.model';
-import { NewsCategoryModel } from 'src/app/model/news-category.model';
+import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { HttpService } from '../http/http.service';
 import { HttpParams } from '@angular/common/http';
 import { PostTypeEnum } from 'src/app/enum/post-type.enum';
@@ -12,7 +12,7 @@ import { PostTypeEnum } from 'src/app/enum/post-type.enum';
 export class PostService {
 
 
-  private menuCategories: NewsCategoryModel[] = [];
+  private menuCategories: PostCategoryModel[] = [];
 
   constructor(private httpService: HttpService) {
 
@@ -21,13 +21,13 @@ export class PostService {
   /**
    * get all news categories
    */
-  public getNewsCategories(): Promise<NewsCategoryModel[]>;
+  public getNewsCategories(): Promise<PostCategoryModel[]>;
   /**
    * get single catgeory by id
    * @param categoryId Category id
    */
-  public getNewsCategories(categoryId: number): Promise<NewsCategoryModel>;
-  public getNewsCategories(args?: undefined | number): Promise<NewsCategoryModel[] | NewsCategoryModel> {
+  public getNewsCategories(categoryId: number): Promise<PostCategoryModel>;
+  public getNewsCategories(args?: undefined | number): Promise<PostCategoryModel[] | PostCategoryModel> {
     return new Promise((resolve, reject) => {
       const argsType = typeof args;
       if (argsType === 'number') {
@@ -52,7 +52,7 @@ export class PostService {
   /**
    * get menu catgories
    */
-  public getMenuCategories(): Promise<NewsCategoryModel[]> {
+  public getMenuCategories(): Promise<PostCategoryModel[]> {
     return new Promise((resolve, reject) => {
       if (this.menuCategories && this.menuCategories.length > 0) {
         const cats = this.getLocalData('menu_cat');
@@ -205,10 +205,10 @@ export class PostService {
 
 
   private parseCategories(cats: any[]) {
-    let catArr: NewsCategoryModel[] = [];
+    let catArr: PostCategoryModel[] = [];
     if (cats && cats.length > 0) {
       catArr = cats.map(c => {
-        const cat: NewsCategoryModel = new NewsCategoryModel(parseInt(c.categoryId, 10), c.name);
+        const cat: PostCategoryModel = new PostCategoryModel(parseInt(c.categoryId, 10), c.name);
         cat.slug = c.slug;
         return cat;
       });

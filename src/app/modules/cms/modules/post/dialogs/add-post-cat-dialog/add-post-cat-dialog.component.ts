@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { NewsCategoryModel } from 'src/app/model/news-category.model';
+import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -11,13 +11,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export class AddPostCatDialogComponent implements OnInit {
 
   // public catForm: FormGroup;
-  public categoryModel: NewsCategoryModel = new NewsCategoryModel(null, '');
+  public categoryModel: PostCategoryModel = new PostCategoryModel(null, '');
   public dialogTitle: string = 'Add new category';
   constructor(
     public dialogRef: MatDialogRef<AddPostCatDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public categoryData: NewsCategoryModel) {
+    @Inject(MAT_DIALOG_DATA) public categoryData: PostCategoryModel) {
     console.log(categoryData)
-    if (categoryData && categoryData instanceof NewsCategoryModel) {
+    if (categoryData && categoryData instanceof PostCategoryModel) {
       this.categoryModel = categoryData;
       this.dialogTitle = 'Edit category';
     }
@@ -29,7 +29,7 @@ export class AddPostCatDialogComponent implements OnInit {
     }); */
   }
 
-  closeDialog(newCat?: NewsCategoryModel) {
+  closeDialog(newCat?: PostCategoryModel) {
     this.dialogRef.close(newCat);
   }
 

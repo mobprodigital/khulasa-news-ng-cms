@@ -85,12 +85,6 @@ export class AddNewUserComponent implements OnInit {
     }
   }
 
-  /*  private getUserRoles() {
-     this.userAccountService.getRoles().then(roles => {
-       this.userRoles = roles;
-     }).catch(err => console.log(err));
-   } */
-
   private async getUserId(): Promise<number> {
     const userId = this.activatedRoute.snapshot.paramMap.get('id');
     if (userId) {
