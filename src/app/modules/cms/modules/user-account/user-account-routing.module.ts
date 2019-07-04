@@ -4,22 +4,19 @@ import { AllUsersComponent } from './components/all-users/all-users.component';
 import { NgModule } from '@angular/core';
 
 const routes: Routes = [
-  {
-    path: 'add-new',
-    component: AddNewUserComponent
-  },
-  {
-    path: 'edit/:id',
-    component: AddNewUserComponent
-  },
+
+
   {
     path: 'all-users',
     component: AllUsersComponent
   },
   {
+    path: ':id',
+    component: AddNewUserComponent
+  },
+  {
     path: '',
-    redirectTo: 'add-new',
-    pathMatch: 'full'
+    component: AddNewUserComponent
   }
 ];
 

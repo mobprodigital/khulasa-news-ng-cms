@@ -12,7 +12,8 @@ export class AuthService {
 
 
   // private baseUrl: string = 'http://192.168.0.7/khulasa-news-panel/';
-  private baseUrl: string = 'http://development.bdigimedia.com/riccha_dev/khulasa-News-Panel/';
+  // private baseUrl: string = 'http://development.bdigimedia.com/riccha_dev/khulasa-News-Panel/';
+  private baseUrl: string = 'http://development.bdigimedia.com/riccha_dev/khulasa-En-Panel/';
 
   /** return true if user is logged in else returns false */
   public get isLoggedIn(): boolean {
@@ -70,7 +71,7 @@ export class AuthService {
 
   login(loginCredentials: LoginModel): Promise<boolean> {
     return new Promise((res, rej) => {
-      this.http.post(this.baseUrl + 'login.php', JSON.stringify(loginCredentials)).subscribe(
+      this.http.post(this.baseUrl + 'user/login', JSON.stringify(loginCredentials)).subscribe(
         (resp: any) => {
           if (resp && resp.status) {
             if (resp.data.token) {
@@ -121,7 +122,7 @@ export class AuthService {
   logout(): Promise<boolean> {
 
     return new Promise((res, rej) => {
-      this.http.get(this.baseUrl + 'logout.php').subscribe(
+      this.http.get(this.baseUrl + 'user/logout').subscribe(
         resp => {
 
         },

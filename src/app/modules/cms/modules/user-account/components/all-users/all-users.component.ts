@@ -12,7 +12,7 @@ export class AllUsersComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'role', 'email', 'action'];
   dataSource: MatTableDataSource<UserModel>;
-
+  public userList: UserModel[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -28,9 +28,9 @@ export class AllUsersComponent implements OnInit {
 
   private getUsers() {
 
-    this.userService.get().then(users => {
-
-      this.dataSource = new MatTableDataSource(users);
+    this.userService.getUser().then(users => {
+      this.userList = users;
+      this.dataSource = new MatTableDataSource(this.userList);
 
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
@@ -42,7 +42,11 @@ export class AllUsersComponent implements OnInit {
   }
 
   public deleteUser(userId: number) {
-    this.userService.deleteUser(userId).then(msg => alert(msg)).catch(err => console.log());
+    this.userService.deleteUser(userId).then(msg => {
+      const userIndex = this.userList.findIndex(u => u.userId === userId);
+      this.userList.splice(userIndex, 1);
+      this.dataSource = new MatTableDataSource(this.userList);
+    }).catch(err => console.log());
     console.log(userId);
   }
 

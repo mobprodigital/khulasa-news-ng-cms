@@ -9,46 +9,59 @@ import { UserRoleModel } from 'src/app/model/user-role.model';
 })
 export class UserAccountService {
 
-  private userList: UserModel[] = [];
 
   constructor(private httpService: HttpService) {
-    this.feedUsres();
+
   }
 
-  public get(): Promise<UserModel[]>;
-  public get(userId: number): Promise<UserModel>;
-  public get(userId?: undefined | number): Promise<UserModel[] | UserModel> {
+  public getUser(): Promise<UserModel[]>;
+  public getUser(userId: number): Promise<UserModel>;
+  public getUser(userId?: undefined | number): Promise<UserModel[] | UserModel> {
     return new Promise((resolve, reject) => {
       const argsType = typeof userId;
+      let path = 'user';
       if (argsType === 'number') {
-        const usr = this.userList.find(u => u.userId === userId);
-        if (usr) {
-          resolve(usr);
-        } else {
-          reject('User not found with id  ' + userId);
-        }
+        path += '/' + userId.toString();
+        this.httpService.get(path).then(resp => {
+          const user = this.parseUsers([resp.data]);
+          if (user.length > 0) {
+            resolve(user[0]);
+          } else {
+            reject('No user found');
+          }
+        }).catch(err => reject(err));
       } else if (argsType === 'undefined') {
-        this.httpService.get('user/listAllUser.php').then(resp => {
-          if (resp.status) {
-            if (resp.data && resp.data.length > 0) {
-              const users = this.parseUsers(resp.data);
-              resolve(users);
-            } else {
-              reject(resp.message);
-            }
+        this.httpService.get(path).then(resp => {
+          if (resp.data && resp.data.length > 0) {
+            const users = this.parseUsers(resp.data);
+            resolve(users);
+          } else {
+            reject(resp.message);
           }
         }).catch(err => {
           reject(err);
         });
       } else {
-        throw new Error('Argument type mismatch');
+        throw new Error('Argument must be eighter number or undefined');
       }
     });
   }
 
   public addUser(newUser: UserModel): Promise<string> {
     return new Promise((res, rej) => {
-      this.httpService.post('user/addUser.php', JSON.stringify(newUser)).then(resp => {
+      this.httpService.post('user', JSON.stringify(newUser)).then(resp => {
+        if (resp.status) {
+          res(resp.message);
+        }
+      }).catch(err => {
+        rej(err);
+      });
+    });
+  }
+
+  public updateUser(user: UserModel): Promise<string> {
+    return new Promise((res, rej) => {
+      this.httpService.put('user/' + user.userId, JSON.stringify(user)).then(resp => {
         if (resp.status) {
           res(resp.message);
         }
@@ -63,7 +76,7 @@ export class UserAccountService {
    */
   public getRoles(): Promise<UserRoleModel[]> {
     return new Promise((res, rej) => {
-      this.httpService.get('roles/getRoles.php').then(resp => {
+      this.httpService.get('role').then(resp => {
         if (resp.status && resp.data && resp.data.length > 0) {
           const roles = this.parseRoles(resp.data);
           res(roles);
@@ -77,28 +90,12 @@ export class UserAccountService {
 
   public deleteUser(userId: number): Promise<string> {
     return new Promise((res, rej) => {
-      this.httpService.post('user/deleteUser.php', { userId }).then(resp => {
+      this.httpService.delete('user/' + userId).then(resp => {
         res(resp.message);
-      }).catch(err => console.log(err));
+      }).catch(err => rej(err));
     });
   }
 
-  private feedUsres() {
-
-    const roles: number[] = [10, 20, 30];
-
-    this.userList = Array.from({ length: 100 }, (_, i) => {
-      const user = new UserModel();
-      user.userId = i;
-      user.email = `user${i + 1}@jmm.com`;
-      user.firstName = `Fname ${i + 1}`;
-      user.lastName = `Lname ${i + 1}`;
-
-      return user;
-    });
-
-
-  }
 
   private parseRoles(roleArr: any[]): UserRoleModel[] {
     let userRoles: UserRoleModel[] = [];

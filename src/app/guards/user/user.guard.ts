@@ -20,6 +20,6 @@ export class UserGuard implements CanActivate, CanLoad {
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-    return true;
+      return this.authSvc.isLoggedIn && this.authSvc.loggedInUser.role.userRights.userAccount.add;
   }
 }

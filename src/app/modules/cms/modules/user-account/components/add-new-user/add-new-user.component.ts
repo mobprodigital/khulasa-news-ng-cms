@@ -25,17 +25,22 @@ export class AddNewUserComponent implements OnInit {
     private fb: FormBuilder
   ) {
 
-    this.getUserRoles();
+    // this.getUserRoles();
   }
 
   ngOnInit() {
     Promise.all([
       this.createUserForm(),
-      this.getUserId()
+      this.getUserId(),
+      this.userAccountService.getRoles()
     ]).then(data => {
-      if (data[1]) {
+      this.userRoles = data[2];
+      const userId = data[1];
+      if (userId) {
         this.newUser = false;
         this.getUserById(data[1]);
+      } else {
+        this.newUser = true;
       }
     }).catch(err => {
       this.newUser = true;
@@ -66,27 +71,32 @@ export class AddNewUserComponent implements OnInit {
 
   onSubmit() {
     if (this.userForm.valid) {
-      this.userAccountService.addUser(this.userForm.value).then(resp => {
+      if (this.newUser) {
+        this.userAccountService.addUser(this.userForm.value).then(resp => {
+          alert(resp);
+        }).catch(err => console.log(err));
+      } else {
+        this.userAccountService.updateUser(this.userForm.value).then(resp => {
+          alert(resp);
+        }).catch(err => console.log(err));
+      }
 
-      }).catch(err => console.log(err));
 
     }
-    console.log('value ', this.userForm.value);
-    console.log('status ', this.userForm.status);
   }
 
-  private getUserRoles() {
-    this.userAccountService.getRoles().then(roles => {
-      this.userRoles = roles;
-    }).catch(err => console.log(err));
-  }
+  /*  private getUserRoles() {
+     this.userAccountService.getRoles().then(roles => {
+       this.userRoles = roles;
+     }).catch(err => console.log(err));
+   } */
 
-  private async getUserId() {
+  private async getUserId(): Promise<number> {
     const userId = this.activatedRoute.snapshot.paramMap.get('id');
     if (userId) {
       return Promise.resolve(parseInt(userId, 10));
     } else {
-      return Promise.reject('no user found');
+      return Promise.resolve(null);
     }
 
   }
@@ -94,7 +104,7 @@ export class AddNewUserComponent implements OnInit {
   private async getUserById(userId: number) {
     try {
       if (userId) {
-        this.userAccountService.get(userId).then(user => this.resetForm(user));
+        this.userAccountService.getUser(userId).then(user => this.resetForm(user));
       }
     } catch (err) {
       alert(err);
@@ -110,8 +120,11 @@ export class AddNewUserComponent implements OnInit {
         email: user.email,
         mobile: user.mobile,
         skype: user.skype,
-        role: user.role.roleId,
         image: user.image,
+      });
+
+      this.userForm.get('role').patchValue({
+        roleId: user.role.roleId
       });
 
       const passControl = this.userForm.get('password');

@@ -26,7 +26,8 @@ export class HttpService {
     private localSvc: LocalStorageService
   ) {
     // this.baseUrl = 'http://192.168.0.7/khulasa-news-panel/';
-    this.baseUrl = 'http://development.bdigimedia.com/riccha_dev/khulasa-News-Panel/';
+    // this.baseUrl = 'http://development.bdigimedia.com/riccha_dev/khulasa-News-Panel/';
+    this.baseUrl = 'http://development.bdigimedia.com/riccha_dev/khulasa-En-Panel/';
 
   }
 
@@ -79,9 +80,8 @@ export class HttpService {
    * @param apiPath api controller path (exclusive base path)
    * @param data data to send
    */
-  public put(apiPath: string, data?: any) {
+  public put(apiPath: string, data?: any): Promise<IHttpResponse> {
     return new Promise((rs, rj) => {
-
       this.http.put(this.baseUrl + apiPath, data).subscribe(
         resp => {
           this.handleResponse(resp);
@@ -97,7 +97,7 @@ export class HttpService {
    * Send http delete request
    * @param apiPath api controller path (exclusive base path)
    */
-  public delete(apiPath: string, data?: any) {
+  public delete(apiPath: string, data?: any): Promise<IHttpResponse> {
     return new Promise((rs, rj) => {
 
       this.http.delete(this.baseUrl + apiPath).subscribe(

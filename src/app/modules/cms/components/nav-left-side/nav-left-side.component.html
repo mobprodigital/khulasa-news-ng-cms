@@ -9,7 +9,7 @@
       <section>
         <ul class="admin-menu">
           <li *ngFor="let menuItem of menu.menuItems" class="admin-menu-item">
-            <a [routerLinkActive]="'active-admin-menu'" matRipple class="admin-menu-link" [routerLink]="[menuItem.path]"
+            <a [routerLinkActiveOptions]="{exact: true}" [routerLinkActive]="'active-admin-menu'" matRipple class="admin-menu-link" [routerLink]="[menuItem.path]"
               [innerHTML]="menuItem.name"></a>
           </li>
         </ul>

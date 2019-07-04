@@ -19,4 +19,5 @@ ul.admin-menu a.admin-menu-link:hover {
 
 ul.admin-menu a.admin-menu-link.active-admin-menu {
   color: #6f85ff;
+  border-left: solid 3px;
 }
