@@ -623,6 +623,11 @@ a {
 .text-capitalize {
   text-transform: capitalize;
 }
+
+.text-danger {
+  color: $red;
+}
+
 .d-block {
   display: block;
 }
@@ -642,13 +647,13 @@ table.table-default {
       border-bottom: solid 1px lightgray;
     }
   }
-  tbody tr:not(:last-of-type) td{
+  tbody tr:not(:last-of-type) td {
     border-bottom: solid 1px lightgray;
   }
   tbody tr td {
     padding: 5px 20px;
     font-size: 14px;
     text-align: left;
-    color: rgba(0,0,0,.87);
+    color: rgba(0, 0, 0, 0.87);
   }
 }

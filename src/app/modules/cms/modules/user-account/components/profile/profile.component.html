@@ -1,0 +1,110 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Update profile</mat-card-title>
+    <mat-card-subtitle>* indicates fields are required</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field>
+            <input autocomplete="off" required formControlName="firstName" placeholder="First name" type="text" matInput
+              aria-required="true" />
+            <mat-error>
+              <div
+                *ngIf="userForm.get('firstName').invalid && (userForm.get('firstName').touched || userForm.get('firstName').dirty)">
+                <div *ngIf="userForm.get('firstName').errors.required">First Name is required</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input autocomplete="off" formControlName="lastName" type="text" placeholder="Last name" matInput aria-required="false" />
+          </mat-form-field>
+        </div>
+<!-- 
+        <div class="col-6">
+          <mat-form-field>
+            <input required formControlName="email" type="email" placeholder="Email" matInput aria-required="true" />
+            <mat-error>
+              <div
+                *ngIf="userForm.get('email').invalid && (userForm.get('email').touched || userForm.get('email').dirty)">
+                <div *ngIf="userForm.get('email').errors.required">email is required</div>
+                <div *ngIf="userForm.get('email').errors.email">Enter valid email</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div> -->
+       <!--  <div formGroupName="role" class="col-6">
+          <mat-form-field>
+            <mat-select required formControlName="roleId" placeholder="Select role" aria-required="true">
+              <mat-option *ngFor="let role of userRoles" [value]="role.roleId">{{role.roleName}}</mat-option>
+            </mat-select>
+
+            <mat-error>
+              <div
+                *ngIf="userForm.get('role').get('roleId').invalid && (userForm.get('role').get('roleId').touched || userForm.get('role').get('roleId').dirty)">
+                <div *ngIf="userForm.get('role').get('roleId').errors.required">Please select a role</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div> -->
+
+        <div class="col-6">
+          <mat-form-field>
+            <input autocomplete="off" formControlName="password" type="password" placeholder="Password" matInput />
+            <mat-error>
+              <div
+                *ngIf="userForm.get('password').invalid && (userForm.get('password').touched || userForm.get('password').dirty)">
+                <div *ngIf="userForm.get('password').errors.required">Password is required</div>
+                <div *ngIf="userForm.get('password').errors.minlength">Password min length is 5</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input autocomplete="off" formControlName="confirmPassword" type="password" placeholder="Confirm Password" matInput />
+            <mat-error>
+              <div
+                *ngIf="userForm.get('confirmPassword').invalid && (userForm.get('confirmPassword').touched || userForm.get('confirmPassword').dirty)">
+                <div *ngIf="userForm.get('confirmPassword').errors.required">Confirm Password is required</div>
+                <div *ngIf="userForm.get('confirmPassword').errors.mustMatch">Confirm Password must match with password
+                </div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input autocomplete="off" formControlName="mobile" type="tel" placeholder="Mobile number" matInput aria-required="false"
+              minlength="8" maxlength="15" />
+            <mat-error>
+              <div
+                *ngIf="userForm.get('mobile').invalid && (userForm.get('mobile').touched || userForm.get('mobile').dirty)">
+                <div *ngIf="userForm.get('mobile').errors.minlength">mobile min length is 8</div>
+                <div *ngIf="userForm.get('mobile').errors.maxlength">mobile max length is 15</div>
+              </div>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="col-6">
+          <mat-form-field>
+            <input autocomplete="off" formControlName="skype" type="text" placeholder="skypeId" matInput aria-required="false" />
+          </mat-form-field>
+        </div>
+
+      </div>
+      <br>
+      <div>
+        <button [disabled]="userForm.invalid" type="submit" mat-raised-button
+          color="primary">Update</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

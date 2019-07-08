@@ -25,32 +25,18 @@ export class ManagePostCategoryComponent implements OnInit {
     private postSvc: PostService,
     public dialog: MatDialog
   ) {
-    this.getAllNewsCategories();
+    this.getAllPostCategories();
   }
 
 
 
-  public getAllNewsCategories() {
+  public getAllPostCategories() {
     this.postSvc.getPostCategories().then(cats => {
       this.categoryList = cats;
       this.dataSource = new MatTableDataSource<PostCategoryModel>(this.categoryList);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     }).catch(err => alert(err));
-  }
-
-  public applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
-  public deleteNews(textId) {
-    const indexNumber = this.dataSource.data.findIndex(n => n.categoryId === textId);
-    this.dataSource.data.splice(indexNumber, 1);
-    this.dataSource = new MatTableDataSource<PostCategoryModel>(this.dataSource.data);
   }
 
   ngOnInit() {
@@ -89,12 +75,12 @@ export class ManagePostCategoryComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: IPostCatDialogResult) => {
-      if (result.parentCategoryId) {
+      if (result.parentCategoryId) { // add child category
         const parentCategoryFound = this.categoryList.find(c => c.categoryId === result.parentCategoryId) as PostCategoryModel;
         if (parentCategoryFound) {
           parentCategoryFound.subCategory.push(result.targetCategory);
         }
-      } else { // root category operation
+      } else { // add root category
         this.categoryList.push(result.targetCategory);
       }
     });
@@ -117,15 +103,11 @@ export class ManagePostCategoryComponent implements OnInit {
       if (result.parentCategoryId) { // update child category
         const parentCategoryFound = this.categoryList.find(c => c.categoryId === result.parentCategoryId) as PostCategoryModel;
         if (parentCategoryFound) {
-          // if (isNew) {
-          //   parentCategoryFound.subCategory.push(result.targetCategory);
-          // } else {
           const oldSubCatFound = parentCategoryFound.subCategory.find(sc => sc.categoryId === result.targetCategory.categoryId);
           if (oldSubCatFound) {
             oldSubCatFound.categoryName = result.targetCategory.categoryName;
             oldSubCatFound.categorySlug = result.targetCategory.categorySlug;
           }
-          // }
         }
       } else { // update root category
         const parentCategoryFound = this.categoryList.find(c => c.categoryId === result.targetCategory.categoryId) as PostCategoryModel;

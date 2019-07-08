@@ -56,6 +56,9 @@ export class AuthService {
     }
   }
 
+  public set loggedInUser(user: UserModel) {
+    localStorage.setItem(btoa('loggedIn'), btoa(JSON.stringify(user)));
+  }
 
   // store the URL so we can redirect after logging in
   redirectUrl: string = '/dashboard';
@@ -82,6 +85,7 @@ export class AuthService {
                 email: resp.data.email,
                 mobile: resp.data.mobile,
                 skype: resp.data.skype,
+                image: null,
                 userId: resp.data.userId,
                 role: new UserRoleModel(
                   resp.data.role.roleId,
@@ -100,10 +104,9 @@ export class AuthService {
                   }
                 )
               });
+              this.loggedInUser = usr;
 
-              console.log(usr);
-
-              localStorage.setItem(btoa('loggedIn'), btoa(JSON.stringify(usr)));
+              // localStorage.setItem(btoa('loggedIn'), btoa(JSON.stringify(usr)));
 
               localStorage.setItem(btoa('token'), btoa(resp.data.token));
               res(true);
@@ -114,7 +117,9 @@ export class AuthService {
             rej(false);
           }
         },
-        err => { }
+        err => {
+          rej(err.error.message);
+        }
       );
     });
   }

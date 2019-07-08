@@ -96,6 +96,14 @@ export class UserAccountService {
     });
   }
 
+  public updateProfile(user: UserModel): Promise<UserModel> {
+    return new Promise((resolve, reject) => {
+      this.httpService.put('profile', user).then(resp => {
+        const usre = this.parseUsers([resp.data]);
+        resolve(usre[0]);
+      }).catch(err => reject(err));
+    });
+  }
 
   private parseRoles(roleArr: any[]): UserRoleModel[] {
     let userRoles: UserRoleModel[] = [];
@@ -145,5 +153,7 @@ export class UserAccountService {
     );
     return users;
   }
+
+
 
 }

@@ -34,9 +34,13 @@
           </mat-error>
         </mat-form-field>
 
+        <div *ngIf="errMsg" class="text-danger">
+          {{errMsg}}
+        </div>
+
         <div>
           <br>
-          <button tabindex="3" type="submit" [disabled]="!loginForm.form.valid" mat-raised-button
+          <button tabindex="3" type="submit" [disabled]="!loginForm.form.valid || showLoader" mat-raised-button
             color="primary">Login</button>
         </div>
 

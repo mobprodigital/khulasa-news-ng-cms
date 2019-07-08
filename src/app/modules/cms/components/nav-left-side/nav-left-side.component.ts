@@ -36,8 +36,8 @@ export class NavLeftSideComponent implements OnInit {
         new AdminMenuItem('All Media', baseFolder + 'media/all-media')
       ]),
       new AdminMenu('User Accounts', [
-        new AdminMenuItem('Add new', baseFolder + 'user-account'),
-        new AdminMenuItem('All Users', baseFolder + 'user-account/all-users')
+        new AdminMenuItem('Add new', baseFolder + 'user-account/add-new'),
+        new AdminMenuItem('All Users', baseFolder + 'user-account')
       ]),
     ]);
   }

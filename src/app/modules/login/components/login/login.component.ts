@@ -12,9 +12,9 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   public pwdHide: boolean = true;
   public logInModel: LoginModel = new LoginModel('', '');
-
+  public errMsg: string;
   public showLoader = false;
-
+  
   constructor(
     private authService: AuthService,
     private router: Router
@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
   }
 
   logInSubmit() {
+    this.errMsg = null;
     this.showLoader = true;
     this.authService.login(this.logInModel).then(data => {
       if (data) {
@@ -32,7 +33,7 @@ export class LoginComponent implements OnInit {
 
       }
     }).catch(err => {
-      alert(err);
+      this.errMsg = err;
     }).finally(() => {
       this.showLoader = false;
     });

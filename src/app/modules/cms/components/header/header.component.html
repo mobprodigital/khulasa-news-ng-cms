@@ -9,7 +9,7 @@
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>Profile</button>
+      <a [routerLink]="['user-account/update-profile']" mat-menu-item>Profile</a>
       <button (click)="logOut()" mat-menu-item>Logout</button>
     </mat-menu>
 

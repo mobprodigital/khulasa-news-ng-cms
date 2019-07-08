@@ -11,6 +11,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MustMatchDirective } from 'src/app/custom-valiators/must-match.directive';
 import { UserAccountService } from 'src/app/service/user-account/user-account.service';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { UserAccountService } from 'src/app/service/user-account/user-account.se
   declarations: [
     MustMatchDirective,
     AddNewUserComponent,
-    AllUsersComponent
+    AllUsersComponent,
+    ProfileComponent
   ],
   providers: [UserAccountService]
 })
