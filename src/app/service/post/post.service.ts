@@ -19,33 +19,121 @@ export class PostService {
   }
 
   /**
-   * get all news categories
+   * Add new root category
+   * @param rootCategoryName new root category name
    */
-  public getNewsCategories(): Promise<PostCategoryModel[]>;
+  public addNewPostCategory(rootCategoryName: string): Promise<PostCategoryModel>;
   /**
-   * get single catgeory by id
-   * @param categoryId Category id
+   * Add new sub category
+   * @param subCategoryName child category name
+   * @param rootCatgoryId root category id
    */
-  public getNewsCategories(categoryId: number): Promise<PostCategoryModel>;
-  public getNewsCategories(args?: undefined | number): Promise<PostCategoryModel[] | PostCategoryModel> {
+  public addNewPostCategory(subCategoryName: string, rootCatgoryId: number): Promise<PostCategoryModel>;
+  public addNewPostCategory(categoryName: string, rootCatgoryId?: number): Promise<PostCategoryModel> {
     return new Promise((resolve, reject) => {
-      const argsType = typeof args;
-      if (argsType === 'number') {
-        this.httpService.get('', new HttpParams().set('action', 'get_category').set('catId', args.toString()))
-          .then((data: any) => {
-            const cats = this.parseCategories([data]);
-            resolve(cats[0]);
-          });
-      } else if (argsType === 'undefined') {
-        this.httpService.get('', new HttpParams().set('action', 'get_categories')).then((resp) => {
-          const categories = this.parseCategories(resp.data);
-          resolve(categories);
-        }).catch(err => {
-          resolve(err);
-        });
-      } else {
-        reject('Argument type mismatch');
+
+      let path = 'category';
+      if (typeof rootCatgoryId === 'number') {
+        path += '/' + rootCatgoryId;
       }
+      this.httpService.post(path, {
+        categoryName
+      }).then(resp => {
+        const newCategory = this.parseCategories([resp.data]);
+        resolve(newCategory[0]);
+        console.log(resp);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
+
+  /**
+   * Edit root category
+   * @param rootCategory root category modal
+   */
+  public editPostcategory(rootCategory: PostCategoryModel): Promise<PostCategoryModel>;
+  /**
+   * Edit sub category
+   * @param subCategory sub category modal
+   * @param rootCatgoryId root category id
+   */
+  public editPostcategory(subCategory: PostCategoryModel, rootCatgoryId: number): Promise<PostCategoryModel>;
+  public editPostcategory(postCategory: PostCategoryModel, rootCatgoryId?: number): Promise<PostCategoryModel> {
+    return new Promise((resolve, reject) => {
+
+      let path = 'category';
+      if (typeof rootCatgoryId === 'number') {
+        path += '/' + rootCatgoryId + '/' + postCategory.categoryId;
+      } else {
+        path += '/' + postCategory.categoryId;
+      }
+      this.httpService.put(path, {
+        categoryName: postCategory.categoryName
+      }).then(resp => {
+        const newCategory = this.parseCategories([resp.data]);
+        resolve(newCategory[0]);
+        console.log(resp);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
+  public deletePostCategory(rootCategoryId: number): Promise<string>;
+  public deletePostCategory(rootCategoryId: number, subCategoryId: number): Promise<string>;
+  public deletePostCategory(rootCategoryId: number, subCategoryId?: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let url: string = 'category/' + rootCategoryId;
+      if (typeof subCategoryId === 'number') {
+        url += '/' + subCategoryId;
+      }
+
+      this.httpService.delete(url).then(resp => {
+        resolve(resp.message);
+      }).catch(err => reject(err));
+
+    });
+  }
+
+  /**
+   * get all root categories with child categories
+   */
+  public getPostCategories(): Promise<PostCategoryModel[]>;
+  /**
+   * get root category and its child catgeories
+   * @param rootCategoryId Root Category id
+   */
+  public getPostCategories(rootCategoryId: number): Promise<PostCategoryModel>;
+  /**
+   * get child category of root category
+   * @param rootCategoryId Root Category id
+   * @param childCategoryId child Category id
+   */
+  public getPostCategories(rootCategoryId: number, childCategoryId: number): Promise<PostCategoryModel>;
+  public getPostCategories(
+    rootCategoryId?: number,
+    childCategoryId?: number): Promise<PostCategoryModel[] | PostCategoryModel> {
+    return new Promise((resolve, reject) => {
+      let catUrl = 'category';
+
+      if (typeof rootCategoryId === 'number') {
+        catUrl += rootCategoryId;
+      }
+      if (typeof childCategoryId === 'number') {
+        catUrl += childCategoryId;
+      }
+
+      this.httpService.get(catUrl).then(resp => {
+        const categories: PostCategoryModel[] = this.parseCategories(resp.data);
+        if (rootCategoryId || childCategoryId) {
+          resolve(categories[0]);
+        } else {
+          resolve(categories);
+        }
+      }).catch(err => reject(err));
+
     });
   }
 
@@ -204,12 +292,16 @@ export class PostService {
 
 
 
-  private parseCategories(cats: any[]) {
+  private parseCategories(cats: any[]): PostCategoryModel[] {
     let catArr: PostCategoryModel[] = [];
     if (cats && cats.length > 0) {
       catArr = cats.map(c => {
-        const cat: PostCategoryModel = new PostCategoryModel(parseInt(c.categoryId, 10), c.name);
-        cat.slug = c.slug;
+        const cat: PostCategoryModel = new PostCategoryModel(parseInt(c.categoryId, 10), c.categoryName, c.categorySlug);
+        if (c.subCategory && c.subCategory.length > 0) {
+          cat.subCategory = this.parseCategories(c.subCategory);
+        } else {
+          cat.subCategory = [];
+        }
         return cat;
       });
     }

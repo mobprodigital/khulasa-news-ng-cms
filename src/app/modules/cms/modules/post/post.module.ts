@@ -14,6 +14,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AddPostCatDialogComponent } from './dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
 import { ManagePostCategoryComponent } from './components/manage-post-category/manage-post-category.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { CdkColumnDef } from '@angular/cdk/table';
 @NgModule({
   declarations: [
     AddNewPostComponent,
@@ -40,6 +41,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     MatPaginatorModule,
     MatDialogModule,
   ],
-  entryComponents: [AddPostCatDialogComponent]
+  entryComponents: [AddPostCatDialogComponent],
+  providers: [CdkColumnDef]
 })
 export class PostModule { }

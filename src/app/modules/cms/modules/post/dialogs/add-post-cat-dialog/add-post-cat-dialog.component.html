@@ -1,15 +1,28 @@
-<div class="admin">
-  <h3 class="dialog-title">{{dialogTitle}}</h3>
-  <form (ngSubmit)="catSubmit()" #catForm="ngForm">
-    <mat-form-field>
-      <input #name="ngModel" name="name" [(ngModel)]="categoryModel.name" placeholder="Enter news category name"
-        matInput required />
-      <mat-error *ngIf="name.invalid && (name.touched || name.dirty)">
-        <span *ngIf="name.errors.required">Category name is required</span>
-      </mat-error>
-    </mat-form-field>
-    <br>
-    <button (click)="closeDialog()" type="button" mat-button color="primary">Cancel</button>
-    <button [disabled]="catForm.invalid" type="submit" mat-button color="primary">Submit</button>
-  </form>
-</div>
+<h1 mat-dialog-title>{{modalTitle}}</h1>
+<form [formGroup]="categoryFormGroup" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-form-field [hidden]="!isNew">
+            <mat-select formControlName="parentCategory" placeholder="Parent Category">
+                <mat-option>None</mat-option>
+                <mat-option *ngFor="let cat of data.categoryList" [value]="cat.categoryId">{{cat.categoryName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input formControlName="categoryName" type="text" placeholder="Category name" matInput />
+            <mat-error>
+                <div
+                    *ngIf="categoryFormGroup.get('categoryName').invalid && (categoryFormGroup.get('categoryName').touched || categoryFormGroup.get('categoryName').dirty)">
+                    <div *ngIf="categoryFormGroup.get('categoryName').errors.required">Category Name is required</div>
+                </div>
+            </mat-error>
+        </mat-form-field>
+
+    </div>
+
+    <div mat-dialog-actions>
+        <button [disabled]="!categoryFormGroup.valid" mat-button type="submit">Submit</button>
+        <button (click)="close()" mat-button type="button">Cancel</button>
+    </div>
+</form>

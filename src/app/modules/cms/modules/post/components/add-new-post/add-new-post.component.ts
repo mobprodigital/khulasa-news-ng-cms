@@ -23,9 +23,9 @@ export class AddNewPostComponent implements OnInit {
     selectable: true,
     removable: true,
     addOnBlur: true,
-  }
+  };
 
-  public categoriesList: PostCategoryModel[] = []
+  public categoriesList: PostCategoryModel[] = [];
 
   public coverImage: File = null;
   public thumbnailUrl: string | ArrayBuffer;
@@ -44,7 +44,7 @@ export class AddNewPostComponent implements OnInit {
   }
 
   private getNewsData() {
-    this.newsService.getNewsCategories().then(cats => {
+    this.newsService.getPostCategories().then(cats => {
       this.categoriesList = cats;
     });
   }
@@ -63,7 +63,7 @@ export class AddNewPostComponent implements OnInit {
     const value = event.value;
 
     if ((value || '').trim()) {
-      let tagControl = <Array<string>>this.newsForm.get('tags').value;
+      const tagControl = this.newsForm.get('tags').value as Array<string>;
       if (tagControl.indexOf(value) === -1) {
         tagControl.push(value);
       }
@@ -76,8 +76,8 @@ export class AddNewPostComponent implements OnInit {
   }
 
   public removeTag(tag: string): void {
-    const tags = <Array<string>>this.newsForm.get('tags').value;
-    let index = tags.indexOf(tag);
+    const tags = this.newsForm.get('tags').value as Array<string>;
+    const index = tags.indexOf(tag);
     if (index >= 0) {
       tags.splice(index, 1);
     }
@@ -87,7 +87,7 @@ export class AddNewPostComponent implements OnInit {
 
   //#region fetured image
   public coverImageChange(ev: MouseEvent) {
-    let files: FileList = ev.target['files'];
+    const files: FileList = ev.target['files'];
     if (files && files.length > 0) {
       let img = files[0];
       this.coverImage = img;
@@ -133,9 +133,9 @@ export class AddNewPostComponent implements OnInit {
 
   private getCategoryControls() {
     return this.news.categoryList.map(cat => {
-      let catFound = this.categoriesList.find(c => c.id === cat.id);
+      let catFound = this.categoriesList.find(c => c.categoryId === cat.categoryId);
       if (catFound) {
-        catFound.selected = true;
+        // catFound.selected = true;
       }
       return this.fb.control(cat);
     })
@@ -165,15 +165,15 @@ export class AddNewPostComponent implements OnInit {
     //insert id into category list
     if ($event.checked) {
       let control = <FormArray>this.newsForm.controls.categories;
-      if (!control.value.find((cat: number) => catg.id === cat)) {
-        control.value.push(catg.id);
+      if (!control.value.find((cat: number) => catg.categoryId === cat)) {
+        control.value.push(catg.categoryId);
       }
     }
     //remove id from category list
     else {
       let control = <FormArray>this.newsForm.controls.categories;
 
-      let catIndex = control.value.indexOf(catg.id);
+      let catIndex = control.value.indexOf(catg.categoryId);
       if (catIndex > -1) {
         control.value.splice(catIndex, 1);
       }

@@ -74,7 +74,6 @@ a {
   box-shadow: none !important;
 }
 
-
 .h-25 {
   height: 25% !important;
 }
@@ -94,7 +93,6 @@ a {
 .h-auto {
   height: auto !important;
 }
-
 
 .mw-100 {
   max-width: 100% !important;
@@ -552,7 +550,6 @@ a {
   margin-left: auto !important;
 }
 
-
 .bg-primary {
   background-color: $primary !important;
 }
@@ -598,9 +595,8 @@ a {
 }
 
 .color-white {
-  color: $white
+  color: $white;
 }
-
 
 .color-gray {
   color: $gray;
@@ -615,26 +611,44 @@ a {
   max-height: 200px;
   overflow: auto;
 }
-.text-center
-{
+.text-center {
   text-align: center;
 }
-.text-uppercase
-{
+.text-uppercase {
   text-transform: uppercase;
 }
-.text-lowercase
-{
+.text-lowercase {
   text-transform: lowercase;
 }
-.text-capitalize
-{
+.text-capitalize {
   text-transform: capitalize;
 }
-.d-block
-{
-  display: block
+.d-block {
+  display: block;
 }
-.d-none{
-  display: none
+.d-none {
+  display: none;
+}
+
+table.table-default {
+  width: 100%;
+  thead {
+    th {
+      font-size: 13px;
+      color: gray;
+      font-weight: 100;
+      text-align: left;
+      padding: 20px 20px;
+      border-bottom: solid 1px lightgray;
+    }
+  }
+  tbody tr:not(:last-of-type) td{
+    border-bottom: solid 1px lightgray;
+  }
+  tbody tr td {
+    padding: 5px 20px;
+    font-size: 14px;
+    text-align: left;
+    color: rgba(0,0,0,.87);
+  }
 }

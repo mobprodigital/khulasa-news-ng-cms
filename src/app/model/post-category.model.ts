@@ -1,7 +1,12 @@
 export class PostCategoryModel {
 
-    slug: string;
-    constructor(public id: number, public name: string, public selected: boolean = false) {
-        this.slug = this.name.toLowerCase().split(' ').join('-');
+
+    constructor(
+        public categoryId: number,
+        public categoryName: string,
+        public categorySlug: string,
+        public subCategory?: PostCategoryModel[]
+    ) {
+
     }
 }

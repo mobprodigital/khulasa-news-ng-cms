@@ -1,7 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { PostCategoryModel } from 'src/app/model/post-category.model';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { PostService } from 'src/app/service/post/post.service';
+import { IPostCatDialogResult } from 'src/app/interface/post-cat-dialog-result.interface';
 
 @Component({
   selector: 'app-add-post-cat-dialog',
@@ -10,34 +12,86 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class AddPostCatDialogComponent implements OnInit {
 
-  // public catForm: FormGroup;
-  public categoryModel: PostCategoryModel = new PostCategoryModel(null, '');
-  public dialogTitle: string = 'Add new category';
+  public categoryFormGroup: FormGroup;
+  public parentCategoryId: number;
+  public isNew: boolean = true;
+  public modalTitle: string;
+
   constructor(
+    private postSvc: PostService,
+    public fb: FormBuilder,
     public dialogRef: MatDialogRef<AddPostCatDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public categoryData: PostCategoryModel) {
-    console.log(categoryData)
-    if (categoryData && categoryData instanceof PostCategoryModel) {
-      this.categoryModel = categoryData;
-      this.dialogTitle = 'Edit category';
-    }
+    @Inject(MAT_DIALOG_DATA) public data: {
+      isNew: boolean,
+      targetCategory: PostCategoryModel,
+      parentCategory?: PostCategoryModel,
+      categoryList: PostCategoryModel[]
+    }) {
+    this.isNew = data.isNew;
+    this.modalTitle = data.isNew ? 'Add new category' : 'Edit category';
+    console.log(data);
   }
 
   ngOnInit() {
-    /* this.catForm = new FormGroup({
-      name: new FormControl(this.categoryModel.name, [Validators.required])
-    }); */
+    this.categoryFormGroup = this.fb.group(
+      {
+        categoryName: [(this.data.targetCategory ? this.data.targetCategory.categoryName : ''), Validators.required],
+        parentCategory: [(this.data.parentCategory ? this.data.parentCategory.categoryId : '')]
+      }
+    );
   }
 
-  closeDialog(newCat?: PostCategoryModel) {
-    this.dialogRef.close(newCat);
+  public onSubmit() {
+    if (this.categoryFormGroup.valid) {
+      const parentCategoryId = this.categoryFormGroup.get('parentCategory').value;
+      const categoryName = this.categoryFormGroup.get('categoryName').value;
+      if (this.isNew) {
+        if (parentCategoryId) {
+          this.postSvc.addNewPostCategory(categoryName, parentCategoryId).then((newCategory: PostCategoryModel) => {
+
+            const result: IPostCatDialogResult = {
+              parentCategoryId,
+              targetCategory: newCategory
+            };
+
+            this.dialogRef.close(result);
+          });
+        } else {
+          this.postSvc.addNewPostCategory(categoryName).then(newCategory => {
+            const result: IPostCatDialogResult = {
+              targetCategory: newCategory
+            };
+            this.dialogRef.close(result);
+          });
+        }
+
+      } else {
+        const editCategory: PostCategoryModel = new PostCategoryModel(
+          this.data.targetCategory.categoryId,
+          categoryName, this.data.targetCategory.categorySlug
+        );
+
+        this.postSvc.editPostcategory(editCategory, parentCategoryId).then(updatedcategory => {
+
+          const result: IPostCatDialogResult = {
+            parentCategoryId,
+            targetCategory: updatedcategory
+          };
+
+          this.dialogRef.close(result);
+        }).catch(err => {
+
+        });
+
+
+      }
+    }
+
   }
 
-  public catSubmit() {
-    // if (this.catForm.valid) {
-    this.categoryModel.slug = this.categoryModel.name.toLowerCase().split(' ').join('-');
-    this.closeDialog(this.categoryModel);
-    // }
+
+  public close() {
+    this.dialogRef.close();
   }
 
 }

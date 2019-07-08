@@ -61,17 +61,15 @@ export class HttpService {
    */
   public post(apiPath: string, data?: any): Promise<IHttpResponse> {
     return new Promise((rs, rj) => {
-      this.http.post(this.baseUrl + apiPath, data,
-        {
-          // headers: this.corsHeaders
-        }).subscribe(
-          resp => {
-            this.handleResponse(resp).catch(err => err);
-          },
-          err => {
-            this.handleError(err);
-          }
-        );
+      this.http.post(this.baseUrl + apiPath, data).subscribe(
+        resp => {
+          this.handleResponse(resp).then(respon => rs(respon)).catch(err => rj(err));
+        },
+        err => {
+          this.handleError(err);
+          rj(err);
+        }
+      );
     });
   }
 
@@ -83,9 +81,9 @@ export class HttpService {
   public put(apiPath: string, data?: any): Promise<IHttpResponse> {
     return new Promise((rs, rj) => {
       this.http.put(this.baseUrl + apiPath, data).subscribe(
-        resp => {
-          this.handleResponse(resp);
-        },
+        resp => this.handleResponse(resp).then(respNew => {
+          rs(respNew);
+        }).catch(err => rj(err)),
         err => {
           this.handleError(err);
         }
@@ -102,28 +100,31 @@ export class HttpService {
 
       this.http.delete(this.baseUrl + apiPath).subscribe(
         resp => {
-          this.handleResponse(resp);
+          this.handleResponse(resp).then(r => rs(r)).catch(err => rj(err));
         },
         err => {
           this.handleError(err);
+          rj(err);
         }
       );
     });
   }
 
   private handleResponse(response: any): Promise<IHttpResponse> {
-    // const status = parseInt(response.status, 10);
 
-    const resp: IHttpResponse = {
-      data: response.data,
-      message: response.message,
-      status: response.status === true
-    };
-    if (response.status) {
-      return Promise.resolve(resp);
-    } else {
-      return Promise.reject(resp.message);
-    }
+    return new Promise((res, rej) => {
+      const resp: IHttpResponse = {
+        data: response.data,
+        message: response.message,
+        status: response.status === true
+      };
+      if (response.status) {
+        res(resp);
+      } else {
+        rej(resp.message);
+      }
+    });
+
   }
 
   private async handleError(err: HttpErrorResponse) {

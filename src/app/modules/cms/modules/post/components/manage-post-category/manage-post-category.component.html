@@ -4,51 +4,46 @@
       <h1 class="page-title">News categories</h1>
     </div>
     <div class="col text-right">
-      <button (click)="openDialog()" type="button" mat-raised-button color="primary">Add new</button>
+      <button (click)="addNewCategory()" type="button" mat-raised-button color="primary">Add new</button>
     </div>
   </div>
 </header>
 
 
-<div class="bg-white" *ngIf="dataSource">
-  <div class="ml-4 mr-4 mt-4">
-    <mat-form-field>
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
-    </mat-form-field>
-  </div>
-  <table mat-table [dataSource]="dataSource" matSort>
-
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="slug">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Slug </th>
-      <td mat-cell *matCellDef="let row"> {{row.slug}} </td>
-    </ng-container>
+<div class="bg-white" *ngIf="categoryList && categoryList.length > 0">
 
 
-    <ng-container matColumnDef="action">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
-      <td mat-cell *matCellDef="let row">
-
-
-
-        <a matTooltip="Edit portal" (click)="openDialog(row)" mat-icon-button color="primary">
-          <mat-icon>edit</mat-icon>
-        </a> &nbsp;
-        <a matTooltip="Delete portal" (click)="deleteNews(row.id)" mat-icon-button color="warn">
-          <mat-icon>delete</mat-icon>
-        </a>
-
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-    </tr>
+  <table class="table-default">
+    <thead>
+      <tr>
+        <th>Category Name</th>
+        <th>Category Slug</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let cat of categoryList">
+        <tr>
+          <td>{{cat.categoryName}}</td>
+          <td>{{cat.categorySlug}}</td>
+          <td>
+            <button color="primary" mat-button (click)="editCategory(cat)">Edit</button>
+            <button color="warn" (click)="deleteCategory(cat.categoryId)" type="button" mat-button>Delete</button>
+          </td>
+        </tr>
+        <ng-container *ngIf="cat.subCategory && cat.subCategory.length">
+          <tr *ngFor="let subCat of cat.subCategory">
+            <td> -- {{subCat.categoryName}}</td>
+            <td>{{subCat.categorySlug}}</td>
+            <td>
+              <button color="primary" mat-button (click)="editCategory(subCat, cat)">Edit</button>
+              <button color="warn" (click)="deleteCategory(cat.categoryId, subCat.categoryId)" type="button" mat-button>Delete</button>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
 </div>
