@@ -14,7 +14,7 @@ export class ProfileComponent implements OnInit {
 
 
   public userForm: FormGroup;
-
+  public loading: boolean;
   constructor(
     private userAccountService: UserAccountService,
     private fb: FormBuilder,
@@ -47,7 +47,13 @@ export class ProfileComponent implements OnInit {
   }
 
   private async getUserData() {
-    this.userAccountService.getUser(this.authSvc.loggedInUser.userId).then(user => this.resetForm(user));
+    this.loading = true;
+    this.userAccountService.getUser(this.authSvc.loggedInUser.userId)
+      .then(user => this.resetForm(user))
+      .catch(err => {
+
+      })
+      .finally(() => this.loading = false);
   }
 
   private resetForm(user: UserModel) {
@@ -66,12 +72,13 @@ export class ProfileComponent implements OnInit {
 
   public onSubmit() {
     if (this.userForm.valid) {
+      this.loading = true;
       this.userAccountService.updateProfile(this.userForm.value).then(user => {
         this.authSvc.loggedInUser = user;
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-      }).catch(err => console.log(err));
+      }).catch(err => console.log(err)).finally(() => this.loading = false);
     }
   }
 

@@ -14,6 +14,7 @@ import { MustMatch } from 'src/app/custom-valiators/must-match.validator';
 })
 export class AddNewUserComponent implements OnInit {
 
+  public loading: boolean = true;
   public newUser: boolean = true;
   public userRoles: UserRoleModel[] = [];
 
@@ -25,10 +26,11 @@ export class AddNewUserComponent implements OnInit {
     private fb: FormBuilder
   ) {
 
-    // this.getUserRoles();
   }
 
   ngOnInit() {
+
+
     Promise.all([
       this.createUserForm(),
       this.getUserId(),
@@ -37,10 +39,12 @@ export class AddNewUserComponent implements OnInit {
       this.userRoles = data[2];
       const userId = data[1];
       if (userId) {
+        this.loading = true;
         this.newUser = false;
         this.getUserById(data[1]);
       } else {
         this.newUser = true;
+        this.loading = false;
       }
     }).catch(err => {
       this.newUser = true;
@@ -71,17 +75,22 @@ export class AddNewUserComponent implements OnInit {
 
   onSubmit() {
     if (this.userForm.valid) {
+      this.loading = true;
       if (this.newUser) {
         this.userAccountService.addUser(this.userForm.value).then(resp => {
           alert(resp);
-        }).catch(err => console.log(err));
+        }).catch(err => console.log(err)).finally(() => {
+          this.loading = false;
+          this.userForm.reset();
+        });
       } else {
         this.userAccountService.updateUser(this.userForm.value).then(resp => {
           alert(resp);
-        }).catch(err => console.log(err));
+        }).catch(err => console.log(err)).finally(() => {
+          this.loading = false;
+          this.userForm.reset();
+        });
       }
-
-
     }
   }
 
@@ -98,7 +107,9 @@ export class AddNewUserComponent implements OnInit {
   private async getUserById(userId: number) {
     try {
       if (userId) {
-        this.userAccountService.getUser(userId).then(user => this.resetForm(user));
+        this.userAccountService.getUser(userId)
+          .then(user => this.resetForm(user))
+          .finally(() => this.loading = false);
       }
     } catch (err) {
       alert(err);

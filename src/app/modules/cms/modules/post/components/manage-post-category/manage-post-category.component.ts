@@ -14,6 +14,8 @@ export class ManagePostCategoryComponent implements OnInit {
 
 
 
+  public loading: boolean;
+
   displayedColumns: string[] = ['name', 'slug', 'action'];
   dataSource: MatTableDataSource<PostCategoryModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -31,12 +33,13 @@ export class ManagePostCategoryComponent implements OnInit {
 
 
   public getAllPostCategories() {
+    this.loading = true;
     this.postSvc.getPostCategories().then(cats => {
       this.categoryList = cats;
       this.dataSource = new MatTableDataSource<PostCategoryModel>(this.categoryList);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-    }).catch(err => alert(err));
+    }).catch(err => alert(err)).finally(() => this.loading = false);
   }
 
   ngOnInit() {
@@ -48,6 +51,7 @@ export class ManagePostCategoryComponent implements OnInit {
     if (!confirm('Are you sure want to delete this category')) {
       return;
     }
+    this.loading = true;
 
     this.postSvc.deletePostCategory(rootCategoryId, subCategoryId).then(msg => {
       alert(msg);
@@ -59,7 +63,7 @@ export class ManagePostCategoryComponent implements OnInit {
       } else if (rootCategoryId) {
         this.categoryList.splice(this.categoryList.findIndex(c => c.categoryId === rootCategoryId), 1);
       }
-    });
+    }).finally(() => this.loading = false);
   }
 
 
@@ -72,6 +76,7 @@ export class ManagePostCategoryComponent implements OnInit {
         parentCategory: null,
         categoryList: this.categoryList
       },
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((result: IPostCatDialogResult) => {
@@ -97,6 +102,7 @@ export class ManagePostCategoryComponent implements OnInit {
         parentCategory,
         categoryList: this.categoryList
       },
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((result: IPostCatDialogResult) => {

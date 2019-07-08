@@ -1,3 +1,5 @@
+<app-progress-bar *ngIf="loading"></app-progress-bar>
+
 <mat-card>
   <mat-card-header>
     <mat-card-title>Update profile</mat-card-title>
@@ -24,33 +26,6 @@
             <input autocomplete="off" formControlName="lastName" type="text" placeholder="Last name" matInput aria-required="false" />
           </mat-form-field>
         </div>
-<!-- 
-        <div class="col-6">
-          <mat-form-field>
-            <input required formControlName="email" type="email" placeholder="Email" matInput aria-required="true" />
-            <mat-error>
-              <div
-                *ngIf="userForm.get('email').invalid && (userForm.get('email').touched || userForm.get('email').dirty)">
-                <div *ngIf="userForm.get('email').errors.required">email is required</div>
-                <div *ngIf="userForm.get('email').errors.email">Enter valid email</div>
-              </div>
-            </mat-error>
-          </mat-form-field>
-        </div> -->
-       <!--  <div formGroupName="role" class="col-6">
-          <mat-form-field>
-            <mat-select required formControlName="roleId" placeholder="Select role" aria-required="true">
-              <mat-option *ngFor="let role of userRoles" [value]="role.roleId">{{role.roleName}}</mat-option>
-            </mat-select>
-
-            <mat-error>
-              <div
-                *ngIf="userForm.get('role').get('roleId').invalid && (userForm.get('role').get('roleId').touched || userForm.get('role').get('roleId').dirty)">
-                <div *ngIf="userForm.get('role').get('roleId').errors.required">Please select a role</div>
-              </div>
-            </mat-error>
-          </mat-form-field>
-        </div> -->
 
         <div class="col-6">
           <mat-form-field>
@@ -102,7 +77,7 @@
       </div>
       <br>
       <div>
-        <button [disabled]="userForm.invalid" type="submit" mat-raised-button
+        <button [disabled]="userForm.invalid || loading" type="submit" mat-raised-button
           color="primary">Update</button>
       </div>
     </form>

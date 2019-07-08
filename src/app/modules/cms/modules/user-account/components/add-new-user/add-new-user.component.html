@@ -1,3 +1,4 @@
+<app-progress-bar *ngIf="loading"></app-progress-bar>
 <mat-card>
   <mat-card-header>
     <mat-card-title>{{newUser ? 'Add new user' : 'Edit user'}}</mat-card-title>
@@ -105,8 +106,10 @@
       </div>
       <br>
       <div>
-        <button [disabled]="userForm.invalid" type="submit" mat-raised-button
+        <button [disabled]="userForm.invalid || loading" type="submit" mat-raised-button
           color="primary">{{ newUser ? 'Create user' : 'Update user'}}</button>
+        &nbsp;
+          <button mat-button type="reset">Reset form</button>
       </div>
     </form>
   </mat-card-content>

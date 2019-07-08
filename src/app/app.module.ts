@@ -12,7 +12,7 @@ import { AjaxInterceptor } from './interceptor/ajax-interceptor/ajax-interceptor
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

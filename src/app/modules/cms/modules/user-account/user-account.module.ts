@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { MustMatchDirective } from 'src/app/custom-valiators/must-match.directive';
 import { UserAccountService } from 'src/app/service/user-account/user-account.service';
 import { ProfileComponent } from './components/profile/profile.component';
+import { SharedModule } from 'src/app/modules/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { ProfileComponent } from './components/profile/profile.component';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
+    SharedModule
   ],
   declarations: [
     MustMatchDirective,

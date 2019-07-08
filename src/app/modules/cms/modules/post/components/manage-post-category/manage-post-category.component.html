@@ -11,8 +11,8 @@
 
 
 <div class="bg-white" *ngIf="categoryList && categoryList.length > 0">
-
-
+<app-progress-bar *ngIf="loading"></app-progress-bar>
+<fieldset [disabled]="loading">
   <table class="table-default">
     <thead>
       <tr>
@@ -44,6 +44,6 @@
       </ng-container>
     </tbody>
   </table>
-
+</fieldset>
 
 </div>

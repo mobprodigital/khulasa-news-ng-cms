@@ -1,3 +1,7 @@
+<div *ngIf="loading" class="cat-pb">
+    <app-progress-bar></app-progress-bar>
+</div>
+
 <h1 mat-dialog-title>{{modalTitle}}</h1>
 <form [formGroup]="categoryFormGroup" (ngSubmit)="onSubmit()">
     <div mat-dialog-content>
@@ -22,7 +26,7 @@
     </div>
 
     <div mat-dialog-actions>
-        <button [disabled]="!categoryFormGroup.valid" mat-button type="submit">Submit</button>
-        <button (click)="close()" mat-button type="button">Cancel</button>
+        <button [disabled]="!categoryFormGroup.valid || loading" mat-button type="submit">Submit</button>
+        <button [disabled]="loading" (click)="close()" mat-button type="button">Cancel</button>
     </div>
 </form>

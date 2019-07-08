@@ -15,6 +15,7 @@ import { AddPostCatDialogComponent } from './dialogs/add-post-cat-dialog/add-pos
 import { ManagePostCategoryComponent } from './components/manage-post-category/manage-post-category.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CdkColumnDef } from '@angular/cdk/table';
+import { SharedModule } from 'src/app/modules/shared/shared.module';
 @NgModule({
   declarations: [
     AddNewPostComponent,
@@ -40,6 +41,7 @@ import { CdkColumnDef } from '@angular/cdk/table';
     MatTableModule,
     MatPaginatorModule,
     MatDialogModule,
+    SharedModule
   ],
   entryComponents: [AddPostCatDialogComponent],
   providers: [CdkColumnDef]

@@ -10,6 +10,7 @@ import { UserAccountService } from 'src/app/service/user-account/user-account.se
 })
 export class AllUsersComponent implements OnInit {
 
+  public loading: boolean;
   displayedColumns: string[] = ['name', 'role', 'email', 'action'];
   dataSource: MatTableDataSource<UserModel>;
   public userList: UserModel[] = [];
@@ -27,7 +28,7 @@ export class AllUsersComponent implements OnInit {
 
 
   private getUsers() {
-
+    this.loading = true;
     this.userService.getUser().then(users => {
       this.userList = users;
       this.dataSource = new MatTableDataSource(this.userList);
@@ -38,10 +39,15 @@ export class AllUsersComponent implements OnInit {
 
     }).catch(err => {
       console.log(err);
-    });
+    }).finally(() => this.loading = false);
   }
 
   public deleteUser(userId: number) {
+
+    if (!confirm('Are you sure to delete this user ?')) {
+      return;
+    }
+
     this.userService.deleteUser(userId).then(msg => {
       const userIndex = this.userList.findIndex(u => u.userId === userId);
       this.userList.splice(userIndex, 1);

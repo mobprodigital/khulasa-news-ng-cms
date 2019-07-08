@@ -16,7 +16,7 @@ export class AddPostCatDialogComponent implements OnInit {
   public parentCategoryId: number;
   public isNew: boolean = true;
   public modalTitle: string;
-
+  public loading: boolean;
   constructor(
     private postSvc: PostService,
     public fb: FormBuilder,
@@ -43,26 +43,30 @@ export class AddPostCatDialogComponent implements OnInit {
 
   public onSubmit() {
     if (this.categoryFormGroup.valid) {
+      this.loading = true;
       const parentCategoryId = this.categoryFormGroup.get('parentCategory').value;
       const categoryName = this.categoryFormGroup.get('categoryName').value;
       if (this.isNew) {
         if (parentCategoryId) {
-          this.postSvc.addNewPostCategory(categoryName, parentCategoryId).then((newCategory: PostCategoryModel) => {
+          this.postSvc.addNewPostCategory(categoryName, parentCategoryId)
+            .then((newCategory: PostCategoryModel) => {
 
-            const result: IPostCatDialogResult = {
-              parentCategoryId,
-              targetCategory: newCategory
-            };
+              const result: IPostCatDialogResult = {
+                parentCategoryId,
+                targetCategory: newCategory
+              };
 
-            this.dialogRef.close(result);
-          });
+              this.dialogRef.close(result);
+            }).catch(err => alert(err))
+            .finally(() => this.loading = false);
         } else {
           this.postSvc.addNewPostCategory(categoryName).then(newCategory => {
             const result: IPostCatDialogResult = {
               targetCategory: newCategory
             };
             this.dialogRef.close(result);
-          });
+          }).catch(err => alert(err))
+            .finally(() => this.loading = false);
         }
 
       } else {
@@ -79,9 +83,8 @@ export class AddPostCatDialogComponent implements OnInit {
           };
 
           this.dialogRef.close(result);
-        }).catch(err => {
-
-        });
+        }).catch(err => alert(err))
+          .finally(() => this.loading = false);
 
 
       }
