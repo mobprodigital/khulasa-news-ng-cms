@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { PostService } from 'src/app/service/post/post.service';
 import { AddPostCatDialogComponent } from '../../dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-add-new-post',
@@ -16,7 +15,6 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 export class AddNewPostComponent implements OnInit {
 
 
-  public Editor = ClassicEditor;
   public rtContent: any;
   public tagControlProp = {
     visible: true,

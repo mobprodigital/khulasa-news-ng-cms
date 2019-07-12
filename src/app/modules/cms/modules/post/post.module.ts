@@ -13,7 +13,6 @@ import {
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AddPostCatDialogComponent } from './dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
 import { ManagePostCategoryComponent } from './components/manage-post-category/manage-post-category.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CdkColumnDef } from '@angular/cdk/table';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 @NgModule({
@@ -26,7 +25,6 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
   imports: [
     CommonModule,
     FormsModule,
-    CKEditorModule,
     PostRoutingModule,
     MatCardModule,
     MatFormFieldModule,

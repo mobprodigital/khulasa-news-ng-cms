@@ -34,10 +34,6 @@
             <textarea formControlName="content" rows="10" placeholder="News content" matInput></textarea>
           </mat-form-field>
 
-          <div>
-            <ckeditor [(ngModel)]="rtContent" [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
-          </div>
-
           <mat-form-field>
             <mat-label>Author</mat-label>
             <mat-select>
