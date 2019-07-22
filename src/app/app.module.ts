@@ -8,6 +8,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { AuthService } from './service/auth/auth.service';
 import { AjaxInterceptor } from './interceptor/ajax-interceptor/ajax-interceptor';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material';
 
 
 @NgModule({
@@ -19,14 +21,18 @@ import { AjaxInterceptor } from './interceptor/ajax-interceptor/ajax-interceptor
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
 
   ],
   providers: [AuthGuard, AuthService,
     [{
       provide: HTTP_INTERCEPTORS,
       useClass: AjaxInterceptor,
-      multi: true
-    }]
+      multi: true,
+
+    }, { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }], MatDatepickerModule,
+    MatNativeDateModule
   ],
   bootstrap: [AppComponent]
 })
