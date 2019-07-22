@@ -4,24 +4,29 @@ import { PostStatusEnum } from '../enum/post-status.enum';
 import { PostTypeEnum } from '../enum/post-type.enum';
 
 export class PostModel {
-    id: number = null;
+    postId: number = null;
     title: string = '';
     slug: string = '';
     content: string = '';
-    postStatus: PostStatusEnum = PostStatusEnum.Draft;
+    scheduledDate: Date | string = null;
+    authorId: number = null;
+    status: PostStatusEnum = PostStatusEnum.Draft;
     postType: PostTypeEnum = PostTypeEnum.Post;
     published: boolean = false;
     category: string = '';
     categoryList: PostCategoryModel[] = [];
     tags: string[] = [];
-    featuredImage: IFeturedImage = {
-        original: '',
-        large: '',
-        medium: '',
-        small: ''
-    };
-    author: string = '';
+    featuredImage: string = null
+    // featuredImage: IFeturedImage = {
+    //     original: '',
+    //     large: '',
+    //     medium: '',
+    //     small: ''
+    // };
     createDate: Date | string = '';
-    publishedDate: Date | string = '';
+    publishedDate: Date | string = null;
     canonicalUrl: string = '';
+    createdBy: number;
 }
+
+
