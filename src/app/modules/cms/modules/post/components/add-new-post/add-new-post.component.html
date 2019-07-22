@@ -1,7 +1,8 @@
 <header class="page-header">
   <div class="row">
     <div class="col">
-      <h1 class="page-title">Add new post</h1>
+      <h1 *ngIf="!postId" class="page-title">Add new post</h1>
+      <h1 *ngIf="postId" class="page-title">Edit post</h1>
     </div>
     <div class="col">
       <div class="text-right">
@@ -12,9 +13,12 @@
 </header>
 
 <form [formGroup]="newsForm" (ngSubmit)="onSubmit()">
+
   <!-- hidden fields start-->
-  <input type="hidden" formControlName="id">
-  <input type="hidden" formControlName="slug">
+  <input type="hidden" formControlName="postId">
+  <input type="hidden" formControlName="scheduledDate">
+
+
   <!-- hidden fields end -->
   <section class="row">
     <div class="col-8 admin-content">
@@ -24,31 +28,38 @@
         </mat-card-header>
         <mat-card-content>
           <mat-form-field>
-            <input formControlName="title" autofocus type="text" placeholder="News title" matInput />
+            <input formControlName="title" type="text" placeholder="News title" matInput />
             <mat-error *ngIf="newsForm.get('title').invalid">
               Title is required
             </mat-error>
           </mat-form-field>
-
           <mat-form-field>
-            <textarea formControlName="content" rows="10" placeholder="News content" matInput></textarea>
+            <input formControlName="slug" type="text" placeholder="Slug" matInput />
+            <mat-error *ngIf="newsForm.get('slug').invalid">
+              Slug Should be Alpha Numeric
+            </mat-error>
           </mat-form-field>
 
+          <!-- <mat-form-field>
+            <textarea formControlName="content" rows="10" placeholder="News content" matInput></textarea>
+          </mat-form-field> -->
+
           <div>
-            <ckeditor [(ngModel)]="rtContent" [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
+            <ckeditor formControlName="content" [editor]="Editor"></ckeditor>
+            <!-- <mat-error *ngIf="newsForm.get('content').invalid">
+              Content is required
+            </mat-error> -->
           </div>
 
           <mat-form-field>
             <mat-label>Author</mat-label>
-            <mat-select>
-              <mat-option selected value="draft">Gyan</mat-option>
-              <mat-option value="publish">Parkash</mat-option>
-              <mat-option value="scheduled">Hello</mat-option>
+            <mat-select formControlName="authorId">
+              <mat-option selected value="1">vipul singh</mat-option>
+              <mat-option value=7>aakash goel</mat-option>
+              <mat-option value=2>Gyan Parkash</mat-option>
+              <mat-option value=94>sunil</mat-option>
             </mat-select>
           </mat-form-field>
-
-
-
         </mat-card-content>
       </mat-card>
       <mat-card>
@@ -62,32 +73,70 @@
         </mat-card-content>
       </mat-card>
     </div>
-
     <div class="col-4 admin-sidebar">
-
       <!-- publish status -->
       <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Post status
+            Post Status
           </mat-panel-title>
         </mat-expansion-panel-header>
 
         <section>
           <mat-form-field>
-            <mat-select>
+            <mat-select formControlName="status">
               <mat-option selected value="draft">Draft</mat-option>
-              <mat-option value="publish">Published</mat-option>
+              <mat-option value="published">Published</mat-option>
               <mat-option value="scheduled">Scheduled</mat-option>
-              <mat-option value="trash">Trash</mat-option>
             </mat-select>
           </mat-form-field>
         </section>
+
+        <section [hidden]="newsForm.get('status').value!='scheduled'">
+          <div style="display: flex">
+            <div style="width: 50%">
+              <mat-form-field>
+                <input formControlName="sDate" matInput [matDatepicker]="picker" placeholder="Choose a date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div style="width: 50%">
+              <mat-form-field>
+                <mat-select formControlName="sTime" placeholder="Choose a time">
+                  <mat-option *ngFor="let t of time ;let i=index" [attr.selected]="i==0 ? true : null" value="{{t}}">
+                    {{t}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </section>
+
 
         <div class="flex ">
           <!-- <button type="button" mat-raised-button color="light">Save draft</button> -->
           <button type="submit" mat-raised-button color="primary">Save</button>
         </div>
+      </mat-expansion-panel>
+
+      <!-- post type -->
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Post Type
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <section>
+          <mat-form-field>
+            <mat-select formControlName="postType">
+              <mat-option selected value="post">Post</mat-option>
+              <mat-option value="page">Page</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </section>
+
       </mat-expansion-panel>
 
       <!-- categories -->
@@ -100,7 +149,8 @@
         <div>
           <section class="max-h-200">
             <div *ngFor="let catg of categoriesList; let i = index">
-              <mat-checkbox [checked]="catg.selected" (change)="setCategory($event, catg)" color="primary">{{catg.name}}
+              <mat-checkbox [checked]="catg.isSelected" (change)="setCategory($event, catg)" color="primary">
+                {{catg.categoryName}}
               </mat-checkbox>
             </div>
           </section>
@@ -157,4 +207,5 @@
 
     </div>
   </section>
+
 </form>
