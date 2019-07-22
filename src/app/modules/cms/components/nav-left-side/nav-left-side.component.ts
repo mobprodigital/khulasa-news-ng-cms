@@ -29,6 +29,7 @@ export class NavLeftSideComponent implements OnInit {
       new AdminMenu('Post', [
         new AdminMenuItem('Add New Post', baseFolder + 'post/add-new'),
         new AdminMenuItem('All Posts', baseFolder + 'post/all-news'),
+        new AdminMenuItem('All Trash Posts', baseFolder + 'post/all-trash'),
         new AdminMenuItem('Manage Post Categories', baseFolder + 'post/manage-categories'),
       ]),
       new AdminMenu('Media', [
