@@ -7,21 +7,25 @@ import { AllPostsComponent } from './components/all-posts/all-posts.component';
 import {
   MatCardModule, MatFormFieldModule, MatInputModule,
   MatCheckboxModule, MatChipsModule, MatIconModule, MatButtonModule,
-  MatExpansionModule, MatTableModule, MatPaginatorModule, MatDialogModule,
-  MatSelectModule
+  MatExpansionModule, MatTableModule, MatPaginatorModule, MatDialogModule, MatProgressBarModule,
+  MatSelectModule, MatSnackBarModule
 } from '@angular/material';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AddPostCatDialogComponent } from './dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
 import { ManagePostCategoryComponent } from './components/manage-post-category/manage-post-category.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { CdkColumnDef } from '@angular/cdk/table';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
+import { AllTrashPostComponent } from './components/all-trash-post/all-trash-post.component';
+
 @NgModule({
   declarations: [
     AddNewPostComponent,
     AllPostsComponent,
     AddPostCatDialogComponent,
-    ManagePostCategoryComponent
+    ManagePostCategoryComponent,
+    AllTrashPostComponent
   ],
   imports: [
     CommonModule,
@@ -41,9 +45,12 @@ import { SharedModule } from 'src/app/modules/shared/shared.module';
     MatTableModule,
     MatPaginatorModule,
     MatDialogModule,
-    SharedModule
+    SharedModule,
+    MatSnackBarModule,
+    MatDatepickerModule,
+    MatProgressBarModule
   ],
   entryComponents: [AddPostCatDialogComponent],
-  providers: [CdkColumnDef]
+  providers: [CdkColumnDef, MatDatepickerModule]
 })
 export class PostModule { }
