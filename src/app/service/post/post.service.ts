@@ -4,16 +4,16 @@ import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { HttpService } from '../http/http.service';
 import { HttpParams } from '@angular/common/http';
 import { PostTypeEnum } from 'src/app/enum/post-type.enum';
+import { PostStatusEnum } from 'src/app/enum/post-status.enum';
+import { resolve } from 'url';
+import { post } from 'selenium-webdriver/http';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-
-
   private menuCategories: PostCategoryModel[] = [];
-
   constructor(private httpService: HttpService) {
 
   }
@@ -22,14 +22,14 @@ export class PostService {
    * Add new root category
    * @param rootCategoryName new root category name
    */
-  public addNewPostCategory(rootCategoryName: string): Promise<PostCategoryModel>;
+  public addNewPostCategory(rootCategoryName: string, slug: string): Promise<PostCategoryModel>;
   /**
    * Add new sub category
    * @param subCategoryName child category name
    * @param rootCatgoryId root category id
    */
-  public addNewPostCategory(subCategoryName: string, rootCatgoryId: number): Promise<PostCategoryModel>;
-  public addNewPostCategory(categoryName: string, rootCatgoryId?: number): Promise<PostCategoryModel> {
+  public addNewPostCategory(subCategoryName: string, slug: string, rootCatgoryId: number): Promise<PostCategoryModel>;
+  public addNewPostCategory(categoryName: string, slug: string, rootCatgoryId?: number): Promise<PostCategoryModel> {
     return new Promise((resolve, reject) => {
 
       let path = 'category';
@@ -37,7 +37,7 @@ export class PostService {
         path += '/' + rootCatgoryId;
       }
       this.httpService.post(path, {
-        categoryName
+        categoryName, slug
       }).then(resp => {
         const newCategory = this.parseCategories([resp.data]);
         resolve(newCategory[0]);
@@ -53,14 +53,14 @@ export class PostService {
    * Edit root category
    * @param rootCategory root category modal
    */
-  public editPostcategory(rootCategory: PostCategoryModel): Promise<PostCategoryModel>;
+  public editPostcategory(rootCategory: PostCategoryModel, slug: string): Promise<PostCategoryModel>;
   /**
    * Edit sub category
    * @param subCategory sub category modal
    * @param rootCatgoryId root category id
    */
-  public editPostcategory(subCategory: PostCategoryModel, rootCatgoryId: number): Promise<PostCategoryModel>;
-  public editPostcategory(postCategory: PostCategoryModel, rootCatgoryId?: number): Promise<PostCategoryModel> {
+  public editPostcategory(subCategory: PostCategoryModel, slug: string, rootCatgoryId: number): Promise<PostCategoryModel>;
+  public editPostcategory(postCategory: PostCategoryModel, slug: string, rootCatgoryId?: number): Promise<PostCategoryModel> {
     return new Promise((resolve, reject) => {
 
       let path = 'category';
@@ -70,7 +70,8 @@ export class PostService {
         path += '/' + postCategory.categoryId;
       }
       this.httpService.put(path, {
-        categoryName: postCategory.categoryName
+        categoryName: postCategory.categoryName,
+        slug
       }).then(resp => {
         const newCategory = this.parseCategories([resp.data]);
         resolve(newCategory[0]);
@@ -138,6 +139,223 @@ export class PostService {
   }
 
   /**
+   * add new post
+   */
+  public addNewPost(postData: PostModel): Promise<PostModel> {
+    return new Promise((resolve, reject) => {
+      let path = 'post'
+      let data = JSON.stringify(postData)
+      this.httpService.post(path, data).then(res => {
+        const post = this.parsePost([res.data]);
+        resolve(post[0]);
+        console.log(res);
+      }).catch(err => reject(err))
+    })
+  }
+
+  /**
+   * edit Post by post id 
+   * @param postId id of post 
+   * @param postData 
+   */
+  public editPostByPostId(postId: number, postData: PostModel): Promise<PostModel> {
+    return new Promise((resolve, reject) => {
+      let path = 'post';
+      let data = JSON.stringify(postData)
+      this.httpService.put(path + "/" + postId, data)
+        .then(res => {
+          let data = this.parsePost([res.data]);
+          resolve(data[0]);
+        }).catch(err => {
+          reject(err);
+        })
+    })
+  }
+
+  /**
+   * delete Post by postId
+   */
+  public deletePostByPostId(postId: number[]): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let path = 'delete/post';
+      let dataToSend = {
+        "postId": postId
+      }
+      this.httpService.post(path, dataToSend)
+        .then(resp => {
+          resolve(resp.message);
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+
+  /**
+   * change post status
+   * 
+   */
+  public changePostStatus(postId: number[], status: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let path = 'change-status';
+
+      let data = {
+        "postId": postId,
+        "targetStatus": status
+      }
+      let dataToSend = JSON.stringify(data)
+      this.httpService.put(path, dataToSend)
+        .then(resp => {
+          resolve(resp.message)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+
+
+
+  /**
+   * get all post
+   */
+  public getPost(): Promise<PostModel[]>;
+  /**
+    * Get post of a specified post id
+    * @param postId id of the post
+   */
+  public getPost(postId: number): Promise<PostModel[]>;
+  /**
+   * get all news of a specified news category and number of news want to get and offset number from where want to get the news
+   * @param postId id of the news category
+   * @param count (default = 10) number of news want to get
+   * @param from (default = 1) offset number from where want to get the news
+   */
+
+  public getPost(postId: number, count: number, start: number, dateFrom: string, dateTo: string, ): Promise<PostModel[]>;
+  public getPost(postId: number, count: number, start: number, dateFrom: string, dateTo: string, status: string): Promise<PostModel[]>;
+  public getPost(postId?: number, count: number = 10, start: number = 0, dateFrom?: string, dateTo?: string, status?: string): Promise<PostModel[]> {
+
+
+    return new Promise((resolve, reject) => {
+      let path = 'post';
+      let param = new HttpParams()
+        .set('start ', start.toString())
+        .set('count ', count.toString())
+
+      if (dateFrom && dateTo && status) {
+        param = new HttpParams()
+          .set('dateFrom', dateFrom)
+          .set('dateTo', dateTo)
+          .set('start ', start.toString())
+          .set('count ', count.toString())
+          .set('status', status)
+      }
+
+      else if (dateFrom && dateTo) {
+        param = new HttpParams()
+          .set('dateFrom', dateFrom)
+          .set('dateTo', dateTo)
+          .set('start ', start.toString())
+          .set('count ', count.toString())
+      }
+      else if (status) {
+
+        param = new HttpParams()
+          .set('status', status)
+          .set('start ', start.toString())
+          .set('count ', count.toString())
+      }
+
+
+
+      if (typeof postId === 'number') {
+        this.httpService.get(path + "/" + postId)
+          .then(resp => {
+            let data = this.parsePost([resp.data]);
+            resolve(data);
+          }).catch(err => {
+            reject(err);
+          })
+      }
+
+      else {
+        this.httpService.get(path, param).then(resp => {
+          let post = this.parsePost(resp.data);
+          resolve(post)
+        })
+          .catch(err => {
+            reject(err)
+          })
+      }
+    })
+  }
+
+  public deleteTrashPost(): Promise<string>;
+  /**
+   * delete trash post
+   * @param postId array of postId
+   */
+  public deleteTrashPost(postId: number[]): Promise<string>;
+  public deleteTrashPost(postId?: number[]): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let path = 'trash/post';
+      if (postId && postId.length > 0) {
+        let dataToSend = {
+          "postId": postId
+        }
+        this.httpService.post(path, dataToSend)
+          .then(resp => {
+            resolve(resp.message);
+          })
+          .catch(err => {
+            reject(err)
+          })
+      }
+      else {
+        this.httpService.post(path)
+          .then(resp => {
+            resolve(resp.message);
+          })
+          .catch(err => {
+            reject(err)
+          })
+
+
+      }
+
+    })
+  }
+
+
+  /**
+   * get all post by post status
+   */
+  public getAllPostByStatus(postStatus: string, start: number = 0, count: number = 10): Promise<PostModel[]> {
+    return new Promise((resolve, reject) => {
+      let path = '/post/status/';
+      let param = new HttpParams()
+        .set('start ', start.toString())
+        .set('count ', count.toString())
+      this.httpService.get(path + postStatus, param)
+        .then(post => {
+          let data = this.parsePost(post.data);
+          resolve(data);
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+
+
+
+
+
+  /**
    * get menu catgories
    */
   public getMenuCategories(): Promise<PostCategoryModel[]> {
@@ -162,52 +380,52 @@ export class PostService {
     });
   }
 
-  /**
-   * get all news
-   */
-  public getNews(): Promise<PostModel[]>;
-  /**
-   * Get all news of a specified news category
-   * @param categoryId id of the news category
-   */
-  public getNews(categoryId: number): Promise<PostModel[]>;
-  /**
-   * Get all news of a specified news category
-   * @param categoryId id of the news category
-   * @param count (default = 10) number of news want to get
-   */
-  public getNews(categoryId: number, count: number): Promise<PostModel[]>;
-  /**
-   * Get all news of a specified news category
-   * @param categoryId id of the news category
-   * @param count (default = 10) number of news want to get
-   * @param from (default = 1) offset number from where want to get the news
-   */
-  public getNews(categoryId: number, count: number, from: number): Promise<PostModel[]>;
-  public getNews(categoryId?: number, count?: number, from?: number): Promise<PostModel[]> {
-    return new Promise((resolve, reject) => {
+  // /**
+  //  * get all news
+  //  */
+  // public getNews(): Promise<PostModel[]>;
+  // /**
+  //  * Get all news of a specified news category
+  //  * @param categoryId id of the news category
+  //  */
+  // public getNews(categoryId: number): Promise<PostModel[]>;
+  // /**
+  //  * Get all news of a specified news category
+  //  * @param categoryId id of the news category
+  //  * @param count (default = 10) number of news want to get
+  //  */
+  // public getNews(categoryId: number, count: number): Promise<PostModel[]>;
+  // /**
+  //  * Get all news of a specified news category
+  //  * @param categoryId id of the news category
+  //  * @param count (default = 10) number of news want to get
+  //  * @param from (default = 1) offset number from where want to get the news
+  //  */
+  // public getNews(categoryId: number, count: number, from: number): Promise<PostModel[]>;
+  // public getNews(categoryId?: number, count?: number, from?: number): Promise<PostModel[]> {
+  //   return new Promise((resolve, reject) => {
 
-      count = typeof count === 'undefined' ? 10 : count;
-      from = typeof from === 'undefined' ? 1 : from;
+  //     count = typeof count === 'undefined' ? 10 : count;
+  //     from = typeof from === 'undefined' ? 1 : from;
 
-      let params = new HttpParams()
-        .set('action', 'get_post_archive')
-        .set('count', count.toString())
-        .set('from', from.toString());
+  //     let params = new HttpParams()
+  //       .set('action', 'get_post_archive')
+  //       .set('count', count.toString())
+  //       .set('from', from.toString());
 
-      if (categoryId) {
-        params = params.set('categoryId', categoryId.toString());
-      }
+  //     if (categoryId) {
+  //       params = params.set('categoryId', categoryId.toString());
+  //     }
 
 
-      this.httpService.get('', params).then((resp) => {
-        const newslist = this.parseNews(resp.data);
-        resolve(newslist);
-      }).catch(err => {
-        reject(err);
-      });
-    });
-  }
+  //     this.httpService.get('', params).then((resp) => {
+  //       const newslist = this.parsePost(resp.data);
+  //       resolve(newslist);
+  //     }).catch(err => {
+  //       reject(err);
+  //     });
+  //   });
+  // }
 
 
   /**
@@ -230,7 +448,7 @@ export class PostService {
       }
       this.httpService.get('', params)
         .then((news: any) => {
-          const n = this.parseNews([news]);
+          const n = this.parsePost([news]);
           resolve(n[0]);
         }).catch(err => {
           reject(err);
@@ -248,7 +466,7 @@ export class PostService {
       this.httpService.get('', params)
         .then((data) => {
           if (data) {
-            const relatedPostList = this.parseNews(data.data);
+            const relatedPostList = this.parsePost(data.data);
             resolve(relatedPostList);
           } else {
             reject('no data found');
@@ -273,7 +491,7 @@ export class PostService {
 
       this.httpService.get('', params)
         .then((resp) => {
-          const newslist = this.parseNews(resp.data);
+          const newslist = this.parsePost(resp.data);
           resolve(newslist);
         })
         .catch(err => {
@@ -289,9 +507,6 @@ export class PostService {
   private getLocalData(key: string): any {
     return localStorage.getItem('ks_' + key);
   }
-
-
-
   private parseCategories(cats: any[]): PostCategoryModel[] {
     let catArr: PostCategoryModel[] = [];
     if (cats && cats.length > 0) {
@@ -308,26 +523,44 @@ export class PostService {
     return catArr;
   }
 
-  private parseNews(news: any[]) {
+  private parsePost(news: any[]) {
     let newslist: PostModel[] = [];
-    if (news && news.length > 0) {
+
+    if (news) {
       newslist = news.map(n => {
-        const postModal: PostModel = new PostModel();
-        postModal.id = n.id;
-        postModal.title = n.title;
-        postModal.author = n.author;
-        postModal.content = n.content;
-        postModal.publishedDate = n.date;
-        postModal.createDate = n.date;
-        postModal.category = n.category;
-        postModal.slug = n.slug;
-        postModal.categoryList = this.parseCategories(n.categoryList);
-        // _newsls.categories=n.category;
-        postModal.featuredImage.small = n.thumbnail || '/assets/images/news/default.jpg';
-        postModal.featuredImage.original = n.thumbnail || '/assets/images/news/default.jpg';
-        postModal.featuredImage.medium = n.thumbnail || '/assets/images/news/default.jpg';
-        postModal.featuredImage.large = n.thumbnail || '/assets/images/news/default.jpg';
-        return postModal;
+        let post: PostModel = new PostModel();
+        post.postId = n.postId;
+        post.title = n.title;
+        post.slug = n.slug;
+        post.content = n.content;
+        if (n.status == PostStatusEnum.Draft) {
+          post.status = PostStatusEnum.Draft;
+        }
+        else if (n.status == PostStatusEnum.Published) {
+          post.status = PostStatusEnum.Published;
+        }
+        else if (n.status == PostStatusEnum.Scheduled) {
+          post.status = PostStatusEnum.Scheduled;
+        }
+        else if (n.status == PostStatusEnum.Trash) {
+          post.status = PostStatusEnum.Trash;
+        }
+        post.scheduledDate = n.scheduledDate;
+        post.categoryList = this.parseCategories(n.categoryList);
+        post.tags = n.tags;
+        post.featuredImage = n.featuredImage || '/assets/images/news/default.jpg';
+        post.authorId = n.authorId;
+        post.createDate = new Date(n.createDate);
+        post.createdBy = n.createdBy;
+        post.publishedDate = new Date(n.publishedDate);
+        post.canonicalUrl = n.canonicalUrl;
+        if (n.postType == PostTypeEnum.Page) {
+          post.postType = PostTypeEnum.Page;
+        }
+        else if (n.postType == PostTypeEnum.Post) {
+          post.postType = PostTypeEnum.Post
+        }
+        return post;
       });
     }
     return newslist;
