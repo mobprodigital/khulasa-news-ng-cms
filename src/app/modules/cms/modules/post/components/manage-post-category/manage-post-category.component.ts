@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { PostService } from 'src/app/service/post/post.service';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialog, MatSnackBar } from '@angular/material';
 import { AddPostCatDialogComponent } from '../../dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
 import { IPostCatDialogResult } from 'src/app/interface/post-cat-dialog-result.interface';
 
@@ -16,16 +16,17 @@ export class ManagePostCategoryComponent implements OnInit {
 
   public loading: boolean;
 
-  displayedColumns: string[] = ['name', 'slug', 'action'];
+  /* displayedColumns: string[] = ['name', 'slug', 'action'];
   dataSource: MatTableDataSource<PostCategoryModel>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort; */
   public categoryList: PostCategoryModel[] = [];
 
 
   constructor(
     private postSvc: PostService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
     this.getAllPostCategories();
   }
@@ -36,9 +37,9 @@ export class ManagePostCategoryComponent implements OnInit {
     this.loading = true;
     this.postSvc.getPostCategories().then(cats => {
       this.categoryList = cats;
-      this.dataSource = new MatTableDataSource<PostCategoryModel>(this.categoryList);
+      /* this.dataSource = new MatTableDataSource<PostCategoryModel>(this.categoryList);
       this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.dataSource.sort = this.sort; */
     }).catch(err => alert(err)).finally(() => this.loading = false);
   }
 
@@ -54,7 +55,9 @@ export class ManagePostCategoryComponent implements OnInit {
     this.loading = true;
 
     this.postSvc.deletePostCategory(rootCategoryId, subCategoryId).then(msg => {
-      alert(msg);
+      this.snackBar.open(msg, 'OK', {
+        duration: 5000,
+      });
       if (rootCategoryId && subCategoryId) {
         const rCat = this.categoryList.find(c => c.categoryId === rootCategoryId);
         if (rCat) {
