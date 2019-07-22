@@ -4,6 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { PostService } from 'src/app/service/post/post.service';
 import { IPostCatDialogResult } from 'src/app/interface/post-cat-dialog-result.interface';
+import { alphaNumericWithSpace } from 'src/app/custom-valiators/alphaNumeric-with-Space.validator';
 
 @Component({
   selector: 'app-add-post-cat-dialog',
@@ -21,6 +22,7 @@ export class AddPostCatDialogComponent implements OnInit {
     private postSvc: PostService,
     public fb: FormBuilder,
     public dialogRef: MatDialogRef<AddPostCatDialogComponent>,
+
     @Inject(MAT_DIALOG_DATA) public data: {
       isNew: boolean,
       targetCategory: PostCategoryModel,
@@ -36,7 +38,8 @@ export class AddPostCatDialogComponent implements OnInit {
     this.categoryFormGroup = this.fb.group(
       {
         categoryName: [(this.data.targetCategory ? this.data.targetCategory.categoryName : ''), Validators.required],
-        parentCategory: [(this.data.parentCategory ? this.data.parentCategory.categoryId : '')]
+        parentCategory: [(this.data.parentCategory ? this.data.parentCategory.categoryId : '')],
+        categorySlug: [(this.data.targetCategory ? this.data.targetCategory.categorySlug : ''), alphaNumericWithSpace]
       }
     );
   }
@@ -46,9 +49,10 @@ export class AddPostCatDialogComponent implements OnInit {
       this.loading = true;
       const parentCategoryId = this.categoryFormGroup.get('parentCategory').value;
       const categoryName = this.categoryFormGroup.get('categoryName').value;
+      const categorySlug = this.categoryFormGroup.get('categorySlug').value;
       if (this.isNew) {
         if (parentCategoryId) {
-          this.postSvc.addNewPostCategory(categoryName, parentCategoryId)
+          this.postSvc.addNewPostCategory(categoryName, categorySlug, parentCategoryId)
             .then((newCategory: PostCategoryModel) => {
 
               const result: IPostCatDialogResult = {
@@ -60,7 +64,7 @@ export class AddPostCatDialogComponent implements OnInit {
             }).catch(err => alert(err))
             .finally(() => this.loading = false);
         } else {
-          this.postSvc.addNewPostCategory(categoryName).then(newCategory => {
+          this.postSvc.addNewPostCategory(categoryName, categorySlug).then(newCategory => {
             const result: IPostCatDialogResult = {
               targetCategory: newCategory
             };
@@ -75,8 +79,8 @@ export class AddPostCatDialogComponent implements OnInit {
           categoryName, this.data.targetCategory.categorySlug
         );
 
-        this.postSvc.editPostcategory(editCategory, parentCategoryId).then(updatedcategory => {
 
+        this.postSvc.editPostcategory(editCategory, categorySlug, parentCategoryId).then(updatedcategory => {
           const result: IPostCatDialogResult = {
             parentCategoryId,
             targetCategory: updatedcategory

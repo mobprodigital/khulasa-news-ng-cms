@@ -1,32 +1,40 @@
 <div *ngIf="loading" class="cat-pb">
-    <app-progress-bar></app-progress-bar>
+  <app-progress-bar></app-progress-bar>
 </div>
 
 <h1 mat-dialog-title>{{modalTitle}}</h1>
 <form [formGroup]="categoryFormGroup" (ngSubmit)="onSubmit()">
-    <div mat-dialog-content>
-        <mat-form-field [hidden]="!isNew">
-            <mat-select formControlName="parentCategory" placeholder="Parent Category">
-                <mat-option>None</mat-option>
-                <mat-option *ngFor="let cat of data.categoryList" [value]="cat.categoryId">{{cat.categoryName}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+  <div mat-dialog-content>
+    <mat-form-field [hidden]="!isNew">
+      <mat-select formControlName="parentCategory" placeholder="Parent Category">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let cat of data.categoryList" [value]="cat.categoryId">{{cat.categoryName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <mat-form-field>
-            <input formControlName="categoryName" type="text" placeholder="Category name" matInput />
-            <mat-error>
-                <div
-                    *ngIf="categoryFormGroup.get('categoryName').invalid && (categoryFormGroup.get('categoryName').touched || categoryFormGroup.get('categoryName').dirty)">
-                    <div *ngIf="categoryFormGroup.get('categoryName').errors.required">Category Name is required</div>
-                </div>
-            </mat-error>
-        </mat-form-field>
+    <mat-form-field>
+      <input formControlName="categoryName" type="text" placeholder="Category name" matInput />
+      <mat-error>
+        <div
+          *ngIf="categoryFormGroup.get('categoryName').invalid && (categoryFormGroup.get('categoryName').touched || categoryFormGroup.get('categoryName').dirty)">
+          <div *ngIf="categoryFormGroup.get('categoryName').errors.required">Category Name is required</div>
+        </div>
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input formControlName="categorySlug" type="text" placeholder="Slug" matInput />
+      <mat-error>
+        <div *ngIf="categoryFormGroup.get('categorySlug').invalid">
+          Slug Should be Alpha Numaric
+        </div>
+      </mat-error>
+    </mat-form-field>
 
-    </div>
+  </div>
 
-    <div mat-dialog-actions>
-        <button [disabled]="!categoryFormGroup.valid || loading" mat-button type="submit">Submit</button>
-        <button [disabled]="loading" (click)="close()" mat-button type="button">Cancel</button>
-    </div>
+  <div mat-dialog-actions>
+    <button [disabled]="!categoryFormGroup.valid || loading" mat-button type="submit">Submit</button>
+    <button [disabled]="loading" (click)="close()" mat-button type="button">Cancel</button>
+  </div>
 </form>
