@@ -6,6 +6,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { PostService } from 'src/app/service/post/post.service';
 import { PostModel } from 'src/app/model/post.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-all-trash-post',
@@ -25,6 +26,11 @@ export class AllTrashPostComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  public length = 16;
+  public pageSize = 10;
+  public pageEvent: PageEvent;
+  public isFilter: boolean = false;
+  public index: number = 0
   constructor(private postService: PostService, private _snackBar: MatSnackBar) {
   }
 
@@ -85,19 +91,36 @@ export class AllTrashPostComponent implements OnInit {
       .then(res => {
         this.showLoader = false
         this.dataSource = new MatTableDataSource<PostModel>(res);
-        setTimeout(() => {
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-        }, 1)
+
 
       })
       .catch(err => { console.log(err) }
-      )
+      ).finally(() => { this.showLoader = false })
   }
 
 
+  public paging(pageEvent) {
+    // if (this.index < pageEvent.pageIndex) {
+    //   this.index = pageEvent.pageIndex;
+    //   this.length = this.length + 10;
+    // }
+    // else if (this.index > pageEvent.pageIndex) {
+    //   this.index = pageEvent.pageIndex;
+    //   this.length = this.length - 10;
+    // }
+    let start = (pageEvent.pageIndex * 10)
+    this.postService.getPost(null, 10, start, null, null, 'trash')
+      .then(res => {
+        this.dataSource = null;
+        this.dataSource = new MatTableDataSource<PostModel>(res);
+      })
+      .catch(err => {
+        alert(err);
+      })
+
+  }
+
   public applyAction() {
-    let postStatus
     this.showLoader = true
     if (this.status === 'draft') {
       this.changePostStatus(this.status, this.getCheckBoxId());
@@ -116,6 +139,7 @@ export class AllTrashPostComponent implements OnInit {
           this._snackBar.open(msg, 'Done', {
             duration: 2000,
           });
+          this.selection.clear()
           this.getTrashPost()
         })
         .catch(err => {
@@ -132,6 +156,7 @@ export class AllTrashPostComponent implements OnInit {
         this._snackBar.open(msg, 'Done', {
           duration: 2000,
         });
+        this.selection.clear()
         this.getTrashPost();
       })
       .catch(err => {
