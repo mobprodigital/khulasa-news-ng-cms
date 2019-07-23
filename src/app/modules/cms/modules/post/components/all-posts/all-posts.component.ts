@@ -4,7 +4,7 @@ import { MatTableDataSource, MatPaginator, MatSort, MatSelectChange } from '@ang
 import { PostService } from 'src/app/service/post/post.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SelectionModel } from '@angular/cdk/collections';
-
+import { PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-all-posts',
@@ -24,6 +24,11 @@ export class AllPostsComponent implements OnInit {
   public dateTo;
   public showLoader: boolean = true;
   public todayDate: Date;
+  public length = 20;
+  public pageSize = 10;
+  public pageEvent: PageEvent;
+  public isFilter: boolean = false;
+  public index: number = 0;
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -57,12 +62,17 @@ export class AllPostsComponent implements OnInit {
   public getAllNews() {
     this.postService.getPost().then(news => {
       this.dataSource = new MatTableDataSource<PostModel>(news);
-      setTimeout(() => {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      }, 1)
+      if (news.length < 10) {
 
-    }).catch(err => alert(err)).finally(() => { this.showLoader = false });
+        this.length = news.length
+      }
+      else {
+        this.length = 20
+      }
+
+    })
+      .catch(err => alert(err))
+      .finally(() => { this.showLoader = false });
   }
 
   public applyFilter(filterValue: string) {
@@ -87,6 +97,66 @@ export class AllPostsComponent implements OnInit {
         console.log(err);
       }).finally(() => { this.showLoader = false })
   }
+
+  public paging(pageEvent) {
+    // if (this.index = pageEvent.pageIndex) {
+    //   this.length = this.length
+    // }
+
+    if (this.index < pageEvent.pageIndex) {
+      this.index = pageEvent.pageIndex;
+      this.length = this.length + 10;
+    }
+    else if (this.index > pageEvent.pageIndex) {
+      this.index = pageEvent.pageIndex;
+      this.length = this.length - 10;
+    }
+
+    let start = (pageEvent.pageIndex * 10)
+    if (this.isFilter) {
+      if (this.dateTo && this.dateFrom && this.postStatus) {
+        let from = this.formatDate(this.dateFrom);
+        let to = this.formatDate(this.dateTo)
+        this.getFilteredPost(from, to, this.postStatus, start);
+      }
+      else if (this.dateTo && this.dateFrom) {
+        this.isFilter = true;
+        this.showLoader = true
+        let from = this.formatDate(this.dateFrom);
+        let to = this.formatDate(this.dateTo)
+        this.getFilteredPost(from, to, null, start);
+      }
+      else if (this.postStatus) {
+        this.isFilter = true;
+        this.showLoader = true
+        this.getFilteredPost(null, null, this.postStatus, start);
+      }
+    }
+    else {
+      this.postService.getPost(null, 10, start, null, null)
+        .then(res => {
+          this.dataSource = null;
+          this.dataSource = new MatTableDataSource<PostModel>(res);
+
+        })
+        .catch(err => {
+          alert(err);
+          this.length - 20;
+        })
+    }
+  }
+
+  public clearFilter() {
+    this.showLoader = true;
+    this.dataSource = null;
+    this.isFilter = false;
+    this.dateFrom = null;
+    this.dateTo = null;
+    this.postStatus = null;
+    this.length = 20;
+    this.getAllNews();
+  }
+
 
   public deleteSelectedPost() {
     this.showLoader = true
@@ -123,6 +193,7 @@ export class AllPostsComponent implements OnInit {
             duration: 2000,
           });
           this.getAllNews();
+          this.selection.clear()
         })
         .catch(err => {
           console.log(err)
@@ -148,39 +219,45 @@ export class AllPostsComponent implements OnInit {
   }
 
   public filterPost() {
-    this.showLoader = true
+    this.length = 20;
     if (this.dateTo && this.dateFrom && this.postStatus) {
+      this.isFilter = true;
+      this.showLoader = true
       let from = this.formatDate(this.dateFrom);
       let to = this.formatDate(this.dateTo)
-      this.getFilteredPost(from, to, this.postStatus);
+      this.getFilteredPost(from, to, this.postStatus, 0);
     }
     else if (this.dateTo && this.dateFrom) {
+      this.isFilter = true;
+      this.showLoader = true
       let from = this.formatDate(this.dateFrom);
       let to = this.formatDate(this.dateTo)
-      this.getFilteredPost(from, to, null);
+      this.getFilteredPost(from, to, null, 0);
     }
-
     else if (this.postStatus) {
-      this.getFilteredPost(null, null, this.postStatus);
+      this.isFilter = true;
+      this.showLoader = true
+      this.getFilteredPost(null, null, this.postStatus, 0);
+    }
+    else {
+      alert('Please Select Filter')
     }
   }
 
 
-  public getFilteredPost(fromDate, toDate, status) {
+  public getFilteredPost(fromDate, toDate, status, start) {
     this.dataSource = null;
-    this.postService.getPost(null, 10, 0, fromDate, toDate, status)
+    this.postService.getPost(null, 10, start, fromDate, toDate, status)
       .then(res => {
-
         this.dataSource = new MatTableDataSource<PostModel>(res);
-        setTimeout(() => {
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-        }, 1)
-
+        if (res.length < 10) {
+          // this.length = res.length
+        }
       })
       .catch(err => console.log(err))
       .finally(() => { this.showLoader = false })
   }
+
   ngOnInit() {
     this.getAllNews();
     this.todayDate = new Date()
