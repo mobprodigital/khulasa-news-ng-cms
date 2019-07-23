@@ -5,8 +5,7 @@ import { HttpService } from '../http/http.service';
 import { HttpParams } from '@angular/common/http';
 import { PostTypeEnum } from 'src/app/enum/post-type.enum';
 import { PostStatusEnum } from 'src/app/enum/post-status.enum';
-import { resolve } from 'url';
-import { post } from 'selenium-webdriver/http';
+
 
 
 @Injectable({
