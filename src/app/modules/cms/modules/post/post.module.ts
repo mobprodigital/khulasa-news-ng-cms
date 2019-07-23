@@ -7,9 +7,11 @@ import { AllPostsComponent } from './components/all-posts/all-posts.component';
 import {
   MatCardModule, MatFormFieldModule, MatInputModule,
   MatCheckboxModule, MatChipsModule, MatIconModule, MatButtonModule,
-  MatExpansionModule, MatTableModule, MatPaginatorModule, MatDialogModule, MatProgressBarModule,
+  MatExpansionModule, MatTableModule, MatDialogModule, MatProgressBarModule,
   MatSelectModule, MatSnackBarModule
 } from '@angular/material';
+
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AddPostCatDialogComponent } from './dialogs/add-post-cat-dialog/add-post-cat-dialog.component';
@@ -17,7 +19,7 @@ import { ManagePostCategoryComponent } from './components/manage-post-category/m
 import { CdkColumnDef } from '@angular/cdk/table';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
 import { AllTrashPostComponent } from './components/all-trash-post/all-trash-post.component';
-
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 @NgModule({
   declarations: [
     AddNewPostComponent,
@@ -46,7 +48,8 @@ import { AllTrashPostComponent } from './components/all-trash-post/all-trash-pos
     SharedModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    CKEditorModule
   ],
   entryComponents: [AddPostCatDialogComponent],
   providers: [CdkColumnDef, MatDatepickerModule]
