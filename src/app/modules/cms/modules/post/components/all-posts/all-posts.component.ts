@@ -23,6 +23,7 @@ export class AllPostsComponent implements OnInit {
   public dateFrom;
   public dateTo;
   public showLoader: boolean = true;
+  public todayDate: Date;
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -182,5 +183,6 @@ export class AllPostsComponent implements OnInit {
   }
   ngOnInit() {
     this.getAllNews();
+    this.todayDate = new Date()
   }
 }
