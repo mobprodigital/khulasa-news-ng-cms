@@ -241,15 +241,15 @@ export class PostService {
     return new Promise((resolve, reject) => {
       let path = 'post';
       let param = new HttpParams()
-        .set('start ', start.toString())
-        .set('count ', count.toString())
+        .set('start', start.toString())
+        .set('count', count.toString())
 
       if (dateFrom && dateTo && status) {
         param = new HttpParams()
           .set('dateFrom', dateFrom)
           .set('dateTo', dateTo)
-          .set('start ', start.toString())
-          .set('count ', count.toString())
+          .set('start', start.toString())
+          .set('count', count.toString())
           .set('status', status)
       }
 
@@ -257,15 +257,15 @@ export class PostService {
         param = new HttpParams()
           .set('dateFrom', dateFrom)
           .set('dateTo', dateTo)
-          .set('start ', start.toString())
-          .set('count ', count.toString())
+          .set('start', start.toString())
+          .set('count', count.toString())
       }
       else if (status) {
 
         param = new HttpParams()
           .set('status', status)
-          .set('start ', start.toString())
-          .set('count ', count.toString())
+          .set('start', start.toString())
+          .set('count', count.toString())
       }
 
 
@@ -336,8 +336,8 @@ export class PostService {
     return new Promise((resolve, reject) => {
       let path = '/post/status/';
       let param = new HttpParams()
-        .set('start ', start.toString())
-        .set('count ', count.toString())
+        .set('start', start.toString())
+        .set('count', count.toString())
       this.httpService.get(path + postStatus, param)
         .then(post => {
           let data = this.parsePost(post.data);
