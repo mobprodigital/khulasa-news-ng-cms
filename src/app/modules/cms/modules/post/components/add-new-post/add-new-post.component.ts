@@ -47,7 +47,8 @@ export class AddNewPostComponent implements OnInit {
   public postId: string = '';
   public postData: PostModel;
   public date;
-  public timee;
+  public todayDate: Date;
+
   // public CatId: number[] = [];
 
   constructor(
@@ -311,6 +312,7 @@ export class AddNewPostComponent implements OnInit {
   ngOnInit() {
     this.getPostCategory();
     this.newsForm = this.createForm();
+    this.todayDate = new Date();
   }
 
 

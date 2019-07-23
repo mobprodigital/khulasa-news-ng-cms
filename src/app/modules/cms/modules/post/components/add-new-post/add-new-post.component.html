@@ -96,7 +96,8 @@
           <div style="display: flex">
             <div style="width: 50%">
               <mat-form-field>
-                <input formControlName="sDate" matInput [matDatepicker]="picker" placeholder="Choose a date">
+                <input formControlName="sDate" [min]="todayDate" matInput [matDatepicker]="picker"
+                  placeholder="Choose a date">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
