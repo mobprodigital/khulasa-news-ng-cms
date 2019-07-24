@@ -26,14 +26,14 @@
         <mat-card-header>
           <mat-card-subtitle>* indicated that fields are required</mat-card-subtitle>
         </mat-card-header>
-        <mat-card-content>
-          <mat-form-field>
-            <input formControlName="title" type="text" placeholder="News title" matInput />
+        <mat-card-content class="margin-tb-10">
+          <mat-form-field class="margin-tb-10">
+            <input formControlName="title" type="text" placeholder="News title *" matInput />
             <mat-error *ngIf="newsForm.get('title').invalid">
               Title is required
             </mat-error>
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field class="margin-tb-10">
             <input formControlName="slug" type="text" placeholder="Slug" matInput />
             <mat-error *ngIf="newsForm.get('slug').invalid">
               Slug Should be Alpha Numeric
@@ -44,20 +44,22 @@
             <textarea formControlName="content" rows="10" placeholder="News content" matInput></textarea>
           </mat-form-field> -->
 
-          <div>
+          <div class="margin-tb-10">
             <ckeditor formControlName="content" [editor]="Editor"></ckeditor>
             <!-- <mat-error *ngIf="newsForm.get('content').invalid">
               Content is required
             </mat-error> -->
           </div>
 
-          <mat-form-field>
+          <mat-form-field class="margin-tb-10">
             <mat-label>Author</mat-label>
             <mat-select formControlName="authorId">
+              <mat-option *ngFor="let al of authorList" value="{{al.authorId}}">{{al.authorName}}</mat-option>
+
+              <!-- <mat-option value=7>aakash goel</mat-option>
               <mat-option selected value="1">vipul singh</mat-option>
-              <mat-option value=7>aakash goel</mat-option>
               <mat-option value=2>Gyan Parkash</mat-option>
-              <mat-option value=94>sunil</mat-option>
+              <mat-option value=94>sunil</mat-option> -->
             </mat-select>
           </mat-form-field>
         </mat-card-content>
@@ -67,7 +69,7 @@
           <mat-card-subtitle>SEO options</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <mat-form-field>
+          <mat-form-field class="margin-tb-10">
             <input type="url" formControlName="canonicalUrl" placeholder="Canonical URL" matInput />
           </mat-form-field>
         </mat-card-content>
