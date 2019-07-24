@@ -8,11 +8,9 @@ export class PostModel {
     title: string = '';
     slug: string = '';
     content: string = '';
-    scheduledDate: Date | string = null;
     authorId: number = null;
     status: PostStatusEnum = PostStatusEnum.Draft;
     postType: PostTypeEnum = PostTypeEnum.Post;
-    published: boolean = false;
     category: string = '';
     categoryList: PostCategoryModel[] = [];
     tags: string[] = [];
@@ -25,6 +23,7 @@ export class PostModel {
     // };
     createDate: Date | string = '';
     publishedDate: Date | string = null;
+    scheduledDate: Date | string = null;
     canonicalUrl: string = '';
     createdBy: number;
 }
