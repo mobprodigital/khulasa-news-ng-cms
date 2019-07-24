@@ -1,0 +1,7 @@
+.margin-tb-10 {
+  margin: 10px 0px;
+}
+
+::ng-deep .ck-editor__editable_inline {
+  min-height: 200px;
+}
