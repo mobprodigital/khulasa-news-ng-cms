@@ -72,7 +72,8 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"> -->
         </tr>
       </table>
 
@@ -87,7 +88,7 @@
       <div>Page size: {{pageEvent.pageSize}}</div>
       <div>Page index: {{pageEvent.pageIndex}}</div>
     </div>
-    <mat-expansion-panel>
+    <mat-expansion-panel [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Filters <i class="material-icons">sort</i>
@@ -95,16 +96,17 @@
       </mat-expansion-panel-header>
       <div>
         <mat-form-field>
-          <input [(ngModel)]="dateFrom" [max]="todayDate" matInput [matDatepicker]="from" placeholder="From Date">
+          <input [(ngModel)]="dateFrom" [max]="todayDate" matInput disabled [matDatepicker]="from"
+            placeholder="From Date">
           <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
-          <mat-datepicker #from></mat-datepicker>
+          <mat-datepicker #from disabled="false"></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
-          <input [(ngModel)]="dateTo" [min]="dateFrom" [max]="todayDate" matInput [matDatepicker]="to"
+          <input [(ngModel)]="dateTo" [min]="dateFrom" disabled [max]="todayDate" matInput [matDatepicker]="to"
             placeholder="To Date">
           <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
-          <mat-datepicker #to></mat-datepicker>
+          <mat-datepicker #to disabled="false"></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
