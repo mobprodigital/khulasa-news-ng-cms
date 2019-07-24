@@ -19,7 +19,7 @@ export class AllPostsComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   selection = new SelectionModel<PostModel>(true, []);
   public postStatusToChange;
-  public postStatus;
+  public postStatus: Date;
   public dateFrom;
   public dateTo;
   public showLoader: boolean = true;
@@ -60,16 +60,15 @@ export class AllPostsComponent implements OnInit {
   }
 
   public getAllNews() {
-    this.postService.getPost().then(news => {
+    // this.postService.getPost().then(news => {
+    this.postService.getAllPosts().then(news => {
       this.dataSource = new MatTableDataSource<PostModel>(news);
       if (news.length < 10) {
-
         this.length = news.length
       }
       else {
         this.length = 20
       }
-
     })
       .catch(err => alert(err))
       .finally(() => { this.showLoader = false });
@@ -83,19 +82,26 @@ export class AllPostsComponent implements OnInit {
   }
 
   public deleteNews(textId) {
-    this.showLoader = true
-    const indexNumber = this.dataSource.data.findIndex(n => n.postId === textId);
-    this.dataSource.data.splice(indexNumber, 1);
-    this.dataSource = new MatTableDataSource<PostModel>(this.dataSource.data);
-    this.postService.deletePostByPostId([textId])
-      .then(msg => {
-        this._snackBar.open(msg, 'Done', {
-          duration: 2000,
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      }).finally(() => { this.showLoader = false })
+
+    let isDelete: boolean = confirm('Are you sure to delete this post ?')
+    if (isDelete) {
+      this.showLoader = true;
+      const indexNumber = this.dataSource.data.findIndex(n => n.postId === textId);
+      this.dataSource.data.splice(indexNumber, 1);
+      this.dataSource = new MatTableDataSource<PostModel>(this.dataSource.data);
+      this.postService.deletePostByPostId([textId])
+        .then(msg => {
+          this._snackBar.open(msg, 'Done', {
+            duration: 2000,
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => {
+          this.showLoader = false
+        })
+    }
   }
 
   public paging(pageEvent) {
@@ -111,29 +117,13 @@ export class AllPostsComponent implements OnInit {
       this.index = pageEvent.pageIndex;
       this.length = this.length - 10;
     }
-
-    let start = (pageEvent.pageIndex * 10)
+    let start: number = (pageEvent.pageIndex * 10)
+    let count: number = 10;
     if (this.isFilter) {
-      if (this.dateTo && this.dateFrom && this.postStatus) {
-        let from = this.formatDate(this.dateFrom);
-        let to = this.formatDate(this.dateTo)
-        this.getFilteredPost(from, to, this.postStatus, start);
-      }
-      else if (this.dateTo && this.dateFrom) {
-        this.isFilter = true;
-        this.showLoader = true
-        let from = this.formatDate(this.dateFrom);
-        let to = this.formatDate(this.dateTo)
-        this.getFilteredPost(from, to, null, start);
-      }
-      else if (this.postStatus) {
-        this.isFilter = true;
-        this.showLoader = true
-        this.getFilteredPost(null, null, this.postStatus, start);
-      }
+      this.getFilteredPost(this.dateFrom, this.dateTo, this.postStatus, start, count);
     }
     else {
-      this.postService.getPost(null, 10, start, null, null)
+      this.postService.getAllPosts(10, start)
         .then(res => {
           this.dataSource = null;
           this.dataSource = new MatTableDataSource<PostModel>(res);
@@ -158,29 +148,29 @@ export class AllPostsComponent implements OnInit {
   }
 
 
-  public deleteSelectedPost() {
-    this.showLoader = true
-    let postId = this.getCheckBoxId();
-    if (postId.length && postId.length > 0) {
-      for (let i = 0; i < postId.length; i++) {
-        const indexNumber = this.dataSource.data.findIndex(n => n.postId === postId[i]);
-        this.dataSource.data.splice(indexNumber, 1);
-        this.dataSource = new MatTableDataSource<PostModel>(this.dataSource.data);
-      }
-      this.postService.deletePostByPostId(postId)
-        .then(msg => {
-          this._snackBar.open(msg, 'Done', {
-            duration: 2000,
-          });
-        })
-        .catch(err => {
-          console.log(err);
-        }).finally(() => { this.showLoader = false })
-    }
-    else {
-      alert('Please select Post ')
-    }
-  }
+  // public deleteSelectedPost() {
+  //   this.showLoader = true
+  //   let postId = this.getCheckBoxId();
+  //   if (postId.length && postId.length > 0) {
+  //     for (let i = 0; i < postId.length; i++) {
+  //       const indexNumber = this.dataSource.data.findIndex(n => n.postId === postId[i]);
+  //       this.dataSource.data.splice(indexNumber, 1);
+  //       this.dataSource = new MatTableDataSource<PostModel>(this.dataSource.data);
+  //     }
+  //     this.postService.deletePostByPostId(postId)
+  //       .then(msg => {
+  //         this._snackBar.open(msg, 'Done', {
+  //           duration: 2000,
+  //         });
+  //       })
+  //       .catch(err => {
+  //         console.log(err);
+  //       }).finally(() => { this.showLoader = false })
+  //   }
+  //   else {
+  //     alert('Please select Post ')
+  //   }
+  // }
 
   public changePostStatus() {
     this.showLoader = true
@@ -220,34 +210,17 @@ export class AllPostsComponent implements OnInit {
 
   public filterPost() {
     this.length = 20;
-    if (this.dateTo && this.dateFrom && this.postStatus) {
-      this.isFilter = true;
-      this.showLoader = true
-      let from = this.formatDate(this.dateFrom);
-      let to = this.formatDate(this.dateTo)
-      this.getFilteredPost(from, to, this.postStatus, 0);
-    }
-    else if (this.dateTo && this.dateFrom) {
-      this.isFilter = true;
-      this.showLoader = true
-      let from = this.formatDate(this.dateFrom);
-      let to = this.formatDate(this.dateTo)
-      this.getFilteredPost(from, to, null, 0);
-    }
-    else if (this.postStatus) {
-      this.isFilter = true;
-      this.showLoader = true
-      this.getFilteredPost(null, null, this.postStatus, 0);
-    }
-    else {
-      alert('Please Select Filter')
-    }
+    this.isFilter = true;
+    this.dataSource = null;
+    let start: number = 0;
+    let count: number = 10;
+    this.getFilteredPost(this.dateFrom, this.dateTo, this.postStatus, start, count);
   }
 
 
-  public getFilteredPost(fromDate, toDate, status, start) {
-    this.dataSource = null;
-    this.postService.getPost(null, 10, start, fromDate, toDate, status)
+  public getFilteredPost(fromDate, toDate, status, start, count) {
+
+    this.postService.getAllPosts(count, start, fromDate, toDate, status)
       .then(res => {
         this.dataSource = new MatTableDataSource<PostModel>(res);
         if (res.length < 10) {
