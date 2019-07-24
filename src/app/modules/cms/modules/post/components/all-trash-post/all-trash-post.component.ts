@@ -7,6 +7,7 @@ import { PostService } from 'src/app/service/post/post.service';
 import { PostModel } from 'src/app/model/post.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material';
+import { PostStatusEnum } from 'src/app/enum/post-status.enum';
 
 @Component({
   selector: 'app-all-trash-post',
@@ -66,33 +67,31 @@ export class AllTrashPostComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.postId}`;
   }
 
-  public getCheckBoxId() {
-    let postId = this.selection.selected.map(a => a.postId);
+  public getCheckBoxId(): number[] {
+    let postId: number[] = this.selection.selected.map(a => a.postId);
     return postId
   }
   public emptyTrash() {
     this.showLoader = true
-    let isEmptyTrash = confirm('Are you sure delete all Trash ?')
+    let isEmptyTrash = confirm('Are you sure delete all trashed posts ?')
     if (isEmptyTrash) {
-      this.showLoader = false
       this.postService.deleteTrashPost()
         .then(msg => {
           this._snackBar.open(msg, 'Done', {
             duration: 2000,
           });
           this.getTrashPost()
+
         })
         .catch(err => console.log(err))
     }
   }
 
   public getTrashPost() {
-    this.postService.getPost(null, 10, 0, null, null, 'trash')
+    this.postService.getAllPosts(null, null, null, null, PostStatusEnum.Trash)
       .then(res => {
         this.showLoader = false
         this.dataSource = new MatTableDataSource<PostModel>(res);
-
-
       })
       .catch(err => { console.log(err) }
       ).finally(() => { this.showLoader = false })
@@ -109,7 +108,7 @@ export class AllTrashPostComponent implements OnInit {
     //   this.length = this.length - 10;
     // }
     let start = (pageEvent.pageIndex * 10)
-    this.postService.getPost(null, 10, start, null, null, 'trash')
+    this.postService.getAllPosts(null, null, null, null, PostStatusEnum.Trash)
       .then(res => {
         this.dataSource = null;
         this.dataSource = new MatTableDataSource<PostModel>(res);
