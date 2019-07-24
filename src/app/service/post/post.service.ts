@@ -5,6 +5,7 @@ import { HttpService } from '../http/http.service';
 import { HttpParams } from '@angular/common/http';
 import { PostTypeEnum } from 'src/app/enum/post-type.enum';
 import { PostStatusEnum } from 'src/app/enum/post-status.enum';
+import { AuthorModel } from 'src/app/model/author.model';
 
 
 
@@ -14,7 +15,6 @@ import { PostStatusEnum } from 'src/app/enum/post-status.enum';
 export class PostService {
   private menuCategories: PostCategoryModel[] = [];
   constructor(private httpService: HttpService) {
-
   }
 
   /**
@@ -215,81 +215,61 @@ export class PostService {
   }
 
 
-
-
-  /**
-   * get all post
-   */
-  public getPost(): Promise<PostModel[]>;
-  /**
-    * Get post of a specified post id
-    * @param postId id of the post
-   */
-  public getPost(postId: number): Promise<PostModel[]>;
-  /**
-   * get all news of a specified news category and number of news want to get and offset number from where want to get the news
-   * @param postId id of the news category
-   * @param count (default = 10) number of news want to get
-   * @param from (default = 1) offset number from where want to get the news
-   */
-
-  public getPost(postId: number, count: number, start: number, dateFrom: string, dateTo: string, ): Promise<PostModel[]>;
-  public getPost(postId: number, count: number, start: number, dateFrom: string, dateTo: string, status: string): Promise<PostModel[]>;
-  public getPost(postId?: number, count: number = 10, start: number = 0, dateFrom?: string, dateTo?: string, status?: string): Promise<PostModel[]> {
-
-
+  public getPostById(postId: number): Promise<PostModel> {
     return new Promise((resolve, reject) => {
       let path = 'post';
-      let param = new HttpParams()
-        .set('start', start.toString())
-        .set('count', count.toString())
-
-      if (dateFrom && dateTo && status) {
-        param = new HttpParams()
-          .set('dateFrom', dateFrom)
-          .set('dateTo', dateTo)
-          .set('start', start.toString())
-          .set('count', count.toString())
-          .set('status', status)
-      }
-
-      else if (dateFrom && dateTo) {
-        param = new HttpParams()
-          .set('dateFrom', dateFrom)
-          .set('dateTo', dateTo)
-          .set('start', start.toString())
-          .set('count', count.toString())
-      }
-      else if (status) {
-
-        param = new HttpParams()
-          .set('status', status)
-          .set('start', start.toString())
-          .set('count', count.toString())
-      }
-
-
-
-      if (typeof postId === 'number') {
-        this.httpService.get(path + "/" + postId)
-          .then(resp => {
-            let data = this.parsePost([resp.data]);
-            resolve(data);
-          }).catch(err => {
-            reject(err);
-          })
-      }
-
-      else {
-        this.httpService.get(path, param).then(resp => {
-          let post = this.parsePost(resp.data);
-          resolve(post)
+      this.httpService.get(path + "/" + postId)
+        .then(resp => {
+          let data = this.parsePost([resp.data]);
+          resolve(data[0]);
+        }).catch(err => {
+          reject(err);
         })
-          .catch(err => {
-            reject(err)
-          })
-      }
     })
+  }
+
+  /**
+   * get all posts with filter
+   * @param count 
+   * 
+   * @param start 
+   * @param dateFrom 
+   * @param dateTo 
+   * @param status 
+   */
+  public getAllPosts(count: number = 10, start: number = 0, dateFrom?: Date, dateTo?: Date, status?: PostStatusEnum): Promise<PostModel[]> {
+    return new Promise((resolve, reject) => {
+      let params = new HttpParams().set('count', count.toString()).set('start', start.toString());
+      if (dateFrom) {
+        params = params.set('dateFrom', this.formatDate(dateFrom));
+        if (dateTo) {
+          params = params.set('dateTo', this.formatDate(dateTo));
+        }
+      }
+      if (status) {
+        params = params.set('status', status);
+      }
+
+      this.httpService.get('post', params).then(resp => {
+        let post = this.parsePost(resp.data);
+        resolve(post)
+      })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+  /**
+   * return date with (yyyy-mm-dd)
+   * @param date
+   */
+  private formatDate(date: Date) {
+    const day = date.getDate();
+    const m = date.getMonth() + 1;
+    const month = "0" + m
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`
   }
 
   public deleteTrashPost(): Promise<string>;
@@ -327,6 +307,26 @@ export class PostService {
 
     })
   }
+
+
+  /**
+   * return All Author
+   */
+
+  public getAllAuthor(): Promise<AuthorModel[]> {
+    return new Promise((resolve, reject) => {
+      let path: string = "user/author";
+      this.httpService.get(path)
+        .then(resp => {
+          let authorList = this.parseAuthor(resp.data);
+          resolve(authorList);
+        })
+        .catch(err => {
+          reject(err);
+        })
+    })
+  }
+
 
 
   /**
@@ -564,5 +564,16 @@ export class PostService {
     }
     return newslist;
   }
-
+  private parseAuthor(author) {
+    let authorList: AuthorModel[] = [];
+    if (author && author.length > 0) {
+      authorList = author.map(a => {
+        let _authorList: AuthorModel = new AuthorModel();
+        _authorList.authorId = a.userId;
+        _authorList.authorName = a.firstName + " " + a.lastName
+        return _authorList;
+      })
+      return authorList
+    }
+  }
 }
