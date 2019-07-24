@@ -11,6 +11,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PostStatusEnum } from 'src/app/enum/post-status.enum';
 import { PostTypeEnum } from 'src/app/enum/post-type.enum';
 import { alphaNumericWithSpace } from 'src/app/custom-valiators/alphaNumeric-with-Space.validator';
+import { IPostCatDialogResult } from 'src/app/interface/post-cat-dialog-result.interface';
+import { AuthorModel } from 'src/app/model/author.model';
 
 @Component({
   selector: 'app-add-new-post',
@@ -48,6 +50,7 @@ export class AddNewPostComponent implements OnInit {
   public postData: PostModel;
   public date;
   public todayDate: Date;
+  public authorList: AuthorModel[] = []
 
   // public CatId: number[] = [];
 
@@ -59,7 +62,6 @@ export class AddNewPostComponent implements OnInit {
     private postService: PostService,
     private router: Router,
     private _snackBar: MatSnackBar
-
   ) {
     this.postId = this.activeedRouter.snapshot.paramMap.get('id');
     if (this.postId) {
@@ -68,20 +70,23 @@ export class AddNewPostComponent implements OnInit {
   }
 
   private getPostCategory() {
-    this.newsService.getPostCategories().then(cats => {
-      this.categoriesList = cats;
-    });
+    this.newsService.getPostCategories()
+      .then(cats => {
+        this.categoriesList = cats;
+      })
+      .catch(err => { console.log(err) });
   }
 
   public getPostByPostId() {
-    this.postService.getPost(parseInt(this.postId))
+    this.postService.getPostById(parseInt(this.postId))
       .then(data => {
-        this.setPostData(data[0]);
+        this.setPostData(data);
       })
+      .catch(err => { console.log(err) })
   }
   public setPostData(post) {
     let date = this.getSDateStime(post.status, post.scheduledDate);
-    let postSlug = this.getPostSlug(post.slug)
+    post.slug
     this.newsForm.patchValue({
       title: post.title,
       content: post.content,
@@ -92,7 +97,7 @@ export class AddNewPostComponent implements OnInit {
       postId: post.postId,
       createDate: post.createDate,
       canonicalUrl: post.canonicalUrl,
-      slug: postSlug,
+      slug: post.slug,
       scheduledDate: post.scheduledDate,
       sDate: date[0] || null,
       sTime: date[1] || null
@@ -101,39 +106,44 @@ export class AddNewPostComponent implements OnInit {
     this.setCheckBoxValue(post.categoryList)
   }
 
-  public getSDateStime(status, sdate) {
+  public getSDateStime(status: string, sdate: Date) {
     let date = [null, null]
-    if (status == "scheduled") {
+    if (status == PostStatusEnum.Scheduled) {
       let sd = sdate.toString();
       date = sd.split(' ');
     }
-    return date
+    return date;
   }
 
-
-  public getPostSlug(slug) {
-    let s = slug.split('-');
-    let postSlug = '';
-    for (let i = 0; i < s.length; i++) {
-      postSlug += s[i] + " "
-    }
-    return postSlug
+  public getAllAuthor() {
+    this.postService.getAllAuthor()
+      .then(data => {
+        this.authorList = data;
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
+
 
 
   public setCheckBoxValue(postId) {
-    const categoryListControl = this.newsForm.get('categoryList').value as Array<string>;
-    for (let i = 0; i < postId.length; i++) {
-      categoryListControl.push(postId[i].categoryId)
-    }
-    let CatId = postId.map(c => c.categoryId);
-    setTimeout(() => {
+    this.newsService.getPostCategories().then(cats => {
+      this.categoriesList = cats;
+      const categoryListControl = this.newsForm.get('categoryList').value as Array<string>;
+      for (let i = 0; i < postId.length; i++) {
+        categoryListControl.push(postId[i].categoryId)
+      }
+      let CatId = postId.map(c => c.categoryId);
       if (this.categoriesList.length > 0 && this.categoriesList) {
         for (let i = 0; i < CatId.length; i++) {
           this.categoriesList.find(c => c.categoryId == CatId[i]).isSelected = true
         }
       }
-    }, 1000);
+
+    });
+
+
   }
 
 
@@ -243,24 +253,49 @@ export class AddNewPostComponent implements OnInit {
     })
   }
 
-  addNewCategory() {
+  // addNewCategory() {
 
-    const catDialogRef = this.matDialog.open(AddPostCatDialogComponent, {
-      width: '250px',
+  //   const catDialogRef = this.matDialog.open(AddPostCatDialogComponent, {
+  //     width: '250px',
+  //   });
+
+  //   catDialogRef.afterClosed().subscribe((result: PostCategoryModel) => {
+  //     if (result) {
+  //       this.categoriesList.push(result);
+  //     }
+  //   })
+  //   /* 
+  //       let control = <FormArray>this.newsForm.controls.categories;
+
+  //       control.push(
+  //         this.fb.control(new NewsCategoryModel(10, 'World'))
+  //       ) */
+  // }
+
+  public addNewCategory(): void {
+    const dialogRef = this.matDialog.open(AddPostCatDialogComponent, {
+      width: '500px',
+      data: {
+        isNew: true,
+        targetCategory: null,
+        parentCategory: null,
+        categoryList: this.categoriesList
+      },
+      disableClose: true,
     });
-
-    catDialogRef.afterClosed().subscribe((result: PostCategoryModel) => {
-      if (result) {
-        this.categoriesList.push(result);
+    dialogRef.afterClosed().subscribe((result: IPostCatDialogResult) => {
+      if (result.parentCategoryId) { // add child category
+        const parentCategoryFound = this.categoriesList.find(c => c.categoryId === result.parentCategoryId) as PostCategoryModel;
+        if (parentCategoryFound) {
+          parentCategoryFound.subCategory.push(result.targetCategory);
+        }
+      } else { // add root category
+        this.categoriesList.push(result.targetCategory);
       }
-    })
-    /* 
-        let control = <FormArray>this.newsForm.controls.categories;
-    
-        control.push(
-          this.fb.control(new NewsCategoryModel(10, 'World'))
-        ) */
+    });
   }
+
+
 
   public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
 
@@ -313,6 +348,7 @@ export class AddNewPostComponent implements OnInit {
     this.getPostCategory();
     this.newsForm = this.createForm();
     this.todayDate = new Date();
+    this.getAllAuthor()
   }
 
 
