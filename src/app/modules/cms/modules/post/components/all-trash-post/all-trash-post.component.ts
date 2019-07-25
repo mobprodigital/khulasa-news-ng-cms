@@ -15,8 +15,6 @@ import { PostStatusEnum } from 'src/app/enum/post-status.enum';
   styleUrls: ['./all-trash-post.component.scss']
 })
 
-
-
 export class AllTrashPostComponent implements OnInit {
 
   public status;
@@ -27,15 +25,13 @@ export class AllTrashPostComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  public length = 16;
-  public pageSize = 10;
+  public tableLength: number;
+  public pageSize: number = 10;
   public pageEvent: PageEvent;
   public isFilter: boolean = false;
   public index: number = 0
   constructor(private postService: PostService, private _snackBar: MatSnackBar) {
   }
-
-
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -67,10 +63,18 @@ export class AllTrashPostComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.postId}`;
   }
 
+
+  private getPostCount() {
+    this.postService.getPostCount(PostStatusEnum.Trash)
+      .then(count => this.tableLength = count)
+      .catch(err => console.log(err))
+  }
+  
   public getCheckBoxId(): number[] {
     let postId: number[] = this.selection.selected.map(a => a.postId);
     return postId
   }
+
   public emptyTrash() {
     this.showLoader = true
     let isEmptyTrash = confirm('Are you sure delete all trashed posts ?')
@@ -97,7 +101,6 @@ export class AllTrashPostComponent implements OnInit {
       ).finally(() => { this.showLoader = false })
   }
 
-
   public paging(pageEvent) {
     // if (this.index < pageEvent.pageIndex) {
     //   this.index = pageEvent.pageIndex;
@@ -116,7 +119,6 @@ export class AllTrashPostComponent implements OnInit {
       .catch(err => {
         alert(err);
       })
-
   }
 
   public applyAction() {
@@ -164,9 +166,9 @@ export class AllTrashPostComponent implements OnInit {
 
   }
 
-
   ngOnInit() {
     this.getTrashPost();
+    this.getPostCount();
   }
 
 }
