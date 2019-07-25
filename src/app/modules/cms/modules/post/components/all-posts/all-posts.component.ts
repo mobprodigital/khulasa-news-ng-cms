@@ -5,6 +5,10 @@ import { PostService } from 'src/app/service/post/post.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SelectionModel } from '@angular/cdk/collections';
 import { PageEvent } from '@angular/material';
+import { FilterModel } from 'src/app/model/filter.model';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { PostTypeEnum } from 'src/app/enum/post-type.enum';
+import { PostStatusEnum } from 'src/app/enum/post-status.enum';
 
 @Component({
   selector: 'app-all-posts',
@@ -18,17 +22,17 @@ export class AllPostsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   selection = new SelectionModel<PostModel>(true, []);
-  public postStatusToChange;
-  public postStatus: Date;
-  public dateFrom;
-  public dateTo;
+  public postStatusForAction: string;
   public showLoader: boolean = true;
   public todayDate: Date;
-  public length = 20;
-  public pageSize = 10;
+  public tableLength: number;
+  public pageSize: number = 10;
   public pageEvent: PageEvent;
   public isFilter: boolean = false;
   public index: number = 0;
+  public filterForm: FormGroup;
+  public errMsg: string;
+  public isFilterValid: boolean = false;
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -38,11 +42,11 @@ export class AllPostsComponent implements OnInit {
   }
   constructor(
     private postService: PostService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private formBuilder: FormBuilder,
   ) {
 
   }
-
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
@@ -63,14 +67,8 @@ export class AllPostsComponent implements OnInit {
     // this.postService.getPost().then(news => {
     this.postService.getAllPosts().then(news => {
       this.dataSource = new MatTableDataSource<PostModel>(news);
-      if (news.length < 10) {
-        this.length = news.length
-      }
-      else {
-        this.length = 20
-      }
     })
-      .catch(err => alert(err))
+      .catch(err => this.errMsg = err)
       .finally(() => { this.showLoader = false });
   }
 
@@ -104,23 +102,28 @@ export class AllPostsComponent implements OnInit {
     }
   }
 
-  public paging(pageEvent) {
+  public paging(pageEvent: PageEvent) {
     // if (this.index = pageEvent.pageIndex) {
     //   this.length = this.length
     // }
 
-    if (this.index < pageEvent.pageIndex) {
-      this.index = pageEvent.pageIndex;
-      this.length = this.length + 10;
-    }
-    else if (this.index > pageEvent.pageIndex) {
-      this.index = pageEvent.pageIndex;
-      this.length = this.length - 10;
-    }
+    // if (this.index < pageEvent.pageIndex) {
+    //   this.index = pageEvent.pageIndex;
+    //   this.tableLength = this.tableLength + 10;
+    // }
+    // else if (this.index > pageEvent.pageIndex) {
+    //   this.index = pageEvent.pageIndex;
+    //   this.tableLength = this.tableLength - 10;
+    // }
     let start: number = (pageEvent.pageIndex * 10)
     let count: number = 10;
     if (this.isFilter) {
-      this.getFilteredPost(this.dateFrom, this.dateTo, this.postStatus, start, count);
+      let dateFrom: Date = this.filterForm.get('dateFrom').value;
+      let dateTo: Date = this.filterForm.get('dateTo').value;
+      let postStatus: PostStatusEnum = this.filterForm.get('postStatus').value;
+
+
+      this.getFilteredPost(dateFrom, dateTo, postStatus, start, count);
     }
     else {
       this.postService.getAllPosts(10, start)
@@ -130,8 +133,7 @@ export class AllPostsComponent implements OnInit {
 
         })
         .catch(err => {
-          alert(err);
-          this.length - 20;
+          this.errMsg = err;
         })
     }
   }
@@ -140,14 +142,18 @@ export class AllPostsComponent implements OnInit {
     this.showLoader = true;
     this.dataSource = null;
     this.isFilter = false;
-    this.dateFrom = null;
-    this.dateTo = null;
-    this.postStatus = null;
-    this.length = 20;
+    this.filterForm.reset()
     this.getAllNews();
   }
 
 
+  private createFilterForm() {
+    return this.formBuilder.group({
+      dateFrom: null,
+      dateTo: null,
+      postStatus: '',
+    })
+  }
   // public deleteSelectedPost() {
   //   this.showLoader = true
   //   let postId = this.getCheckBoxId();
@@ -175,8 +181,8 @@ export class AllPostsComponent implements OnInit {
   public changePostStatus() {
     this.showLoader = true
     let postId = this.getCheckBoxId();
-    if (postId.length > 0 && this.postStatusToChange) {
-      this.postService.changePostStatus(postId, this.postStatusToChange)
+    if (postId.length > 0 && this.postStatusForAction) {
+      this.postService.changePostStatus(postId, this.postStatusForAction)
         .then(msg => {
           this.showLoader = false
           this._snackBar.open(msg, 'Done', {
@@ -208,31 +214,55 @@ export class AllPostsComponent implements OnInit {
     return `${year}-${month}-${day}`
   }
 
-  public filterPost() {
-    this.length = 20;
-    this.isFilter = true;
-    this.dataSource = null;
-    let start: number = 0;
-    let count: number = 10;
-    this.getFilteredPost(this.dateFrom, this.dateTo, this.postStatus, start, count);
+  public onSubmit() {
+
+    let dateFrom: Date = this.filterForm.get('dateFrom').value;
+    let dateTo: Date = this.filterForm.get('dateTo').value;
+    let postStatus: PostStatusEnum = this.filterForm.get('postStatus').value;
+    if (dateFrom || dateTo || postStatus) {
+      this.isFilterValid = false
+      this.dataSource = null;
+      this.isFilter = true;
+      let start: number = 0;
+      let count: number = 10;
+      this.postService.getPostCount(postStatus.toString())
+        .then(num => {
+          this.tableLength = num
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      this.getFilteredPost(dateFrom, dateTo, postStatus, start, count);
+    }
+    else {
+      this.isFilterValid = true;
+    }
   }
 
-
-  public getFilteredPost(fromDate, toDate, status, start, count) {
-
+  public getFilteredPost(fromDate: Date, toDate: Date, status: PostStatusEnum, start: number, count: number) {
     this.postService.getAllPosts(count, start, fromDate, toDate, status)
       .then(res => {
         this.dataSource = new MatTableDataSource<PostModel>(res);
-        if (res.length < 10) {
-          // this.length = res.length
-        }
       })
-      .catch(err => console.log(err))
+      .catch(err => this.errMsg = err)
       .finally(() => { this.showLoader = false })
+  }
+
+
+  private getPostCount() {
+    this.postService.getPostCount()
+      .then(num => {
+        this.tableLength = num
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   ngOnInit() {
     this.getAllNews();
-    this.todayDate = new Date()
+    this.todayDate = new Date();
+    this.getPostCount();
+    this.filterForm = this.createFilterForm();
   }
 }
