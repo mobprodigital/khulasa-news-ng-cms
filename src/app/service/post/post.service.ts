@@ -6,6 +6,7 @@ import { HttpParams } from '@angular/common/http';
 import { PostTypeEnum } from 'src/app/enum/post-type.enum';
 import { PostStatusEnum } from 'src/app/enum/post-status.enum';
 import { AuthorModel } from 'src/app/model/author.model';
+import { PostCountModel } from 'src/app/model/count.model';
 
 
 
@@ -15,6 +16,7 @@ import { AuthorModel } from 'src/app/model/author.model';
 export class PostService {
   private menuCategories: PostCategoryModel[] = [];
   constructor(private httpService: HttpService) {
+
   }
 
   /**
@@ -260,6 +262,56 @@ export class PostService {
     })
   }
 
+
+
+
+  /**
+   * 
+   * get all post count 
+   */
+  public getPostCount(): Promise<number>;
+  /**
+   * get post count with status
+   * @param status 
+   */
+  public getPostCount(status: string): Promise<number>;
+  public getPostCount(status?: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      let path = 'count/post';
+      console.log(status)
+      if (status) {
+        let param = new HttpParams()
+          .set('status', status);
+        this.httpService.get(path, param)
+          .then(resp => {
+
+            let count = this.parseCount(resp.data)
+            resolve(count)
+            console.log(count)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      }
+      else {
+        this.httpService.get(path)
+          .then(resp => {
+            let count = this.parseCount(resp.data)
+            resolve(count)
+            console.log(count)
+          })
+          .catch(err => {
+            reject(err)
+          })
+
+      }
+    })
+  }
+
+
+
+
+
   /**
    * return date with (yyyy-mm-dd)
    * @param date
@@ -503,9 +555,11 @@ export class PostService {
   private async setLocalData(key: string, data: any) {
     localStorage.setItem('ks_' + key, JSON.stringify(data));
   }
+
   private getLocalData(key: string): any {
     return localStorage.getItem('ks_' + key);
   }
+
   private parseCategories(cats: any[]): PostCategoryModel[] {
     let catArr: PostCategoryModel[] = [];
     if (cats && cats.length > 0) {
@@ -564,6 +618,7 @@ export class PostService {
     }
     return newslist;
   }
+
   private parseAuthor(author) {
     let authorList: AuthorModel[] = [];
     if (author && author.length > 0) {
@@ -576,4 +631,14 @@ export class PostService {
       return authorList
     }
   }
+
+  private parseCount(post) {
+    let pCount: number;
+    if (post) {
+      let _pcount: PostCountModel = new PostCountModel(post.published || 0, post.trash || 0, post.schedule || 0, post.draft || 0);
+      return _pcount.published + _pcount.draft + _pcount.schedule + _pcount.trash;
+    }
+    return pCount
+  }
+
 }
