@@ -67,7 +67,6 @@
             <a matTooltip="Delete portal" (click)="deleteNews(row.postId)" mat-icon-button color="warn">
               <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
             </a>
-
           </td>
         </ng-container>
 
@@ -77,55 +76,61 @@
         </tr>
       </table>
 
-      <mat-paginator (page)="paging( $event)" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 100]">
+      <mat-paginator (page)="paging( $event)" [length]="tableLength" [pageSize]="pageSize">
       </mat-paginator>
     </div>
   </div>
   <div class="col-md-3">
-    <div *ngIf="pageEvent">
-      <h5>Page Change Event Properties</h5>
-      <div>List length: {{pageEvent.length}}</div>
-      <div>Page size: {{pageEvent.pageSize}}</div>
-      <div>Page index: {{pageEvent.pageIndex}}</div>
-    </div>
-    <mat-expansion-panel [expanded]="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Filters <i class="material-icons">sort</i>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div>
-        <mat-form-field>
-          <input [(ngModel)]="dateFrom" [max]="todayDate" matInput disabled [matDatepicker]="from"
-            placeholder="From Date">
-          <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
-          <mat-datepicker #from disabled="false"></mat-datepicker>
-        </mat-form-field>
+    <form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Filters <i class="material-icons">sort</i>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div>
+          <mat-form-field>
+            <input formControlName="dateFrom" [max]="todayDate" matInput disabled="true" [matDatepicker]="from"
+              placeholder="From Date">
+            <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+            <mat-datepicker #from disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <mat-error *ngIf="isFilterValid">
+            please Select a Date
+          </mat-error>
 
-        <mat-form-field>
-          <input [(ngModel)]="dateTo" [min]="dateFrom" disabled [max]="todayDate" matInput [matDatepicker]="to"
-            placeholder="To Date">
-          <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
-          <mat-datepicker #to disabled="false"></mat-datepicker>
-        </mat-form-field>
+          <mat-form-field>
+            <input formControlName="dateTo" [min]="dateFrom" [max]="todayDate" matInput [matDatepicker]="to"
+              placeholder="To Date">
+            <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+            <mat-datepicker #to disabled="false"></mat-datepicker>
+          </mat-form-field>
+          <mat-error *ngIf="isFilterValid ">
+            please Select a Date
+          </mat-error>
 
-        <mat-form-field>
-          <mat-label>Post Status </mat-label>
-          <mat-select [(ngModel)]="postStatus">
-            <mat-option value="">--select Post Status</mat-option>
-            <mat-option value="draft">Draft</mat-option>
-            <mat-option value="published">Published</mat-option>
-            <mat-option value="scheduled">Scheduled</mat-option>
-            <mat-option value="trash">Trash</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <div class="flex">
-          <button (click)="filterPost()" type="button" color="primary" mat-raised-button>Filter</button> &nbsp;
-          <button (click)="clearFilter()" type="button" mat-raised-button>Clear Filter</button> &nbsp;
+          <mat-form-field>
+            <mat-label>Post Status </mat-label>
+            <mat-select formControlName="postStatus">
+              <mat-option value="">-- select Post Status --</mat-option>
+              <mat-option value="draft">Draft</mat-option>
+              <mat-option value="published">Published</mat-option>
+              <mat-option value="scheduled">Scheduled</mat-option>
+              <mat-option value="trash">Trash</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-error *ngIf="isFilterValid">
+            please Select a status
+          </mat-error>
+          <div class="flex">
+            <button type="submit" color="primary" mat-raised-button>Filter</button> &nbsp;
+            <button (click)="clearFilter()" type="button" mat-raised-button>Clear Filter</button> &nbsp;
+          </div>
         </div>
+      </mat-expansion-panel>
+    </form>
 
-      </div>
-    </mat-expansion-panel>
+
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -135,7 +140,7 @@
       <div class="max-h-200">
         <mat-form-field>
           <mat-label>Change Post Status </mat-label>
-          <mat-select [(ngModel)]="postStatusToChange">
+          <mat-select [(ngModel)]="postStatusForAction">
             <mat-option value="">--select Post Status</mat-option>
             <mat-option value="draft">Draft</mat-option>
             <mat-option value="published">Published</mat-option>
