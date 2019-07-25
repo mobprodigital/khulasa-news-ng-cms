@@ -48,7 +48,6 @@ export class AddNewPostComponent implements OnInit {
   public newsForm: FormGroup;
   public postId: string = '';
   public postData: PostModel;
-  public date;
   public todayDate: Date;
   public authorList: AuthorModel[] = []
 
@@ -84,9 +83,9 @@ export class AddNewPostComponent implements OnInit {
       })
       .catch(err => { console.log(err) })
   }
-  public setPostData(post) {
+
+  public setPostData(post: PostModel) {
     let date = this.getSDateStime(post.status, post.scheduledDate);
-    post.slug
     this.newsForm.patchValue({
       title: post.title,
       content: post.content,
@@ -106,8 +105,8 @@ export class AddNewPostComponent implements OnInit {
     this.setCheckBoxValue(post.categoryList)
   }
 
-  public getSDateStime(status: string, sdate: Date) {
-    let date = [null, null]
+  public getSDateStime(status: string, sdate: Date | string) {
+    let date: string[] = [null, null]
     if (status == PostStatusEnum.Scheduled) {
       let sd = sdate.toString();
       date = sd.split(' ');
@@ -125,14 +124,12 @@ export class AddNewPostComponent implements OnInit {
       })
   }
 
-
-
-  public setCheckBoxValue(postId) {
+  public setCheckBoxValue(postId: PostCategoryModel[]) {
     this.newsService.getPostCategories().then(cats => {
       this.categoriesList = cats;
       const categoryListControl = this.newsForm.get('categoryList').value as Array<string>;
       for (let i = 0; i < postId.length; i++) {
-        categoryListControl.push(postId[i].categoryId)
+        categoryListControl.push(postId[i].categoryId.toString())
       }
       let CatId = postId.map(c => c.categoryId);
       if (this.categoriesList.length > 0 && this.categoriesList) {
@@ -142,10 +139,7 @@ export class AddNewPostComponent implements OnInit {
       }
 
     });
-
-
   }
-
 
   public addPost() {
     if (this.newsForm.valid) {
@@ -171,15 +165,13 @@ export class AddNewPostComponent implements OnInit {
       })
       .catch(err => console.log(err))
   }
-  public tags(tagList) {
+
+  public tags(tagList: string[]) {
     const tagControl = this.newsForm.get('tags').value as Array<string>;
     for (let i = 0; i < tagList.length; i++) {
       tagControl.push(tagList[i])
     }
   }
-
-
-
 
   private createForm() {
     return this.fb.group({
@@ -197,9 +189,9 @@ export class AddNewPostComponent implements OnInit {
       postType: PostTypeEnum.Post,
       sDate: null,
       sTime: null
-
     });
   }
+
   public coverImageChange(ev: MouseEvent) {
     const files: FileList = ev.target['files'];
     if (files && files.length > 0) {
@@ -219,6 +211,7 @@ export class AddNewPostComponent implements OnInit {
       }
     }
   }
+
   public addTag(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -295,8 +288,6 @@ export class AddNewPostComponent implements OnInit {
     });
   }
 
-
-
   public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
 
     //insert id into category list
@@ -315,8 +306,8 @@ export class AddNewPostComponent implements OnInit {
         control.value.splice(catIndex, 1);
       }
     }
-
   }
+
   public formatDate(date: Date) {
     const day = date.getDate();
     const m = date.getMonth() + 1;
@@ -324,8 +315,8 @@ export class AddNewPostComponent implements OnInit {
     const year = date.getFullYear();
     return `${year}-${month}-${day}`
   }
+
   onSubmit() {
-    console.log(this.newsForm.get('categoryList').value)
     if (this.newsForm.get('status').value == 'scheduled') {
       let date = this.newsForm.get('sDate').value;
       let sdate = this.formatDate(date);
@@ -350,6 +341,4 @@ export class AddNewPostComponent implements OnInit {
     this.todayDate = new Date();
     this.getAllAuthor()
   }
-
-
 }
