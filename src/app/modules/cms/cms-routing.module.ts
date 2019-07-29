@@ -16,9 +16,13 @@ const routes: Routes = [
         loadChildren: './modules/media/media.module#MediaModule'
       },
       {
+        path: 'menu',
+        loadChildren: './modules/menu/menu.module#MenuModule'
+      },
+      {
         path: 'user-account',
         loadChildren: './modules/user-account/user-account.module#UserAccountModule',
-        canLoad : [  ]
+        canLoad: []
       },
       {
         path: '',
