@@ -7,7 +7,7 @@ import { PostTypeEnum } from 'src/app/enum/post-type.enum';
 import { PostStatusEnum } from 'src/app/enum/post-status.enum';
 import { AuthorModel } from 'src/app/model/author.model';
 import { PostCountModel } from 'src/app/model/count.model';
-
+import { MenuModel, MenuItemModel } from 'src/app/model/menu.model';
 
 
 @Injectable({
@@ -16,7 +16,7 @@ import { PostCountModel } from 'src/app/model/count.model';
 export class PostService {
   private menuCategories: PostCategoryModel[] = [];
   constructor(private httpService: HttpService) {
-
+   
   }
 
   /**
@@ -216,7 +216,10 @@ export class PostService {
     })
   }
 
-
+  /**
+   * get post by post id 
+   * @param postId post id is number 
+   */
   public getPostById(postId: number): Promise<PostModel> {
     return new Promise((resolve, reject) => {
       let path = 'post';
@@ -362,7 +365,7 @@ export class PostService {
 
 
   /**
-   * return All Author
+   * get All Author
    */
 
   public getAllAuthor(): Promise<AuthorModel[]> {
@@ -378,6 +381,7 @@ export class PostService {
         })
     })
   }
+
 
 
 
@@ -400,10 +404,6 @@ export class PostService {
         })
     })
   }
-
-
-
-
 
 
   /**
@@ -430,6 +430,33 @@ export class PostService {
       }
     });
   }
+
+
+
+  /**
+   * 
+   * add new menu
+   * @param menuName name of menu type string
+   * 
+   */
+  public addNewMenu(menuName: string): Promise<MenuModel> {
+    return new Promise((resolve, reject) => {
+      let dataToSend = {
+        "menuName": menuName
+      };
+      this.httpService.post('menu', dataToSend)
+        .then(resp => {
+          let newMenu = this.parseMenu([resp.data]);
+          resolve(newMenu)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+ 
+
 
   // /**
   //  * get all news
@@ -639,6 +666,35 @@ export class PostService {
       return _pcount.published + _pcount.draft + _pcount.schedule + _pcount.trash;
     }
     return pCount
+  }
+  private parseMenu(menu) {
+    let Menu: MenuModel;
+    if (menu) {
+      Menu = menu.map(m => {
+        let _menu: MenuModel = new MenuModel();
+        _menu.menuId = m.menuId;
+        _menu.menuName = m.menuName;
+        _menu.menuItems = this.parseMenuItems(m.menuItems);
+        return _menu
+      })
+      return Menu
+    }
+  }
+
+  private parseMenuItems(menuItems) {
+    let menuItemList: MenuItemModel[] = [];
+    if (menuItems) {
+      menuItemList = menuItems.map(mI => {
+        let _menuItem: MenuItemModel = new MenuItemModel();
+        _menuItem.menuItemId = mI.menuItemId;
+        _menuItem.menuItemName = mI.menuItemName;
+        _menuItem.menuItemType = mI.menuItemType;
+        _menuItem.menuItemUrl = mI.menuItemUrl;
+        _menuItem.target = mI.target;
+        return _menuItem;
+      })
+      return menuItemList
+    }
   }
 
 }
