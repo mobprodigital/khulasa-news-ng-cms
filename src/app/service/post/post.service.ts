@@ -16,7 +16,8 @@ import { MenuModel, MenuItemModel } from 'src/app/model/menu.model';
 export class PostService {
   private menuCategories: PostCategoryModel[] = [];
   constructor(private httpService: HttpService) {
-   
+    this.getMenu();
+     this.getMenu(1);
   }
 
   /**
@@ -455,7 +456,50 @@ export class PostService {
     })
   }
 
- 
+  /**
+   * 
+   * get All menu 
+   */
+  public getMenu(): Promise<MenuModel[]>;
+  /**
+   * get menu by menu id 
+   * @param menuId  id of menu
+   * @param start  start from in list
+   * @param count number of menu you wants
+   */
+  public getMenu(menuId: number, start?: number, count?: number): Promise<MenuModel>;
+  public getMenu(menuId?: number, start: number = 0, count: number = 10): Promise<MenuModel | MenuModel[]> {
+    return new Promise((resolve, reject) => {
+      let params = new HttpParams()
+        .set('start', start.toString())
+        .set('count', count.toString())
+      let path = 'menu'
+      if (menuId) {
+        this.httpService.get(path + "/" + menuId)
+          .then(resp => {
+            let menu = this.parseMenu(resp.data);
+            resolve(menu);
+            console.log(menu);
+          })
+          .catch(err => {
+            reject(err);
+          })
+      }
+      else {
+        this.httpService.get('menu', params)
+          .then(resp => {
+            let menu = this.parseMenu(resp.data);
+            resolve(menu);
+            console.log(menu);
+          })
+          .catch(err => {
+            reject(err);
+          })
+      }
+    })
+  }
+
+  
 
 
   // /**
