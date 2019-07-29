@@ -1,5 +1,7 @@
 
-/**menu model for Portal view */
+/**
+ * menu model for Portal view
+ */
 export class MenuModel {
     /**Id of menu*/
     public menuId: number;
@@ -10,7 +12,10 @@ export class MenuModel {
 }
 
 
-/** menu item model for menuItems  */
+/** 
+* menu item model for menuItems
+*/
+
 export class MenuItemModel {
     /**id of menuItem */
     public menuItemId: number;

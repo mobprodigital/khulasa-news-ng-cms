@@ -1,6 +1,4 @@
 export class PostCategoryModel {
-
-
     constructor(
         public categoryId: number,
         public categoryName: string,
