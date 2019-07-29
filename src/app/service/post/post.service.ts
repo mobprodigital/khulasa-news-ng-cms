@@ -17,7 +17,8 @@ export class PostService {
   private menuCategories: PostCategoryModel[] = [];
   constructor(private httpService: HttpService) {
     this.getMenu();
-     this.getMenu(1);
+    this.getMenu(1);
+    this.getMenuItemById(1, 1000);
   }
 
   /**
@@ -477,7 +478,7 @@ export class PostService {
       if (menuId) {
         this.httpService.get(path + "/" + menuId)
           .then(resp => {
-            let menu = this.parseMenu(resp.data);
+            let menu = this.parseMenu([resp.data]);
             resolve(menu);
             console.log(menu);
           })
@@ -488,7 +489,7 @@ export class PostService {
       else {
         this.httpService.get('menu', params)
           .then(resp => {
-            let menu = this.parseMenu(resp.data);
+            let menu = this.parseMenu([resp.data]);
             resolve(menu);
             console.log(menu);
           })
@@ -499,7 +500,22 @@ export class PostService {
     })
   }
 
-  
+  /***
+   * get menu Item by Id
+   */
+  public getMenuItemById(menuId: number, menuItemId: number): Promise<MenuItemModel> {
+    return new Promise((resolve, reject) => {
+      this.httpService.get('menu' + "/" + menuId + "/" + menuItemId)
+        .then(resp => {
+          let menuItem = this.parseMenuItems([resp.data])
+          resolve(menuItem[0])
+          console.log(menuItem)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
 
 
   // /**
