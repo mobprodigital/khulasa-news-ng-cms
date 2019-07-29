@@ -16,9 +16,7 @@ import { MenuModel, MenuItemModel } from 'src/app/model/menu.model';
 export class PostService {
   private menuCategories: PostCategoryModel[] = [];
   constructor(private httpService: HttpService) {
-    this.getMenu();
-    this.getMenu(1);
-    this.getMenuItemById(1, 1000);
+  
   }
 
   /**
@@ -514,6 +512,21 @@ export class PostService {
         .catch(err => {
           reject(err)
         })
+    })
+  }
+
+  public addMenuItemByMenuId(menuId, menuItem: MenuItemModel): Promise<MenuItemModel> {
+    return new Promise((resolve, reject) => {
+      let data = JSON.stringify(menuItem)
+      this.httpService.post('menu' + "/" + menuId, data)
+        .then(resp => {
+          let menuItem = this.parseMenuItems([resp.data]);
+          resolve(menuItem[0]);
+        })
+        .catch(err => {
+          reject(err);
+        })
+
     })
   }
 
