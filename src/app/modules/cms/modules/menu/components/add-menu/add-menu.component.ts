@@ -65,7 +65,16 @@ export class AddMenuComponent implements OnInit {
   }
 
 
-  
+  public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
+
+    if ($event.checked) {
+    }
+  }
+  public setPost($event: MatCheckboxChange, post: PostModel) {
+
+    if ($event.checked) {
+    }
+  }
 
 
 
