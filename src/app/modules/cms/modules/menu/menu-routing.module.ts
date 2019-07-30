@@ -11,6 +11,10 @@ const routes: Routes = [
   {
     path: 'all-menu',
     component: AllMenuComponent
+  },
+  {
+    path: 'edit/:id',
+    component: AddMenuComponent
   }
 ];
 
