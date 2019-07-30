@@ -115,6 +115,26 @@ export class MenuService {
   }
 
 
+  /**
+   * 
+   * delete menu item by id 
+   * @param menuId id of menu
+   * @param menuItemId id of menu item
+   */
+  public deleteMenuItemById(menuId: number, menuItemId: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.httpService.delete('menu' + "/" + menuId + "/" + menuItemId)
+        .then(resp => {
+          resolve(resp.message);
+        })
+        .catch(err => {
+          reject(err);
+        })
+    })
+  }
+
+
+
 
 
 
