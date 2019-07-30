@@ -154,7 +154,27 @@ export class MenuService {
   }
 
 
- 
+  /**
+   * edit menu item by id 
+   * @param menuId  id of menu
+   * @param menuItemId  id of menu item
+   * @param menuItem data of menu item
+   */
+
+  public editMenuItem(menuId: number, menuItemId: number, menuItem: MenuItemModel): Promise<MenuItemModel> {
+    return new Promise((resolve, reject) => {
+      this.httpService.put('menu' + "/" + menuId + "/" + menuItemId, menuItem)
+        .then(resp => {
+          let res = this.parseMenuItems([resp.data]);
+          resolve(res[0]);
+        })
+        .catch(err => {
+          reject(err);
+        })
+
+    })
+  }
+
 
 
 
