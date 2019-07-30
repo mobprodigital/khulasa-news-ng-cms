@@ -19,4 +19,68 @@
 
 
 
+<div class="row">
+  <div class="col-md-4 ">
 
+    <mat-accordion>
+
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Categories
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+
+        <div *ngFor="let catg of categoryList; let i = index">
+          <mat-checkbox [checked]="catg.isSelected" (change)="setCategory($event, catg)" color="primary">
+            {{catg.categoryName}}
+          </mat-checkbox>
+        </div>
+        <div class="text-right mt-4 mb-2">
+          <button mat-raised-button>Add to Menu</button>
+        </div>
+
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Post
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+        <div *ngFor="let post of postList; let i = index">
+          <mat-checkbox (change)="setPost($event, post)" color="primary">
+            {{post.title}}
+          </mat-checkbox>
+        </div>
+        <div class="text-right mt-4 mb-2">
+          <button mat-raised-button>Add to Menu</button>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Custom Links
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+        <mat-form-field>
+          <input matInput placeholder="URL">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Link Text">
+        </mat-form-field>
+        <div class="text-right mt-4 mb-2">
+          <button mat-raised-button>Add to Menu</button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+  </div>
+  <div class="col-md-9 ">
+
+  </div>
+</div>
