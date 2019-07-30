@@ -27,12 +27,27 @@ export class AddMenuComponent implements OnInit {
     private postSerive: PostService
   ) {
     this.menuId = parseInt(this.activatedRoute.snapshot.paramMap.get("id"));
+    if (this.menuId) {
+      this.getMenuById();
+    }
+  }
 
+  public getMenuById() {
+    this.menuSerive.getMenu(this.menuId)
+      .then(data => {
+        this.menu = data;
+        console.log(this.menu);
+      })
+      .catch(err => {
+        this.errMsg = err
+      })
   }
 
 
-  ngOnInit() {
 
+
+  ngOnInit() {
+    
     setTimeout(() => {
       this.showLoader = false;
     }, 1000);
