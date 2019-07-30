@@ -4,12 +4,33 @@ import { CommonModule } from '@angular/common';
 import { MenuRoutingModule } from './menu-routing.module';
 import { AddMenuComponent } from './components/add-menu/add-menu.component';
 import { AllMenuComponent } from './components/all-menu/all-menu.component';
+import {
+  MatCardModule, MatFormFieldModule, MatInputModule,
+  MatCheckboxModule, MatChipsModule, MatIconModule, MatButtonModule,
+  MatExpansionModule, MatTableModule, MatDialogModule, MatProgressBarModule,
+  MatSelectModule, MatSnackBarModule
+} from '@angular/material';
+
 
 @NgModule({
   declarations: [AddMenuComponent, AllMenuComponent],
   imports: [
     CommonModule,
-    MenuRoutingModule
+    MenuRoutingModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatExpansionModule,
+    MatTableModule,
+    MatDialogModule,
+    MatProgressBarModule,
+    MatSelectModule,
+    MatSnackBarModule
+
   ]
 })
 export class MenuModule { }
