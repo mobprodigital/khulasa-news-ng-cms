@@ -43,11 +43,21 @@ export class AddMenuComponent implements OnInit {
       })
   }
 
+  public getCategory() {
+    this.postSerive.getPostCategories()
+      .then(cat => {
+        this.categoryList = cat;
+      })
+      .catch(err => {
+        this.errMsg = err;
+      })
+  }
+
 
 
 
   ngOnInit() {
-    
+    this.getCategory();
     setTimeout(() => {
       this.showLoader = false;
     }, 1000);
