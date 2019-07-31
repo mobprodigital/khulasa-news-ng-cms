@@ -95,13 +95,7 @@ export class AddMenuComponent implements OnInit {
     }
     return `${this.postSelection.isSelected(row) ? 'deselect' : 'select'} row ${row.title + 1}`;
   }
-
-
-
-
-
  
-
   public getMenuById() {
     this.menuSerive.getMenu(this.menuId)
       .then(data => {
@@ -152,7 +146,31 @@ export class AddMenuComponent implements OnInit {
 
 
 
- 
+  public onSubmit() {
+    if (this.menuForm.valid) {
+      if (this.menuId) {
+        let item = this.menuForm.get('menuItems').value;
+        this.menuSerive.addMenuItemByMenuId(this.menuId, item)
+          .then(data => {
+            console.log(data)
+          })
+          .catch(err => this.errMsg = err)
+      }
+      else {
+        alert('hi')
+        this.menuSerive.addNewMenu(this.menuForm.get('menuName').value)
+          .then(data => {
+
+            this.router.navigateByUrl('/menu/edit' + "/" + data.menuId);
+            console.log(data);
+          })
+          .catch(err => { this.errMsg = err });
+      }
+    }
+
+    console.log(this.menuForm.value);
+  }
+
 
   // public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
 
