@@ -10,7 +10,7 @@ import {
   MatExpansionModule, MatTableModule, MatDialogModule, MatProgressBarModule,
   MatSelectModule, MatSnackBarModule
 } from '@angular/material';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AddMenuComponent, AllMenuComponent],
@@ -29,7 +29,9 @@ import {
     MatDialogModule,
     MatProgressBarModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    FormsModule,
+    ReactiveFormsModule,
 
   ]
 })
