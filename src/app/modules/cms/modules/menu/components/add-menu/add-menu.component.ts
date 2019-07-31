@@ -95,7 +95,40 @@ export class AddMenuComponent implements OnInit {
     }
     return `${this.postSelection.isSelected(row) ? 'deselect' : 'select'} row ${row.title + 1}`;
   }
- 
+
+
+
+
+
+  public addCategoryToMenu() {
+    let categoryName: string[] = this.categorySelection.selected.map(cat => cat.categoryName);
+    let categoryId: number[] = this.categorySelection.selected.map(cat => cat.categoryId);
+    this.categorySelection.clear();
+    let menuItem = this.menuForm.controls.menuItems;
+    let menuItemList: MenuItemModel[] = []
+    for (let i = 0; i < categoryName.length; i++) {
+      let item: MenuItemModel = new MenuItemModel();
+      item.itemName = categoryName[i];
+      item.itemType = MenuItemTypeEnum.Category;
+      item.itemUrl = categoryId[i].toString();
+      item.target = "_blank";
+      item.position = i;
+      menuItemList.push(item)
+      this.menu.menuItems.push(item)
+    }
+    menuItem.setValue(this.menu.menuItems);
+
+    // console.log(this.menuForm.get('menuItemList').value)
+
+  }
+
+
+  public addPostToMenu() {
+    let title: string[] = this.postSelection.selected.map(post => post.title);
+    console.log(title)
+    this.postSelection.clear();
+  }
+
   public getMenuById() {
     this.menuSerive.getMenu(this.menuId)
       .then(data => {
