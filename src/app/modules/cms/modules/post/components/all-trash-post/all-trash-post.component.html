@@ -1,3 +1,6 @@
+<mat-progress-bar class="login-pb" [mode]="'query'" *ngIf="showLoader"></mat-progress-bar>
+
+
 <header class="page-header">
   <div class="row">
     <div class="col">
@@ -13,12 +16,8 @@
   </div>
 </header>
 
-
-
 <div class="row">
   <div class="col-md-9">
-    <mat-progress-bar class="login-pb" [mode]="'query'" *ngIf="showLoader"></mat-progress-bar>
-
     <div *ngIf="dataSource">
       <mat-form-field>
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
@@ -66,14 +65,14 @@
           </tr>
         </table>
 
-        <mat-paginator (page)="paging( $event)" [length]="length" [pageSize]="pageSize"
+        <mat-paginator (page)="paging( $event)" [length]="tableLength" [pageSize]="pageSize"
           [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
       </div>
     </div>
   </div>
   <div class="col-md-3">
     <mat-accordion>
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Action
