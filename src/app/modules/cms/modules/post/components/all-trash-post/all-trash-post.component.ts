@@ -69,7 +69,7 @@ export class AllTrashPostComponent implements OnInit {
       .then(count => this.tableLength = count)
       .catch(err => console.log(err))
   }
-  
+
   public getCheckBoxId(): number[] {
     let postId: number[] = this.selection.selected.map(a => a.postId);
     return postId
@@ -92,26 +92,21 @@ export class AllTrashPostComponent implements OnInit {
   }
 
   public getTrashPost() {
-    this.postService.getAllPosts(null, null, null, null, PostStatusEnum.Trash)
+    this.postService.getAllPosts(10, 0, null, null, PostStatusEnum.Trash)
       .then(res => {
         this.showLoader = false
+        console.log(res)
         this.dataSource = new MatTableDataSource<PostModel>(res);
+        this.getPostCount();
       })
       .catch(err => { console.log(err) }
       ).finally(() => { this.showLoader = false })
   }
 
   public paging(pageEvent) {
-    // if (this.index < pageEvent.pageIndex) {
-    //   this.index = pageEvent.pageIndex;
-    //   this.length = this.length + 10;
-    // }
-    // else if (this.index > pageEvent.pageIndex) {
-    //   this.index = pageEvent.pageIndex;
-    //   this.length = this.length - 10;
-    // }
+
     let start = (pageEvent.pageIndex * 10)
-    this.postService.getAllPosts(null, null, null, null, PostStatusEnum.Trash)
+    this.postService.getAllPosts(10, start, null, null, PostStatusEnum.Trash)
       .then(res => {
         this.dataSource = null;
         this.dataSource = new MatTableDataSource<PostModel>(res);
@@ -168,7 +163,6 @@ export class AllTrashPostComponent implements OnInit {
 
   ngOnInit() {
     this.getTrashPost();
-    this.getPostCount();
   }
 
 }
