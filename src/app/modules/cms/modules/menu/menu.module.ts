@@ -11,6 +11,7 @@ import {
   MatSelectModule, MatSnackBarModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [AddMenuComponent, AllMenuComponent],
@@ -32,6 +33,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule,
+    DragDropModule
 
   ]
 })
