@@ -47,6 +47,9 @@ export class AddMenuComponent implements OnInit {
   categoryList = new MatTableDataSource<PostCategoryModel>();
   categorySelection = new SelectionModel<PostCategoryModel>(true, []);
 
+  postdisplayedColumns: string[] = ['select', 'post-title'];
+  postList = new MatTableDataSource<PostModel>();
+  postSelection = new SelectionModel<PostModel>(true, []);
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelectedCategoty() {
@@ -70,10 +73,32 @@ export class AddMenuComponent implements OnInit {
     return `${this.categorySelection.isSelected(row) ? 'deselect' : 'select'} row ${row.categoryName + 1}`;
   }
 
-  
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelectedPost() {
+    const numSelected = this.postSelection.selected.length;
+    const numRows = this.postList.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterTogglePost() {
+    this.isAllSelectedPost() ?
+      this.postSelection.clear() :
+      this.postList.data.forEach(row => this.postSelection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabelPost(row?: PostModel): string {
+    if (!row) {
+      return `${this.isAllSelectedPost() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.postSelection.isSelected(row) ? 'deselect' : 'select'} row ${row.title + 1}`;
+  }
 
 
- 
+
+
 
   public getMenuById() {
     this.menuSerive.getMenu(this.menuId)
@@ -107,12 +132,10 @@ export class AddMenuComponent implements OnInit {
       })
   }
 
-  
-
+ 
 
 
  
-
 
   // public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
 
