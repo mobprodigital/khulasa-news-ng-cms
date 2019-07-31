@@ -142,13 +142,21 @@
 
   </div>
   <div class="col-md-8 ">
-    
-    </div>
-
-
-
-
-
-
+    <form [formGroup]="menuForm" (ngSubmit)="onSubmit()">
+      <input type="hidden" formControlName="menuId">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field>
+            <input formControlName="menuName" type="text" matInput placeholder="Menu Name *">
+          </mat-form-field>
+          <mat-error *ngIf="menuForm.get('menuName').invalid">
+            Name is required
+          </mat-error>
+        </div>
+        <div class="col-md-6 text-right">
+          <button type="submit" mat-raised-button color="primary">Add Menu</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
