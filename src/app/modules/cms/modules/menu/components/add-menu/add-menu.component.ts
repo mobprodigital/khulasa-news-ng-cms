@@ -100,6 +100,7 @@ export class AddMenuComponent implements OnInit {
 
 
 
+
   public getMenuById() {
     this.menuSerive.getMenu(this.menuId)
       .then(data => {
@@ -132,10 +133,19 @@ export class AddMenuComponent implements OnInit {
       })
   }
 
+  private createMenuForm() {
+    return this.fb.group({
+      menuId: "",
+      menuName: ["", Validators.required],
+      menuItems: ""
+    })
+  }
+
  
 
 
- 
+
+  
 
   // public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
 
