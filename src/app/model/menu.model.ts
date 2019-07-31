@@ -27,4 +27,6 @@ export class MenuItemModel {
     public itemUrl: string = '';
     /**target of menuItem */
     public target: string = '';
+    /**position of menu item */
+    public position: number = null
 }
