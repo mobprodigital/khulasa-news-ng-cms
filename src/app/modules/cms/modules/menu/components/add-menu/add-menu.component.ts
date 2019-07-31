@@ -100,6 +100,7 @@ export class AddMenuComponent implements OnInit {
 
 
 
+ 
 
   public getMenuById() {
     this.menuSerive.getMenu(this.menuId)
@@ -141,11 +142,17 @@ export class AddMenuComponent implements OnInit {
     })
   }
 
+  private setMenu(menu: MenuModel) {
+    this.menuForm.patchValue({
+      menuId: menu.menuId,
+      menuName: menu.menuName
+    })
+
+  }
+
+
+
  
-
-
-
-  
 
   // public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
 
