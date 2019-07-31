@@ -206,6 +206,7 @@ export class MenuService {
         _menuItem.itemType = mI.itemType;
         _menuItem.itemUrl = mI.itemUrl;
         _menuItem.target = mI.target;
+        _menuItem.position = mI.position;
         return _menuItem;
       })
       return menuItemList
