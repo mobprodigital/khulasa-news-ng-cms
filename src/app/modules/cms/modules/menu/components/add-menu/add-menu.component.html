@@ -17,30 +17,55 @@
 </header>
 
 
-
-
 <div class="row">
   <div class="col-md-4 ">
-
     <mat-accordion>
-
       <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Categories
           </mat-panel-title>
-
         </mat-expansion-panel-header>
+        <div class="margin-body">
+          <table mat-table [dataSource]="categoryList" class="mat-elevation-z8">
 
-        <div *ngFor="let catg of categoryList; let i = index">
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <!-- <mat-checkbox (change)="$event ? masterToggleCategory() : null"
+                  [checked]="categorySelection.hasValue() && isAllSelectedCategoty()"
+                  [indeterminate]="categorySelection.hasValue() && !isAllSelectedCategoty()"
+                  [aria-label]="checkboxLabelCategory()">
+                </mat-checkbox> -->
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                  (change)="$event ? categorySelection.toggle(row) : null" [checked]="categorySelection.isSelected(row)"
+                  [aria-label]="checkboxLabelCategory(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="category-name">
+              <th mat-header-cell *matHeaderCellDef>Category Name </th>
+              <td mat-cell *matCellDef="let row"> {{row.categoryName}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="categorydisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: categorydisplayedColumns;"
+              (click)="categorySelection.toggle(row)">
+            </tr>
+          </table>
+          <!-- <div *ngFor="let catg of categoryList; let i = index">
           <mat-checkbox [checked]="catg.isSelected" (change)="setCategory($event, catg)" color="primary">
             {{catg.categoryName}}
           </mat-checkbox>
+        </div> -->
+          <div class="text-right mt-3 mb-3 mr-3">
+            <button (click)="addCategoryToMenu()" mat-raised-button>Add to Menu</button>
+          </div>
         </div>
-        <div class="text-right mt-4 mb-2">
-          <button mat-raised-button>Add to Menu</button>
-        </div>
-
       </mat-expansion-panel>
 
       <mat-expansion-panel>
@@ -50,14 +75,23 @@
           </mat-panel-title>
 
         </mat-expansion-panel-header>
-        <div *ngFor="let post of postList; let i = index">
-          <mat-checkbox (change)="setPost($event, post)" color="primary">
-            {{post.title}}
+
+        <div class="margin-body">
+
+          
+
+
+          <div *ngFor="let post of postList; let i = index">
+          <mat-checkbox name="post" (change)="setPost($event, post)" color="primary">
+            <span class="title"> {{post.title}}</span>
+
           </mat-checkbox>
         </div>
-        <div class="text-right mt-4 mb-2">
-          <button mat-raised-button>Add to Menu</button>
+          <div class="text-right mt-3 mb-3 mr-3">
+            <button (click)="addPostToMenu()" mat-raised-button>Add to Menu</button>
+          </div>
         </div>
+
       </mat-expansion-panel>
 
       <mat-expansion-panel>
@@ -65,7 +99,6 @@
           <mat-panel-title>
             Custom Links
           </mat-panel-title>
-
         </mat-expansion-panel-header>
         <mat-form-field>
           <input matInput placeholder="URL">
@@ -77,10 +110,18 @@
           <button mat-raised-button>Add to Menu</button>
         </div>
       </mat-expansion-panel>
+
     </mat-accordion>
 
   </div>
-  <div class="col-md-9 ">
+  <div class="col-md-8 ">
+    
+    </div>
+
+
+
+
+
 
   </div>
 </div>
