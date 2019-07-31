@@ -158,5 +158,13 @@
         </div>
       </div>
     </form>
+    <div *ngIf="menu">
+      <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let m of menu.menuItems" cdkDrag>
+          <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+          {{m.itemName}}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
