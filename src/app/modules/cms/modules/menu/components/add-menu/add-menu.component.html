@@ -78,15 +78,42 @@
 
         <div class="margin-body">
 
-          
+          <table mat-table [dataSource]="postList" class="mat-elevation-z8">
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <!-- <mat-checkbox (change)="$event ? masterTogglePost() : null"
+                  [checked]="postSelection.hasValue() && isAllSelectedPost()"
+                  [indeterminate]="postSelection.hasValue() && !isAllSelectedPost()" [aria-label]="checkboxLabelPost()">
+                </mat-checkbox> -->
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                  (change)="$event ? postSelection.toggle(row) : null" [checked]="postSelection.isSelected(row)"
+                  [aria-label]="checkboxLabelPost(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="post-title">
+              <th mat-header-cell *matHeaderCellDef> &nbsp;&nbsp; Post title </th>
+              <td mat-cell *matCellDef="let row"> &nbsp;&nbsp; <span class="title"> {{row.title}}</span></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="postdisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: postdisplayedColumns;" (click)="postSelection.toggle(row)">
+            </tr>
+          </table>
 
 
-          <div *ngFor="let post of postList; let i = index">
+          <!-- <div *ngFor="let post of postList; let i = index">
           <mat-checkbox name="post" (change)="setPost($event, post)" color="primary">
             <span class="title"> {{post.title}}</span>
 
           </mat-checkbox>
-        </div>
+        </div> -->
           <div class="text-right mt-3 mb-3 mr-3">
             <button (click)="addPostToMenu()" mat-raised-button>Add to Menu</button>
           </div>
