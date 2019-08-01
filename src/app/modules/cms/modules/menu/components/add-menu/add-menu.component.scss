@@ -1,6 +1,6 @@
 .title {
   display: inline-block;
-  width: 225px;
+  width: 200px;
   white-space: nowrap;
   overflow: hidden !important;
   text-overflow: ellipsis;
@@ -12,6 +12,8 @@ div.mat-expansion-panel-body {
 
 .margin-body {
   margin: 0 -24px -16px;
+  height: 250px;
+  overflow: auto;
 }
 
 .example-list {
@@ -26,7 +28,7 @@ div.mat-expansion-panel-body {
 }
 
 .example-box {
-  padding: 20px 10px;
+  padding: 10px;
   border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
   display: flex;
