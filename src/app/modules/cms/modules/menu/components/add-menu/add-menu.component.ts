@@ -154,6 +154,28 @@ export class AddMenuComponent implements OnInit {
     }
   }
 
+  public addUrlToMenu() {
+    const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
+    let position
+    if (menuItemsControl.length) {
+      let posititonList: number[] = menuItemsControl.map(i => i.position);
+      let lastPositon = Math.max(...posititonList);
+      position = lastPositon + 1
+    }
+    else {
+      position = 1
+    }
+
+    let item: MenuItemModel = new MenuItemModel();
+    item.itemName = this.linkText;
+    item.itemType = MenuItemTypeEnum.Url;
+    item.itemUrl = this.url;
+    item.target = "_blank";
+    item.position = position;
+    menuItemsControl.push(item);
+    this.linkText = '';
+    this.url = '';
+  }
 
   /**add category,post,coustom url to menu funtion end  */
 
