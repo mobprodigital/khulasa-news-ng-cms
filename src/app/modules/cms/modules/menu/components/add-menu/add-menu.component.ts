@@ -128,7 +128,32 @@ export class AddMenuComponent implements OnInit {
     }
   }
 
-  
+  public addPostToMenu() {
+    const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
+    let position: number;
+
+    let postTitle: string[] = this.postSelection.selected.map(post => post.title);
+    let postId: number[] = this.postSelection.selected.map(post => post.postId);
+    this.postSelection.clear();
+    for (let i = 0; i < postTitle.length; i++) {
+      let item: MenuItemModel = new MenuItemModel();
+      item.itemName = postTitle[i];
+      item.itemType = MenuItemTypeEnum.Post;
+      item.itemUrl = postId[i];
+      item.target = "_blank";
+      if (menuItemsControl.length) {
+        let posititonList: number[] = menuItemsControl.map(i => i.position);
+        let lastPositon = Math.max(...posititonList);
+        item.position = lastPositon + 1
+      }
+      else {
+        position = i + 1
+      }
+
+      menuItemsControl.push(item)
+    }
+  }
+
 
   /**add category,post,coustom url to menu funtion end  */
 
