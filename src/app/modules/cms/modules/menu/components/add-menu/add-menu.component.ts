@@ -276,6 +276,25 @@ export class AddMenuComponent implements OnInit {
       })
   }
 
+  public getCategory() {
+    this.postSerive.getPostCategories()
+      .then(cat => {
+        this.categoryList = new MatTableDataSource<PostCategoryModel>(cat);
+      })
+      .catch(err => {
+        this.errMsg = err;
+      })
+  }
+
+  public getPost() {
+    this.postSerive.getAllPosts()
+      .then(data => {
+        this.postList = new MatTableDataSource<PostModel>(data);
+      })
+      .catch(err => {
+        this.errMsg = err;
+      })
+  }
 
   /**initial calling function end */
 
