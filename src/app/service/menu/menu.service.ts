@@ -27,7 +27,7 @@ export class MenuService {
       this.httpService.post('menu', dataToSend)
         .then(resp => {
           let newMenu = this.parseMenu([resp.data]);
-          resolve(newMenu)
+          resolve(newMenu[0])
         })
         .catch(err => {
           reject(err)
@@ -99,13 +99,13 @@ export class MenuService {
    * @param menuItem data object of menu item 
    * 
    */
-  public addMenuItemByMenuId(menuId, menuItem: MenuItemModel): Promise<MenuItemModel> {
+  public addMenuItemByMenuId(menuId, menuItem: MenuItemModel): Promise<MenuItemModel[]> {
     return new Promise((resolve, reject) => {
       let data = JSON.stringify(menuItem)
       this.httpService.post('menu' + "/" + menuId, data)
         .then(resp => {
           let menuItem = this.parseMenuItems([resp.data]);
-          resolve(menuItem[0]);
+          resolve(menuItem);
         })
         .catch(err => {
           reject(err);
