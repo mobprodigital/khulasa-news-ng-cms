@@ -180,7 +180,30 @@ export class AddMenuComponent implements OnInit {
   /**add category,post,coustom url to menu funtion end  */
 
 
- 
+  /**delete menu item by id funtion start  */
+
+  public deleteItem(itemId, position) {
+    const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
+    console.log(position)
+    if (itemId) {
+      menuItemsControl.splice(position - 1, 1)
+      this.menuSerive.deleteMenuItemById(this.menuId, itemId)
+        .then(msg => {
+          this._snackBar.open(msg, 'Done', {
+            duration: 2000,
+          });
+        })
+        .catch(err => {
+          this.errMsg = err
+        })
+    }
+    else {
+      menuItemsControl.splice(position - 1, 1)
+    }
+
+  }
+
+  /**delete menu item by id funtion end  */
 
   /** create form and patch value function start */
 
