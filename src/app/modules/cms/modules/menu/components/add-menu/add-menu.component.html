@@ -62,9 +62,10 @@
             {{catg.categoryName}}
           </mat-checkbox>
         </div> -->
-          <div class="text-right mt-3 mb-3 mr-3">
-            <button (click)="addCategoryToMenu()" mat-raised-button>Add to Menu</button>
-          </div>
+
+        </div>
+        <div class="text-right pt-4">
+          <button (click)="addCategoryToMenu()" mat-raised-button>Add to Menu</button>
         </div>
       </mat-expansion-panel>
 
@@ -114,9 +115,10 @@
 
           </mat-checkbox>
         </div> -->
-          <div class="text-right mt-3 mb-3 mr-3">
-            <button (click)="addPostToMenu()" mat-raised-button>Add to Menu</button>
-          </div>
+
+        </div>
+        <div class="text-right pt-4">
+          <button (click)="addPostToMenu()" mat-raised-button>Add to Menu</button>
         </div>
 
       </mat-expansion-panel>
@@ -128,13 +130,13 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-form-field>
-          <input matInput placeholder="URL">
+          <input [(ngModel)]="url" matInput placeholder="URL">
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Link Text">
+          <input [(ngModel)]="linkText" matInput placeholder="Link Text">
         </mat-form-field>
         <div class="text-right mt-4 mb-2">
-          <button mat-raised-button>Add to Menu</button>
+          <button (click)="addUrlToMenu()" mat-raised-button>Add to Menu</button>
         </div>
       </mat-expansion-panel>
 
@@ -158,6 +160,7 @@
         </div>
       </div>
     </form>
+
     <div *ngIf="menu">
       <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
         <div class="example-box" *ngFor="let m of menu.menuItems" cdkDrag>
