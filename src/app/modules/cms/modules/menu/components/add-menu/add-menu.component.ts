@@ -5,7 +5,7 @@ import { MenuModel, MenuItemModel } from 'src/app/model/menu.model';
 import { PostService } from 'src/app/service/post/post.service';
 import { PostCategoryModel } from 'src/app/model/post-category.model';
 import { PostModel } from 'src/app/model/post.model';
-import { MatCheckboxChange, MatTableDataSource } from '@angular/material';
+import { MatCheckboxChange, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MenuItemTypeEnum } from 'src/app/enum/menu-item-type.enum';
@@ -21,8 +21,8 @@ export class AddMenuComponent implements OnInit {
   public menu: MenuModel = null;
   public menuForm: FormGroup;
   public showLoader: boolean = true;
-  // public categoryList: PostCategoryModel[] = [];
-  // public postList: PostModel[] = [];
+  public url: string = '';
+  public linkText: string = '';
 
   constructor(
     private menuSerive: MenuService,
@@ -30,16 +30,21 @@ export class AddMenuComponent implements OnInit {
     private postSerive: PostService,
     private router: Router,
     private fb: FormBuilder,
+    private _snackBar: MatSnackBar
   ) {
     this.menuId = parseInt(this.activatedRoute.snapshot.paramMap.get("id"));
     if (this.menuId) {
       this.getMenuById();
     }
-
   }
 
 
   drop(event: CdkDragDrop<string[]>) {
+    // const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
+
+    // let menuItems: MenuItemModel = menuItemsControl.find(i => i.position == event.previousIndex + 1)
+    // console.log(menuItems)
+    // menuItemsControl.pop(menuItems)
     console.log(event.currentIndex, event.previousIndex);
   }
 
@@ -96,104 +101,86 @@ export class AddMenuComponent implements OnInit {
     return `${this.postSelection.isSelected(row) ? 'deselect' : 'select'} row ${row.title + 1}`;
   }
 
-
-
-
+  /**add category,post,coustom url to menu funtion start */
 
   public addCategoryToMenu() {
+    const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
+    let position: number;
+
     let categoryName: string[] = this.categorySelection.selected.map(cat => cat.categoryName);
     let categoryId: number[] = this.categorySelection.selected.map(cat => cat.categoryId);
     this.categorySelection.clear();
-    let menuItem = this.menuForm.controls.menuItems;
-    let menuItemList: MenuItemModel[] = []
     for (let i = 0; i < categoryName.length; i++) {
       let item: MenuItemModel = new MenuItemModel();
       item.itemName = categoryName[i];
       item.itemType = MenuItemTypeEnum.Category;
-      item.itemUrl = categoryId[i].toString();
+      if (menuItemsControl.length) {
+        let posititonList: number[] = menuItemsControl.map(i => i.position);
+        let lastPositon = Math.max(...posititonList);
+        position = lastPositon + 1
+      }
+      else {
+        position = i + 1
+      }
       item.target = "_blank";
-      item.position = i;
-      menuItemList.push(item)
-      this.menu.menuItems.push(item)
+      item.position = position;
+      menuItemsControl.push(item)
     }
-    menuItem.setValue(this.menu.menuItems);
-
-    // console.log(this.menuForm.get('menuItemList').value)
-
   }
 
+  
 
-  public addPostToMenu() {
-    let title: string[] = this.postSelection.selected.map(post => post.title);
-    console.log(title)
-    this.postSelection.clear();
-  }
-
-  public getMenuById() {
-    this.menuSerive.getMenu(this.menuId)
-      .then(data => {
-        this.setMenu(data);
-        this.menu = data
-      })
-      .catch(err => {
-        this.errMsg = err
-      })
-  }
-
-  public getCategory() {
-    this.postSerive.getPostCategories()
-      .then(cat => {
-        this.categoryList = new MatTableDataSource<PostCategoryModel>(cat);
-      })
-      .catch(err => {
-        this.errMsg = err;
-      })
-  }
+  /**add category,post,coustom url to menu funtion end  */
 
 
-  public getPost() {
-    this.postSerive.getAllPosts()
-      .then(data => {
-        this.postList = new MatTableDataSource<PostModel>(data);
-      })
-      .catch(err => {
-        this.errMsg = err;
-      })
-  }
+ 
+
+  /** create form and patch value function start */
 
   private createMenuForm() {
     return this.fb.group({
       menuId: "",
       menuName: ["", Validators.required],
-      menuItems: ""
+      menuItems: this.fb.array([])
     })
   }
 
   private setMenu(menu: MenuModel) {
+    // this.menuForm.controls['menuName'].setValue(menu.menuName);
+    // this.menuForm.controls['menuId'].setValue(menu.menuId);
     this.menuForm.patchValue({
       menuId: menu.menuId,
       menuName: menu.menuName
-    })
+    });
+    this.setmenuItems(menu.menuItems);
 
   }
 
+  private setmenuItems(item: MenuItemModel[]) {
+    const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
+    for (let i = 0; i < item.length; i++) {
+      menuItemsControl.push(item[i]);
+    }
+  }
+
+  /** create form and patch value function end */
 
 
   public onSubmit() {
     if (this.menuForm.valid) {
       if (this.menuId) {
         let item = this.menuForm.get('menuItems').value;
-        this.menuSerive.addMenuItemByMenuId(this.menuId, item)
+        let sendItem = item.filter(i => i.itemId == null)
+        console.log(sendItem)
+        this.menuSerive.addMenuItemByMenuId(this.menuId, sendItem)
           .then(data => {
             console.log(data)
           })
           .catch(err => this.errMsg = err)
       }
       else {
-        alert('hi')
         this.menuSerive.addNewMenu(this.menuForm.get('menuName').value)
           .then(data => {
-
             this.router.navigateByUrl('/menu/edit' + "/" + data.menuId);
             console.log(data);
           })
@@ -205,18 +192,22 @@ export class AddMenuComponent implements OnInit {
   }
 
 
-  // public setCategory($event: MatCheckboxChange, catg: PostCategoryModel) {
+  /** initial calling function start  */
 
-  //   if ($event.checked) {
+  public getMenuById() {
+    this.menuSerive.getMenu(this.menuId)
+      .then(data => {
+        this.menu = data;
+        this.setMenu(data);
 
-  //   }
-  // }
-  // public setPost($event: MatCheckboxChange, post: PostModel) {
+      })
+      .catch(err => {
+        this.errMsg = err
+      })
+  }
 
-  //   if ($event.checked) {
-  //   }
-  // }
 
+  /**initial calling function end */
 
 
   ngOnInit() {
@@ -227,7 +218,5 @@ export class AddMenuComponent implements OnInit {
       this.showLoader = false;
     }, 1000);
   }
-
-
 
 }
