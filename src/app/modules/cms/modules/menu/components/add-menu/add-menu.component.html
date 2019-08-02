@@ -151,12 +151,12 @@
           <mat-form-field>
             <input formControlName="menuName" type="text" matInput placeholder="Menu Name *">
           </mat-form-field>
-          <mat-error *ngIf="menuForm.get('menuName').invalid">
-            Name is required
+          <mat-error *ngIf="menuForm.controls['menuName'].errors">
+            <div [hidden]="menuForm.controls['menuName'].errors.required">Name is required.</div>
           </mat-error>
         </div>
         <div class="col-md-6 text-right">
-          <button type="submit" mat-raised-button color="primary">Add Menu</button>
+          <button type="submit" [disabled]="addMenuBtn" mat-raised-button color="primary">Add Menu</button>
         </div>
       </div>
     </form>
@@ -182,6 +182,7 @@
         </div>
       </div>
     </div> -->
+
 
 
   </div>
