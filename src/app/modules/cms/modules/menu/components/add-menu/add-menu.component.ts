@@ -220,6 +220,7 @@ export class AddMenuComponent implements OnInit {
 
   /**delete menu item by id funtion end  */
 
+  
   /** create form and patch value function start */
 
   private createMenuForm() {
@@ -257,15 +258,19 @@ export class AddMenuComponent implements OnInit {
       if (this.menuId && this.menuForm.get('menuItems').value.length > 0) {
         let item = this.menuForm.get('menuItems').value;
         let ItemsForAdd = item.filter(i => i.itemId == null);
-        this.menuSerive.addMenuItemByMenuId(this.menuId, ItemsForAdd)
-          .then(data => {
-            this._snackBar.open("Menu Item Successfully Added", 'Done', {
-              duration: 2000,
-            });
-            this.menuForm.controls['menuItems'].setValue([])
-            this.getMenuById();
-          })
-          .catch(err => this.errMsg = err)
+        let ItemsForEdit = item.filter(i => i.itemId)
+        console.log(ItemsForEdit)
+        if (ItemsForAdd.length > 0) {
+          this.menuSerive.addMenuItemByMenuId(this.menuId, ItemsForAdd)
+            .then(data => {
+              this._snackBar.open("Menu Item Successfully Added", 'Done', {
+                duration: 2000,
+              });
+              this.menuForm.controls['menuItems'].setValue([])
+              this.getMenuById();
+            })
+            .catch(err => this.errMsg = err)
+        }
       }
       else if (this.menuForm.get('menuId').value == "" && this.menuForm.get('menuName').value.length > 0) {
         this.menuSerive.addNewMenu(this.menuForm.get('menuName').value)
