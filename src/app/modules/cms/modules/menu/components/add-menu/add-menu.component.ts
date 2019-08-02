@@ -282,14 +282,16 @@ export class AddMenuComponent implements OnInit {
   /** on submit function start */
   public onSubmit() {
     if (this.menuForm.valid) {
-
+      /**add menu item  conditon*/
       if (this.menuId && this.menuForm.get('menuItems').value.length > 0) {
         this.addMenuBtn = true;
         let item: MenuItemModel[] = this.menuForm.get('menuItems').value;
         let ItemsForAdd: MenuItemModel[] = item.filter(i => i.itemId == null);
+        /**edit menu item   condition*/
         if (this.isEditMenuItem) {
           this.editMenuItem();
         }
+        /**add menu item condition */
         if (ItemsForAdd.length > 0) {
           this.menuSerive.addMenuItemByMenuId(this.menuId, ItemsForAdd)
             .then(data => {
@@ -303,6 +305,7 @@ export class AddMenuComponent implements OnInit {
             .finally(() => {
             })
         }
+        /** edit menu name condition */
         if (this.menu.menuName != this.menuForm.get('menuName').value) {
           this.menuSerive.editMenu(this.menuId, this.menuForm.get('menuName').value)
             .then(resp => {
@@ -316,12 +319,11 @@ export class AddMenuComponent implements OnInit {
             .finally(() => {
             })
         }
-
-
         setTimeout(() => {
           this.addMenuBtn = false;
         }, 2000);
       }
+      /**add new menu condition */
       else if (this.menuForm.get('menuId').value == "" && this.menuForm.get('menuName').value.length > 0) {
         this.menuSerive.addNewMenu(this.menuForm.get('menuName').value)
           .then(data => {
