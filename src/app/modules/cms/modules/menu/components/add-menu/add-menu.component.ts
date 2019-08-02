@@ -41,12 +41,11 @@ export class AddMenuComponent implements OnInit {
 
 
   drop(event: CdkDragDrop<string[]>) {
-    // const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
-
-    // let menuItems: MenuItemModel = menuItemsControl.find(i => i.position == event.previousIndex + 1)
-    // console.log(menuItems)
-    // menuItemsControl.pop(menuItems)
-    console.log(event.currentIndex, event.previousIndex);
+    moveItemInArray(this.menuForm.get('menuItems').value, event.previousIndex, event.currentIndex);
+    const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
+    for (let i = 0; i < menuItemsControl.length; i++) {
+      menuItemsControl[i].position = i + 1
+    }
   }
 
   categorydisplayedColumns: string[] = ['select', 'category-name'];
@@ -196,6 +195,10 @@ export class AddMenuComponent implements OnInit {
           this._snackBar.open(msg, 'Done', {
             duration: 2000,
           });
+
+          for (let i = 0; i < menuItemsControl.length; i++) {
+            menuItemsControl[i].position = i + 1
+          }
         })
         .catch(err => {
           this.errMsg = err
@@ -208,6 +211,9 @@ export class AddMenuComponent implements OnInit {
       this._snackBar.open("Item Successfully Deleted", 'Done', {
         duration: 2000,
       });
+      for (let i = 0; i < menuItemsControl.length; i++) {
+        menuItemsControl[i].position = i + 1
+      }
     }
 
   }
@@ -250,13 +256,14 @@ export class AddMenuComponent implements OnInit {
 
       if (this.menuId && this.menuForm.get('menuItems').value.length > 0) {
         let item = this.menuForm.get('menuItems').value;
-        let sendItem = item.filter(i => i.itemId == null)
-        console.log(sendItem)
-        this.menuSerive.addMenuItemByMenuId(this.menuId, sendItem)
+        let ItemsForAdd = item.filter(i => i.itemId == null);
+        this.menuSerive.addMenuItemByMenuId(this.menuId, ItemsForAdd)
           .then(data => {
             this._snackBar.open("Menu Item Successfully Added", 'Done', {
               duration: 2000,
             });
+            this.menuForm.controls['menuItems'].setValue([])
+            this.getMenuById();
           })
           .catch(err => this.errMsg = err)
       }
