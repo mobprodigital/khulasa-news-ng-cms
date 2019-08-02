@@ -142,7 +142,10 @@ export class MenuService {
    */
   public editMenu(menuId: number, menuName: string): Promise<MenuModel> {
     return new Promise((resolve, reject) => {
-      this.httpService.put('menu' + "/" + menuId, menuName)
+      let dataToSend = {
+        "menuName": menuName
+      };
+      this.httpService.put('menu' + "/" + menuId, dataToSend)
         .then(resp => {
           let res = this.parseMenu([resp.data])
           resolve(res[0])
