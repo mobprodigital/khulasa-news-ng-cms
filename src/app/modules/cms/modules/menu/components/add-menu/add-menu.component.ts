@@ -220,7 +220,17 @@ export class AddMenuComponent implements OnInit {
 
   /**delete menu item by id funtion end  */
 
-  
+  /**edit menu item by id function start */
+
+
+
+  public editItem() {
+
+  }
+  /**edit menu item by id function end  */
+
+
+
   /** create form and patch value function start */
 
   private createMenuForm() {
@@ -256,10 +266,8 @@ export class AddMenuComponent implements OnInit {
     if (this.menuForm.valid) {
 
       if (this.menuId && this.menuForm.get('menuItems').value.length > 0) {
-        let item = this.menuForm.get('menuItems').value;
-        let ItemsForAdd = item.filter(i => i.itemId == null);
-        let ItemsForEdit = item.filter(i => i.itemId)
-        console.log(ItemsForEdit)
+        let item: MenuItemModel[] = this.menuForm.get('menuItems').value;
+        let ItemsForAdd: MenuItemModel[] = item.filter(i => i.itemId == null);
         if (ItemsForAdd.length > 0) {
           this.menuSerive.addMenuItemByMenuId(this.menuId, ItemsForAdd)
             .then(data => {
