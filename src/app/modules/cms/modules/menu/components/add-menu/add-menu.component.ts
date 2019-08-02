@@ -236,10 +236,11 @@ export class AddMenuComponent implements OnInit {
 
   /** create form and patch value function end */
 
-
+  /** on submit function start */
   public onSubmit() {
     if (this.menuForm.valid) {
-      if (this.menuId) {
+
+      if (this.menuId && this.menuForm.get('menuItems').value.length > 0) {
         let item = this.menuForm.get('menuItems').value;
         let sendItem = item.filter(i => i.itemId == null)
         console.log(sendItem)
@@ -249,7 +250,7 @@ export class AddMenuComponent implements OnInit {
           })
           .catch(err => this.errMsg = err)
       }
-      else {
+      else if (this.menuForm.get('menuId').value == "" && this.menuForm.get('menuName').value.length > 0) {
         this.menuSerive.addNewMenu(this.menuForm.get('menuName').value)
           .then(data => {
             this.router.navigateByUrl('/menu/edit' + "/" + data.menuId);
@@ -258,10 +259,9 @@ export class AddMenuComponent implements OnInit {
           .catch(err => { this.errMsg = err });
       }
     }
-
-    console.log(this.menuForm.value);
   }
 
+  /** on submit function end  */
 
   /** initial calling function start  */
 
