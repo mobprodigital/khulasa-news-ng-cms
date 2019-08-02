@@ -24,6 +24,10 @@ export class AddMenuComponent implements OnInit {
   public url: string = '';
   public linkText: string = '';
   public isEdit: boolean = true;
+  public isEditMenuItem: boolean;
+  public addMenuBtn: boolean = false;
+
+
   constructor(
     private menuSerive: MenuService,
     private activatedRoute: ActivatedRoute,
@@ -36,6 +40,7 @@ export class AddMenuComponent implements OnInit {
     if (this.menuId) {
       this.getMenuById();
       this.isEdit = false;
+      this.isEditMenuItem = false
     }
   }
 
@@ -46,6 +51,7 @@ export class AddMenuComponent implements OnInit {
     for (let i = 0; i < menuItemsControl.length; i++) {
       menuItemsControl[i].position = i + 1
     }
+    this.isEditMenuItem = true
   }
 
   categorydisplayedColumns: string[] = ['select', 'category-name'];
@@ -195,10 +201,10 @@ export class AddMenuComponent implements OnInit {
           this._snackBar.open(msg, 'Done', {
             duration: 2000,
           });
-
           for (let i = 0; i < menuItemsControl.length; i++) {
             menuItemsControl[i].position = i + 1
           }
+          this.editMenuItem()
         })
         .catch(err => {
           this.errMsg = err
@@ -222,15 +228,22 @@ export class AddMenuComponent implements OnInit {
 
   /**edit menu item by id function start */
 
-  public editItem() {
-    let item: MenuItemModel[] = this.menuForm.get('menuItems').value;
-    let ItemsForEdit: MenuItemModel[] = item.filter(i => i.itemId)
-    console.log(ItemsForEdit)
-    if (ItemsForEdit.length > 0) {
-      this.menuSerive.editMenuItem(this.menuId, ItemsForEdit)
-        .then(resp => { })
-        .catch(err => { this.errMsg = err })
-    }
+  public editMenuItem() {
+    // let item: MenuItemModel[] = this.menuForm.get('menuItems').value;
+    // let ItemsForEdit: MenuItemModel[] = item.filter(i => i.itemId)
+    // console.log(ItemsForEdit)
+    // if (ItemsForEdit.length > 0) {
+    //   this.menuSerive.editMenuItem(this.menuId, ItemsForEdit)
+    //     .then(resp => {
+    // this.menuForm.controls['menuItems'].setValue([])
+    // this.getMenuById();
+    // })
+    //     .catch(err => { this.errMsg = err })
+    // }
+    console.log('edit');
+    this.isEditMenuItem = false;
+    console.log(this.menuForm.value)
+
   }
 
   /**edit menu item by id function end  */
@@ -265,24 +278,49 @@ export class AddMenuComponent implements OnInit {
 
   /** create form and patch value function end */
 
+
   /** on submit function start */
   public onSubmit() {
     if (this.menuForm.valid) {
 
       if (this.menuId && this.menuForm.get('menuItems').value.length > 0) {
+        this.addMenuBtn = true;
         let item: MenuItemModel[] = this.menuForm.get('menuItems').value;
         let ItemsForAdd: MenuItemModel[] = item.filter(i => i.itemId == null);
+        if (this.isEditMenuItem) {
+          this.editMenuItem();
+        }
         if (ItemsForAdd.length > 0) {
           this.menuSerive.addMenuItemByMenuId(this.menuId, ItemsForAdd)
             .then(data => {
-              this._snackBar.open("Menu Item Successfully Added", 'Done', {
+              this._snackBar.open("Menu Successfully Update", 'Done', {
                 duration: 2000,
               });
               this.menuForm.controls['menuItems'].setValue([])
               this.getMenuById();
             })
             .catch(err => this.errMsg = err)
+            .finally(() => {
+            })
         }
+        if (this.menu.menuName != this.menuForm.get('menuName').value) {
+          this.menuSerive.editMenu(this.menuId, this.menuForm.get('menuName').value)
+            .then(resp => {
+              this.menuForm.controls['menuName'].setValue(resp.menuName);
+              this.menu.menuName = resp.menuName;
+              this._snackBar.open("Menu  Successfully Update", 'Done', {
+                duration: 2000,
+              });
+            })
+            .catch(err => this.errMsg = err)
+            .finally(() => {
+            })
+        }
+
+
+        setTimeout(() => {
+          this.addMenuBtn = false;
+        }, 2000);
       }
       else if (this.menuForm.get('menuId').value == "" && this.menuForm.get('menuName').value.length > 0) {
         this.menuSerive.addNewMenu(this.menuForm.get('menuName').value)
@@ -295,6 +333,7 @@ export class AddMenuComponent implements OnInit {
           .catch(err => { this.errMsg = err });
       }
     }
+    console.log(this.menuForm.value)
   }
 
   /** on submit function end  */
