@@ -115,6 +115,7 @@ export class AddMenuComponent implements OnInit {
       let item: MenuItemModel = new MenuItemModel();
       item.itemName = categoryName[i];
       item.itemType = MenuItemTypeEnum.Category;
+      item.itemUrl = categoryId[i];
       if (menuItemsControl.length) {
         let posititonList: number[] = menuItemsControl.map(i => i.position);
         let lastPositon = Math.max(...posititonList);
@@ -185,9 +186,11 @@ export class AddMenuComponent implements OnInit {
 
   public deleteItem(itemId, position) {
     const menuItemsControl = this.menuForm.get('menuItems').value as Array<MenuItemModel>;
-    console.log(position)
+    // console.log(position)
     if (itemId) {
-      menuItemsControl.splice(position - 1, 1)
+      let index = menuItemsControl.map(i => i.itemId).indexOf(itemId);
+      console.log(index)
+      menuItemsControl.splice(index, 1)
       this.menuSerive.deleteMenuItemById(this.menuId, itemId)
         .then(msg => {
           this._snackBar.open(msg, 'Done', {
@@ -199,7 +202,12 @@ export class AddMenuComponent implements OnInit {
         })
     }
     else {
-      menuItemsControl.splice(position - 1, 1)
+      let index = menuItemsControl.map(i => i.position).indexOf(position);
+      console.log(index);
+      menuItemsControl.splice(index, 1);
+      this._snackBar.open("Item Successfully Deleted", 'Done', {
+        duration: 2000,
+      });
     }
 
   }
@@ -246,7 +254,9 @@ export class AddMenuComponent implements OnInit {
         console.log(sendItem)
         this.menuSerive.addMenuItemByMenuId(this.menuId, sendItem)
           .then(data => {
-            console.log(data)
+            this._snackBar.open("Menu Item Successfully Added", 'Done', {
+              duration: 2000,
+            });
           })
           .catch(err => this.errMsg = err)
       }
@@ -254,7 +264,9 @@ export class AddMenuComponent implements OnInit {
         this.menuSerive.addNewMenu(this.menuForm.get('menuName').value)
           .then(data => {
             this.router.navigateByUrl('/menu/edit' + "/" + data.menuId);
-            console.log(data);
+            this._snackBar.open("Menu Successfully Added", 'Done', {
+              duration: 2000,
+            });
           })
           .catch(err => { this.errMsg = err });
       }
