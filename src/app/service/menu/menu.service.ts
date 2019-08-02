@@ -99,12 +99,12 @@ export class MenuService {
    * @param menuItem data object of menu item 
    * 
    */
-  public addMenuItemByMenuId(menuId, menuItem: MenuItemModel): Promise<MenuItemModel[]> {
+  public addMenuItemByMenuId(menuId, menuItem: MenuItemModel[]): Promise<MenuItemModel[]> {
     return new Promise((resolve, reject) => {
       let data = JSON.stringify(menuItem)
       this.httpService.post('menu' + "/" + menuId, data)
         .then(resp => {
-          let menuItem = this.parseMenuItems([resp.data]);
+          let menuItem = this.parseMenuItems(resp.data);
           resolve(menuItem);
         })
         .catch(err => {
@@ -161,17 +161,16 @@ export class MenuService {
    * @param menuItem data of menu item
    */
 
-  public editMenuItem(menuId: number, menuItemId: number, menuItem: MenuItemModel): Promise<MenuItemModel> {
+  public editMenuItem(menuId: number, menuItem: MenuItemModel[]): Promise<MenuItemModel[]> {
     return new Promise((resolve, reject) => {
-      this.httpService.put('menu' + "/" + menuId + "/" + menuItemId, menuItem)
+      this.httpService.put('menu' + "/" + menuId, menuItem)
         .then(resp => {
-          let res = this.parseMenuItems([resp.data]);
-          resolve(res[0]);
+          let res = this.parseMenuItems(resp.data);
+          resolve(res);
         })
         .catch(err => {
           reject(err);
         })
-
     })
   }
 
