@@ -23,7 +23,7 @@ export class AddMenuComponent implements OnInit {
   public showLoader: boolean = true;
   public url: string = '';
   public linkText: string = '';
-
+  public isEdit: boolean = true;
   constructor(
     private menuSerive: MenuService,
     private activatedRoute: ActivatedRoute,
@@ -35,6 +35,7 @@ export class AddMenuComponent implements OnInit {
     this.menuId = parseInt(this.activatedRoute.snapshot.paramMap.get("id"));
     if (this.menuId) {
       this.getMenuById();
+      this.isEdit = false;
     }
   }
 
