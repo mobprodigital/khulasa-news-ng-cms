@@ -20,7 +20,7 @@
 <div class="row">
   <div class="col-md-4 ">
     <mat-accordion>
-      <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel [expanded]="!isEdit" [disabled]="isEdit">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Categories
@@ -69,7 +69,7 @@
         </div>
       </mat-expansion-panel>
 
-      <mat-expansion-panel>
+      <mat-expansion-panel [disabled]="isEdit">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Post
@@ -123,7 +123,7 @@
 
       </mat-expansion-panel>
 
-      <mat-expansion-panel>
+      <mat-expansion-panel [disabled]="isEdit">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Custom Links
