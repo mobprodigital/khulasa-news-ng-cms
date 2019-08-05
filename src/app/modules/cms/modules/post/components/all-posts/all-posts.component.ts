@@ -149,8 +149,8 @@ export class AllPostsComponent implements OnInit {
 
   private createFilterForm() {
     return this.formBuilder.group({
-      dateFrom: null,
-      dateTo: null,
+      dateFrom:  { disabled: true, value: '' },
+      dateTo:  { disabled: true, value: '' },
       postStatus: '',
     })
   }
