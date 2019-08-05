@@ -4,12 +4,13 @@
 <header class="page-header">
   <div class="row">
     <div class="col">
-      <h1 *ngIf="!menuId" class="page-title">Add new Menu</h1>
-      <h1 *ngIf="menuId" class="page-title">Edit Menu</h1>
+      <h1 class="page-title">All Menu</h1>
+
     </div>
     <div class="col">
       <div class="text-right">
-        <a [routerLink]="['/post/all-news']" mat-raised-button color="primary">All posts</a>
+
+        <a [routerLink]="['/menu/add-new-menu']" mat-raised-button color="primary">Add New Menu</a>
       </div>
     </div>
   </div>
