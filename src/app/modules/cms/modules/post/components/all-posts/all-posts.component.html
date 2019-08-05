@@ -90,23 +90,22 @@
         </mat-expansion-panel-header>
         <div>
           <mat-form-field>
-            <input formControlName="dateFrom" [max]="todayDate" matInput disabled="true" [matDatepicker]="from"
-              placeholder="From Date">
+            <input formControlName="dateFrom" [max]="todayDate" matInput [matDatepicker]="from" placeholder="From Date">
             <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
             <mat-datepicker #from disabled="false"></mat-datepicker>
           </mat-form-field>
           <mat-error *ngIf="isFilterValid">
-            please Select a Date
+            Please Select a Date
           </mat-error>
 
           <mat-form-field>
-            <input formControlName="dateTo" [min]="dateFrom" [max]="todayDate" matInput [matDatepicker]="to"
-              placeholder="To Date">
+            <input formControlName="dateTo" [min]="this.filterForm.get('dateFrom').value" [max]="todayDate" matInput
+              [matDatepicker]="to" placeholder="To Date">
             <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
             <mat-datepicker #to disabled="false"></mat-datepicker>
           </mat-form-field>
           <mat-error *ngIf="isFilterValid ">
-            please Select a Date
+            Please Select a Date
           </mat-error>
 
           <mat-form-field>
@@ -120,7 +119,7 @@
             </mat-select>
           </mat-form-field>
           <mat-error *ngIf="isFilterValid">
-            please Select a status
+            Please Select a status
           </mat-error>
           <div class="flex">
             <button type="submit" color="primary" mat-raised-button>Filter</button> &nbsp;
