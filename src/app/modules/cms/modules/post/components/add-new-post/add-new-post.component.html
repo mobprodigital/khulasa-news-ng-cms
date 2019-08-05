@@ -162,6 +162,9 @@
             <button mat-raised-button color="light" (click)="addNewCategory()" type="button">Add new</button>
           </div>
         </div>
+        <mat-error *ngIf="newsForm.get('categoryList').invalid">
+          category is required
+        </mat-error>
       </mat-expansion-panel>
 
       <!-- tags -->
